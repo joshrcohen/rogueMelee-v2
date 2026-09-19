@@ -1,4 +1,5 @@
 #include "special_internal.h"
+#include <melee/ft/fighter.h>
 RogueFighterState fighter_state;
 bool Rogue_DebugGrantAbility(const char* key)
 {
@@ -199,14 +200,13 @@ int Rogue_AbilityMapBone(Fighter* fp, int bone)
     source = Rogue_AbilitySourceKind(fp);
     mapped = ftPartsRemap(fp->kind, source, bone);
     /* Unmapped decorative bones cannot index outside the recipient skeleton. */
-    if (mapped < 0 || mapped >= 0x8C || !fp->parts[mapped].joint)
+    if (mapped < 0 || (unsigned) mapped >= ftPartsTable[fp->kind]->parts_num || !fp->parts[mapped].joint)
         mapped = ftParts_GetBoneIndex(fp, FtPart_TransN);
     return mapped;
 }
 
-bool Rogue_TrySpecial(Fighter_GObj* gobj, RogueAbilitySlot slot, bool airborne)
+static bool install_ability(Fighter* fp, RogueAbilitySlot slot)
 {
-    Fighter* fp = GET_FIGHTER(gobj);
     const RogueAbilityDefinition* def;
     ftData* source;
     if (!Rogue_IsRunPlayer(fp) || slot < 0 || slot >= ROGUE_ABILITY_SLOTS) return false;
@@ -232,6 +232,42 @@ bool Rogue_TrySpecial(Fighter_GObj* gobj, RogueAbilitySlot slot, bool airborne)
     fp->x58C = ftData_Table_Unk0[def->internal_kind].count;
     /* Source animation flags already identify the source skeleton. Melee's
      * ftPartsRemap path retargets its FigaTree to the unchanged base fighter. */
-    (airborne ? def->air_enter : def->ground_enter)(gobj);
     return true;
+}
+
+bool Rogue_TrySpecial(Fighter_GObj* gobj, RogueAbilitySlot slot, bool airborne)
+{
+    Fighter* fp = GET_FIGHTER(gobj);
+    if (!install_ability(fp, slot)) return false;
+    (airborne ? fighter_state.active->air_enter : fighter_state.active->ground_enter)(gobj);
+    return true;
+}
+
+bool Rogue_AbilityResumeFamily(Fighter* fp, FighterKind family, RogueAbilitySlot slot)
+{
+    const RogueAbilityDefinition* def;
+    if (!Rogue_IsRunPlayer(fp)) return false;
+    def = Rogue_GetAbility(RogueDirector_Run()->specials[slot]);
+    if (def && abilityFamily(def->internal_kind) == abilityFamily(family))
+        return install_ability(fp, slot);
+    if (abilityFamily(fp->kind) == abilityFamily(family)) {
+        Rogue_AbilityCleanup(fp);
+        return true;
+    }
+    return false;
+}
+
+int Rogue_AbilityPartIndex(Fighter* fp, int part)
+{
+    int index = ftParts_GetBoneIndex(fp, part);
+    if (Rogue_IsRunPlayer(fp) && ((unsigned) index >= ftPartsTable[fp->kind]->parts_num || !fp->parts[index].joint))
+        return ftParts_GetBoneIndex(fp, FtPart_TransN);
+    return index;
+}
+
+int Rogue_AbilityDebugRestored(Fighter* fp)
+{
+    return fp && fighter_state.fighter == fp && !fighter_state.active &&
+        fp->dat_attrs == fighter_state.native_attrs && fp->x24 == fighter_state.native_anims &&
+        fp->x28 == fighter_state.native_anim_flags && fp->x58C == fighter_state.native_anim_count;
 }

@@ -31,3 +31,27 @@ file = "src/sysdolphin/baselib/hsd_3A64.c"
 anchor = "s32 HSD_SisLib_803A70A0(HSD_Text* text, s32 entry_idx, char* fmt, ...)\n{\n    u8 buffer[128];\n    u8 encoded[128];"
 replacement = "s32 HSD_SisLib_803A70A0(HSD_Text* text, s32 entry_idx, char* fmt, ...)\n{\n    u8 buffer[128];\n    u8 encoded[512];"
 reason = "Use the same safe encoded capacity when updating an existing native text entry."
+
+[[fix]]
+id = "debug-stale-class-guard"
+owner = "platform/diagnostics"
+file = "src/sysdolphin/baselib/class.c"
+anchor = "    info = o->parent.class_info;"
+replacement = "#if ROGUE_DEBUG\n    if ((u32) o < 0x80000000U || (u32) o >= 0x81800000U)\n        HSD_Panic(__FILE__, __LINE__, \"[rogue] stale HSD object\");\n#endif\n    info = o->parent.class_info;"
+reason = "Debug builds emit a native stack trace before traversing a freed HSD class pointer; no release behavior change."
+
+[[fix]]
+id = "boomerang-return-donor-context"
+owner = "platform/specials/link"
+file = "src/melee/ft/kinds/ftLink/ftlinkspecials.c"
+anchor = "void ftLk_SpecialS2_Enter(HSD_GObj* gobj)\n{\n    Fighter* fp = GET_FIGHTER(gobj);"
+replacement = "void ftLk_SpecialS2_Enter(HSD_GObj* gobj)\n{\n    Fighter* fp = GET_FIGHTER(gobj);\n    if (Rogue_IsRunPlayer(fp) && !Rogue_AbilityResumeFamily(fp, Ft_Kind_Link, ROGUE_ABILITY_SIDE)) return;"
+reason = "A returning boomerang re-enters Link's catch state after the initial special has cleaned up; reinstall its persistent donor context before selecting the donor motion table."
+
+[[fix]]
+id = "boomerang-return-recipient-bone"
+owner = "platform/specials/link"
+file = "src/melee/ft/kinds/ftLink/ftlinkspecialhi.c"
+anchor = "    return ftParts_GetBoneIndex(GET_FIGHTER(gobj), FtPart_LThumbNb);"
+replacement = "    return Rogue_AbilityPartIndex(GET_FIGHTER(gobj), FtPart_LThumbNb);"
+reason = "Some recipients lack Link's thumb part; attach the returning article to TransN rather than indexing the invalid native part sentinel."

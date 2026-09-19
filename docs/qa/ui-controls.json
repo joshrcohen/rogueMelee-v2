@@ -1,0 +1,63 @@
+{
+  "status": "pass",
+  "scenario": "native-controller-progression",
+  "dol_sha1": "9e72fd4339c624809f0c5c956a8fa8728aa2fb08",
+  "image_sha256": "18eb4cd39dad3d43ebc5b29dd154f26204489a1fc5fc2e5d914ecc0bc5f0f64a",
+  "log_sha256": "5bd4488e9c0fccdd1dfd2f532f595187f823bdf1e151666744fc27d8e882c2fa",
+  "events": [
+    [
+      "1",
+      "20",
+      "0",
+      "0"
+    ],
+    [
+      "1",
+      "20",
+      "0",
+      "1"
+    ],
+    [
+      "1",
+      "400",
+      "0",
+      "0"
+    ],
+    [
+      "1",
+      "8",
+      "0",
+      "0"
+    ],
+    [
+      "1",
+      "210",
+      "1",
+      "0"
+    ],
+    [
+      "2",
+      "8",
+      "1",
+      "0"
+    ],
+    [
+      "2",
+      "210",
+      "0",
+      "0"
+    ]
+  ],
+  "checks": [
+    "B opens and closes build",
+    "X rerolls",
+    "right selects reward",
+    "A claims reward",
+    "right selects route",
+    "A enters native combat",
+    "progression resources released"
+  ],
+  "limitations": [
+    "Fixed-seed QA boot; normal CSS entry still pending"
+  ]
+}

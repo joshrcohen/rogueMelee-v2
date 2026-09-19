@@ -1,0 +1,25 @@
+{
+  "scenario": "native-scene-lifetimes",
+  "status": "pass",
+  "cycles": 100,
+  "seconds": 137.7473471998237,
+  "log_sha256": "48b444fb2fdb3d0d46a2104b0d9aad434003e5cd6e1cc0eb38162835d4c41c52",
+  "dol_sha1": "7401dc07f259b322a1195b8d645104d19483daf8",
+  "image_sha256": "b64d81f9b1dbdb23cc5b934e0f28f5824ffb7018068c335ef2cd2628408a7420",
+  "views": [
+    "reward",
+    "shop",
+    "complete",
+    "dead",
+    "build panel"
+  ],
+  "native_assets": [
+    "original authored RogueUi.dat JOBJ tree",
+    "retail CSS portrait texture animation",
+    "retail SIS text"
+  ],
+  "resources_at_every_exit": 0,
+  "limitations": [
+    "Scripted scene transitions; normal controller flow still to validate"
+  ]
+}

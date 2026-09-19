@@ -34,6 +34,11 @@ def main():
     p.add_argument("--profile", choices=['debug','release'], default='debug')
     p.add_argument('--qa-scene-cycles', type=int, default=0, help='Debug-only real scene lifecycle test')
     p.add_argument('--qa-match', action='store_true', help='Debug-only controlled native match lifecycle fixture')
+    p.add_argument("--qa-matches", type=int, default=20)
+    p.add_argument("--qa-specials", action="store_true", help="Debug-only 104-special native lifecycle fixture")
+    p.add_argument("--qa-special-start", type=int, default=0)
+    p.add_argument("--qa-special-count", type=int, default=104)
+    p.add_argument("--qa-ui", action="store_true", help="Debug-only fixed-seed interactive progression preview")
     p.add_argument("--target", choices=['all','dol','hooks','progression','specials','assets'], default='all')
     p = sub.add_parser("verify-image", help="Verify immutable NTSC-U 1.02 input")
     p.add_argument("--image", type=Path)
@@ -41,9 +46,12 @@ def main():
     p.add_argument("--suite", choices=['all','tooling','core','specials','integration','golden'], default='all')
     sub.add_parser("status", help="Show implementation evidence")
     sub.add_parser('run', help='Launch the verified output image in an isolated Dolphin profile')
-    p = sub.add_parser('soak', help='Run real native scene resource lifetimes in Dolphin')
-    p.add_argument('--iterations', type=int, default=100)
-    p.add_argument('--timeout', type=int, default=180)
+    p = sub.add_parser('soak', help='Run native lifecycle fixtures and save pass/failure evidence')
+    p.add_argument('--scenario', choices=['scenes','matches','specials'], default='scenes')
+    p.add_argument('--iterations', '--transitions', type=int)
+    p.add_argument('--matches', type=int, help='Shorthand for --scenario matches --iterations N')
+    p.add_argument('--start', type=int, default=0, help='First recipient x special matrix index')
+    p.add_argument('--timeout', type=int, default=600)
     sub.add_parser("migrate-specials", help="Inventory the prepared pinned special migration oracle")
     args = parser.parse_args()
     try:
@@ -55,14 +63,14 @@ def main():
             bootstrap(cfg, args.image)
         elif args.command == 'build':
             from lib.build import build
-            build(cfg, args.profile, args.target, args.qa_scene_cycles, args.qa_match)
+            build(cfg, args.profile, args.target, args.qa_scene_cycles, args.qa_match, args.qa_ui, args.qa_matches, args.qa_specials, args.qa_special_start, args.qa_special_count)
         elif args.command == 'verify-image':
             image = args.image or cfg['paths'].get('melee_iso')
             if not image:
                 raise ValueError('Set MELEE_ISO_PATH or pass --image PATH')
             print(json.dumps(verify(image, ROOT), indent=2))
         elif args.command == 'test':
-            folder = ROOT / 'tests' / (args.suite if args.suite != 'all' else '')
+            folder = ROOT / 'tests' / ('core' if args.suite == 'golden' else args.suite if args.suite != 'all' else '')
             return subprocess.call([sys.executable, '-m', 'unittest', 'discover', '-s', str(folder), '-v'], cwd=ROOT)
         elif args.command == 'migrate-specials':
             from lib.migration import inventory
@@ -71,8 +79,11 @@ def main():
             from lib.emulator import launch
             launch(cfg)
         elif args.command == 'soak':
-            from lib.emulator import scene_soak
-            scene_soak(cfg, args.iterations, args.timeout)
+            from lib.emulator import soak
+            scenario = 'matches' if args.matches is not None else args.scenario
+            iterations = args.matches if args.matches is not None else args.iterations
+            if iterations is None: iterations = 104 if scenario == 'specials' else 100
+            soak(cfg, scenario, iterations, args.timeout, args.start)
         else:
             print((ROOT / 'IMPLEMENTATION_STATUS.md').read_text(encoding='utf-8'))
         return 0

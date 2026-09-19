@@ -1,5 +1,6 @@
 #include "rogue_mode.h"
-#include "ui_text.h"
+#include "ui_scene.h"
+#include "qa/special_matrix.h"
 #include "../../director/rogue_director.h"
 #include "../../upgrades/upgrade_registry.h"
 #include "../../encounters/encounter_registry.h"
@@ -24,8 +25,10 @@ static VsModeData selection;
 static CSSData css;
 static StartMeleeData match;
 static MatchExitInfo result;
-static RogueText screen;
-static unsigned generation, cursor, build_view;
+static RogueUiContext ui;
+#define screen ui.text
+static unsigned cursor, build_view;
+static const char* feedback;
 static unsigned qa_cycles, qa_frames, qa_matches, qa_failures;
 static const unsigned stages[6] = { 31, 32, 28, 8, 2, 3 };
 
@@ -37,6 +40,7 @@ static void change_state(unsigned id)
 
 void RogueMode_Load(void)
 {
+    RogueSpecialQa_Reset();
     gm_InitVsMode(&selection);
     selection.start.players[0].ckind = CKind_Fox;
     selection.start.players[0].slot_type = Gm_PKind_Human;
@@ -92,6 +96,9 @@ static void enter_match(GameModeState* state)
         player->ckind = i ? run->current.fighters[i - 1] : run->character;
         player->slot_type = i ? Gm_PKind_Cpu : Gm_PKind_Human;
         player->stocks = i ? run->current.stocks[i - 1] : 3;
+#if ROGUE_DEBUG && ROGUE_QA_MODE == 4
+        player->stocks = 99;
+#endif
         player->team = i ? 1 : 0;
         player->cpu_level = 3 + run->act * 2;
         if (i) {
@@ -121,9 +128,10 @@ static void exit_match(GameModeState* state)
         result.match_end.player_standings[0].stocks > 0;
     (void) state;
     RogueRun_MatchEnd(RogueDirector_Run(), won, 0);
+    RogueSpecialQa_Result(won);
 #if ROGUE_DEBUG && ROGUE_QA_MODE == 2
     qa_matches++;
-    if (won != (qa_matches < 20)) qa_failures++;
+    if (won != (qa_matches < ROGUE_QA_MATCHES)) qa_failures++;
     qa_frames = 0;
     OSReport("[rogue] transition_qa index=%u won=%d failures=%u\n", qa_matches, won, qa_failures);
 #endif
@@ -143,39 +151,114 @@ GameModeState RogueMode_States[] = {
     { GM_GAMEMODESTATE_TERMINATE }
 };
 
+static const char* fighter_names[26] = {
+    "Captain Falcon", "Donkey Kong", "Fox", "Mr Game and Watch", "Kirby", "Bowser",
+    "Link", "Luigi", "Mario", "Marth", "Mewtwo", "Ness", "Peach", "Pikachu",
+    "Ice Climbers", "Jigglypuff", "Samus", "Yoshi", "Zelda", "Sheik", "Falco",
+    "Young Link", "Dr Mario", "Roy", "Pichu", "Ganondorf"
+};
+static const char* node_names[5] = { "MATCH", "ELITE", "BOSS", "SHOP", "REST" };
+static const char* stage_names[6] = { "Battlefield", "Final Destination", "Dream Land", "Yoshi Story", "Fountain of Dreams", "Pokemon Stadium" };
+
 static void draw(void)
 {
     RogueRun* run = RogueDirector_Run();
-    unsigned i;
-    const char* phases[] = { "Select", "Choose an upgrade", "Choose your route",
-        "Battle", "Shop", "Rest", "Run ended", "Run complete" };
+    unsigned i, floor = run->floor < 15 ? run->floor : 14;
+    const char* phases[] = { "CHOOSE A FIGHTER", "CHOOSE AN UPGRADE", "CHOOSE YOUR ROUTE",
+        "BATTLE", "SHOP", "REST", "RUN ENDED", "RUN COMPLETE" };
+    RogueUi_Update(&ui, run, cursor, build_view);
     RogueText_Begin(&screen);
-    RogueText_Line(&screen, 35, 25, "rogueMelee   Act %u / 3   Floor %u / 15", run->act, run->floor + 1);
-    RogueText_Line(&screen, 35, 65, "%s   Gold %u   Seed %08X", phases[run->phase], run->gold, run->seed);
-    if (build_view) {
-        unsigned line = 0;
-        for (i = 0; i < ROGUE_UPGRADES; ++i) if (run->stacks[i]) {
-            RogueText_Line(&screen, 35 + (line / 10) * 300, 110 + (line % 10) * 25,
-                              "%s x%u", rogue_upgrades[i].name, run->stacks[i]);
-            line++;
-        }
-    } else if (run->phase == ROGUE_REWARD || run->phase == ROGUE_SHOP) {
-        RogueOfferState* offers = run->phase == ROGUE_SHOP ? &run->shop : &run->reward;
-        for (i = 0; i < 3; ++i) {
-            unsigned id = offers->ids[i];
-            RogueText_Line(&screen, 35, 130 + i * 75, "%s %s %s", cursor == i ? ">" : " ",
-                RogueOffer_Name(id), offers->sold[i] ? "(Sold)" : "");
-            RogueText_Line(&screen, 55, 158 + i * 75, "%s", RogueOffer_Description(id));
-        }
-        RogueText_Line(&screen, 35, 380, "X: Reroll (%u gold)", RogueRun_RerollCost(run, run->phase == ROGUE_SHOP));
-    } else if (run->phase == ROGUE_ROUTE) {
-        for (i = 0; i < 2; ++i) {
-            unsigned recipe = run->preview[i].recipe;
-            RogueText_Line(&screen, 35, 150 + i * 80, "%s %s", cursor == i ? ">" : " ",
-                recipe ? rogue_recipes[recipe - 1].name : run->route[run->floor][i] == ROGUE_NODE_SHOP ? "Shop" : "Rest");
+    for (i = 0; i < 15; ++i) {
+        RogueText_Line(&screen, 43+i*39, 23, "%u", i+1);
+        RogueText_Style(&screen, 0.60f, i == run->floor ? 0x171B30 : 0xE5E9F6);
+        if (i % 5 == 4) {
+            RogueText_Line(&screen, 33+i*39, 54, "BOSS");
+            RogueText_Style(&screen, 0.50f, 0xAAB4CF);
         }
     }
-    RogueText_Line(&screen, 35, 430, "A: Choose   B: Build   Start: Continue");
+    RogueText_Line(&screen, 24, 61, "ACT %u / 3     FLOOR %u / 15", run->act, floor+1);
+    RogueText_Style(&screen, 0.80f, 0xFFFFFF);
+    RogueText_Line(&screen, 471, 61, "GOLD %u", run->gold);
+    RogueText_Style(&screen, 0.85f, 0xF6CD36);
+    RogueText_Line(&screen, 212, 102, "%s", build_view ? "CURRENT BUILD" : phases[run->phase]);
+    RogueText_Style(&screen, 0.85f, 0xDAE2FF);
+    if (build_view) {
+        unsigned line = 0;
+        const char* slots[4] = { "Neutral", "Side", "Up", "Down" };
+        for (i = 0; i < 4; ++i) {
+            const RogueSpecialDef* special = RogueSpecial_Find(run->specials[i]);
+            RogueText_Line(&screen, 32, 133+i*23, "%s: %s", slots[i], special ? special->name : "Native");
+            RogueText_Style(&screen, 0.8f, 0xF6CD36);
+        }
+        for (i = 0; i < ROGUE_UPGRADES; ++i) if (run->stacks[i]) {
+            RogueText_Line(&screen, 32 + (line / 8) * 198, 240 + (line % 8) * 19,
+                "%s x%u", rogue_upgrades[i].name, run->stacks[i]);
+            RogueText_Style(&screen, 0.7f, 0xDFE5F7);
+            line++;
+        }
+    } else {
+        if (run->phase == ROGUE_REWARD || run->phase == ROGUE_SHOP) {
+            RogueOfferState* offers = run->phase == ROGUE_SHOP ? &run->shop : &run->reward;
+            for (i = 0; i < 3; ++i) {
+                unsigned id = offers->ids[i], x = 20+i*204;
+                const char* icon = id > ROGUE_UPGRADES ? "B" : "+";
+                RogueText_Line(&screen, x+21, 146, "%s", icon);
+                RogueText_Style(&screen, 1.2f, 0xF6CD36);
+                RogueText_Line(&screen, x+49, 144, "%s", RogueOffer_Name(id));
+                RogueText_Style(&screen, 0.53f, cursor == i ? 0xF6CD36 : 0xFFFFFF);
+                RogueText_Line(&screen, x+49, 154, "%s", id > ROGUE_UPGRADES ? "SPECIAL / COMMON" : "PASSIVE / COMMON");
+                RogueText_Style(&screen, 0.50f, 0xAEB9D5);
+                RogueText_Wrap(&screen, x+12, 190, 25, RogueOffer_Description(id));
+                if (run->phase == ROGUE_SHOP) {
+                    if (offers->sold[i]) RogueText_Line(&screen, x+12, 228, "SOLD");
+                    else RogueText_Line(&screen, x+12, 228, "%u GOLD", RogueOffer_Price(run,id));
+                    RogueText_Style(&screen, 0.65f, offers->sold[i] ? 0x9299AA : 0xF6CD36);
+                }
+            }
+        } else if (run->phase == ROGUE_ROUTE) {
+            for (i = 0; i < 2; ++i) {
+                unsigned recipe = run->preview[i].recipe;
+                RogueText_Line(&screen, 36+i*320, 146, "%s %s", cursor == i ? ">" : " ", node_names[run->route[floor][i]]);
+                RogueText_Style(&screen, 1.0f, cursor == i ? 0xF6CD36 : 0xFFFFFF);
+                RogueText_Wrap(&screen, 36+i*320, 190, 25, recipe ? rogue_recipes[recipe-1].name : "Recover and prepare");
+            }
+        } else {
+            RogueText_Line(&screen, 42, 150, "%s", phases[run->phase]);
+            RogueText_Line(&screen, 42, 187, "SCORE %u   FIGHTS %u", run->score, run->encounters);
+            RogueText_Style(&screen, 0.8f, 0xBAC3E0);
+        }
+        {
+            unsigned choice = run->phase == ROGUE_ROUTE ? cursor % 2 : 0;
+            const RogueEncounter* encounter = &run->preview[choice];
+            RogueText_Line(&screen, 36, 372, "%s", fighter_names[run->character]);
+            RogueText_Style(&screen, 1.0f, 0xFFFFFF);
+            RogueText_Line(&screen, 36, 268, "YOUR FIGHTER");
+            RogueText_Style(&screen, 0.65f, 0x9DAED5);
+            RogueText_Line(&screen, 302, 325, "VS");
+            RogueText_Style(&screen, 1.1f, 0xE84956);
+            RogueText_Line(&screen, 354, 267, "%s", encounter->recipe ? rogue_recipes[encounter->recipe-1].name : node_names[run->route[floor][choice]]);
+            RogueText_Style(&screen, 0.9f, 0xFFFFFF);
+            for (i = 0; i < encounter->enemy_count; ++i) {
+                RogueText_Line(&screen, 350+i*84, 366, "%s", fighter_names[encounter->fighters[i]]);
+                RogueText_Style(&screen, 0.55f, 0xCBD3EC);
+            }
+            if (encounter->stage) {
+                RogueText_Line(&screen, 354, 377, "%s", stage_names[encounter->stage-1]);
+                RogueText_Style(&screen, 0.65f, 0xBBA0E4);
+            }
+        }
+    }
+    RogueText_Line(&screen, 24, 433, "B: %s   A: SELECT", build_view ? "CLOSE BUILD" : "CURRENT BUILD");
+    RogueText_Style(&screen, 0.8f, 0xDEE5FB);
+    if (run->phase == ROGUE_REWARD || run->phase == ROGUE_SHOP) {
+        RogueText_Line(&screen, 389, 433, "X: REROLL  %u GOLD", RogueRun_RerollCost(run, run->phase == ROGUE_SHOP));
+        RogueText_Style(&screen, 0.75f, 0xF6CD36);
+    }
+    if (feedback) RogueText_Line(&screen, 24, 447, "%s", feedback);
+    else if (run->phase == ROGUE_DEAD || run->phase == ROGUE_COMPLETE)
+        RogueText_Line(&screen, 24, 447, "A: RETRY    START: MAIN MENU    SEED %08X", run->seed);
+    else RogueText_Line(&screen, 24, 447, "LEFT / RIGHT: CHOOSE    START: CONTINUE    SEED %08X", run->seed);
+    RogueText_Style(&screen, 0.6f, 0x8A99BA);
     RogueText_End(&screen);
 }
 
@@ -183,21 +266,21 @@ void RogueMode_Enter(void* data)
 {
     (void) data;
     cursor = build_view = 0;
-    screen.native = NULL;
-    generation = RogueRuntime_Get()->scene_generation;
-    HSD_SisLib_803A62A0(4, "SdMenu.usd", "SIS_MenuData");
-    HSD_SisLib_803A611C(4, NULL, 7, 8, 128, 5, 128, 0);
-    RogueText_Create(&screen, 4, 0);
-    RogueRuntime_ResourceAcquire(generation);
+    feedback = NULL;
+#if ROGUE_DEBUG && ROGUE_QA_CYCLES
+    RogueDirector_Start(0x524f4755 + qa_cycles, CKind_Fox);
+    if (qa_cycles % 4 == 1) RogueRun_Shop(RogueDirector_Run());
+    else if (qa_cycles % 4 == 2) RogueDirector_Run()->phase = ROGUE_COMPLETE;
+    else if (qa_cycles % 4 == 3) RogueDirector_Run()->phase = ROGUE_DEAD;
+#endif
+    RogueUi_Create(&ui);
     draw();
 }
 
 void RogueMode_Exit(void* data)
 {
     (void) data;
-    RogueText_Destroy(&screen);
-    HSD_SisLib_803A5F50(4);
-    RogueRuntime_ResourceRelease(generation);
+    RogueUi_Destroy(&ui);
 }
 
 void RogueMode_Frame(void)
@@ -206,7 +289,9 @@ void RogueMode_Frame(void)
     u64 input = mn_80229624(0);
     unsigned count = run->phase == ROGUE_ROUTE ? 2 : 3;
 #if ROGUE_DEBUG && ROGUE_QA_CYCLES
-    if (++qa_frames >= 2) {
+    if (++qa_frames == 2) { build_view = 1; draw(); }
+    if (qa_frames == 3) { build_view = 0; draw(); }
+    if (qa_frames >= 4) {
         qa_frames = 0;
         if (++qa_cycles >= ROGUE_QA_CYCLES) {
             gm_ChangeGameModeAfterCurrentScene(GM_MENU);
@@ -215,11 +300,12 @@ void RogueMode_Frame(void)
     }
     return;
 #endif
+    { int qa = RogueSpecialQa_Progression(); if (qa) { if (qa == 2) change_state(2); return; } }
     /* The controlled fixture exercises native result computation, not player skill. */
 #if ROGUE_DEBUG && ROGUE_QA_MODE == 2
     if (++qa_frames < 60) return;
     qa_frames = 0;
-    if (qa_matches >= 20 || qa_failures) {
+    if (qa_matches >= ROGUE_QA_MATCHES || qa_failures) {
         OSReport("[rogue] match_qa_complete transitions=%u failures=%u phase=%u\n", qa_matches, qa_failures, run->phase);
         gm_ChangeGameModeAfterCurrentScene(GM_MENU);
         gm_801A4B60();
@@ -237,15 +323,25 @@ void RogueMode_Frame(void)
     return;
 #endif
     if (!input) return;
+    feedback = NULL;
+#if ROGUE_DEBUG
+    OSReport("[rogue] ui_input phase=%u mask=%x cursor=%u build=%u\n", run->phase, (unsigned) input, cursor, build_view);
+#endif
     if (input & MenuInput_Back) build_view = !build_view;
     if (!build_view) {
         if (input & (MenuInput_Up | MenuInput_Left)) cursor = (cursor + count - 1) % count;
         if (input & (MenuInput_Down | MenuInput_Right)) cursor = (cursor + 1) % count;
-        if (input & MenuInput_XButton) RogueRun_Reroll(run, run->phase == ROGUE_SHOP);
-        if (input & MenuInput_Confirm) {
+        if ((input & MenuInput_XButton) && (run->phase == ROGUE_REWARD || run->phase == ROGUE_SHOP))
+            feedback = RogueRun_Reroll(run, run->phase == ROGUE_SHOP) ? "New offers ready" : "Reroll unavailable: check gold or sold slots";
+        if (input & MenuInput_AButton) {
             if (run->phase == ROGUE_REWARD) RogueRun_ChooseUpgrade(run, cursor);
             else if (run->phase == ROGUE_ROUTE) RogueRun_ChooseRoute(run, cursor % 2);
-            else if (run->phase == ROGUE_SHOP) RogueRun_Buy(run, cursor);
+            else if (run->phase == ROGUE_SHOP)
+                feedback = RogueRun_Buy(run, cursor) ? "Added to your build" : "Offer unavailable: check gold or sold status";
+            else if (run->phase == ROGUE_DEAD || run->phase == ROGUE_COMPLETE) {
+                RogueDirector_Start((unsigned) OSGetTick(), run->character);
+                cursor = 0;
+            }
         }
         if (input & MenuInput_StartButton) {
             if (run->phase == ROGUE_SHOP || run->phase == ROGUE_REST) RogueRun_LeaveService(run);
@@ -270,6 +366,7 @@ void RogueMode_MenuFrame(void)
 
 void RogueMode_MatchFrame(void)
 {
+    RogueSpecialQa_Frame();
 #if ROGUE_DEBUG && ROGUE_QA_MODE == 2
     unsigned i;
     if (!RogueRuntime_IsActive() || RogueRuntime_Get()->scene != GS_VS) return;
@@ -295,7 +392,7 @@ void RogueMode_MatchFrame(void)
         OSReport("[rogue] match_qa frames=450 fighters=%u expected=%u\n", present,
             RogueDirector_Run()->current.enemy_count + 1);
         if (present != RogueDirector_Run()->current.enemy_count + 1) qa_failures++;
-        if (qa_matches == 19) Player_SetStocks(0, 0);
+        if (qa_matches + 1 == ROGUE_QA_MATCHES) Player_SetStocks(0, 0);
         else for (i = 1; i <= RogueDirector_Run()->current.enemy_count; ++i) Player_SetStocks(i, 0);
     }
 #endif

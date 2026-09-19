@@ -1,5 +1,6 @@
 #include "special_engine.h"
 #include <melee/ft/ftdata.h>
+#include <melee/ft/kinds/ftCommon/ftCo_Fall.h>
 #include <melee/ft/kinds/ftKoopa/ftkoopa.h>
 #include <melee/ft/kinds/ftLink/ftlink.h>
 #include <melee/ft/kinds/ftCLink/ftclink.h>
@@ -31,7 +32,7 @@
     { 1 + kind * 4 + slot, key, label, character, kind, slot, NULL, NULL, \
       ROGUE_COMPAT_ADAPTED, ROGUE_ABILITY_NEEDS_ATTRS | ROGUE_ABILITY_NEEDS_ANIMATION | \
       ROGUE_ABILITY_NEEDS_BONE_MAP | ROGUE_ABILITY_NEEDS_STATE_TABLE, \
-      ftCo_MS_Count, ftCo_MS_Count + count - 1, table, 0, sizeof(attrs) }
+      ftCo_MS_Count, ftCo_MS_Count + count - 1, table, (1U << Ft_Kind_Captain), sizeof(attrs) }
 #define FOUR(kind, character, prefix, table, count, attrs, n, s, u, d) \
     ABILITY(kind, character, ROGUE_ABILITY_NEUTRAL, prefix "_neutral", n, table, count, attrs), \
     ABILITY(kind, character, ROGUE_ABILITY_SIDE, prefix "_side", s, table, count, attrs), \
@@ -139,6 +140,12 @@ const RogueAbilityDefinition* Rogue_GetAbility(RogueAbilityID id)
             def->ground_enter = ftData_SpecialLw[def->internal_kind];
             def->air_enter = ftData_SpecialAirLw[def->internal_kind]; break;
         default: return NULL;
+        }
+        /* Native Hand Slap is ground-only. Consume the borrowed air input and
+         * transition to native fall instead of rejecting both ground and air. */
+        if (def->internal_kind == Ft_Kind_Donkey && def->native_slot == ROGUE_ABILITY_DOWN) {
+            def->flags |= ROGUE_ABILITY_GROUND_ONLY;
+            def->air_enter = ftCo_Fall_Enter;
         }
         return def;
     }

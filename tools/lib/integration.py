@@ -26,11 +26,11 @@ def validate(entries, upstream):
             raise ValueError('Missing hook ownership/ABI')
 
 
-def prepare(profile, qa_cycles=0, qa_match=False):
+def prepare(profile, qa_cycles=0, qa_match=False, qa_ui=False, qa_matches=20, qa_specials=False, qa_special_start=0, qa_special_count=104):
     clean = ensure('melee')
     entries = hooks()
     validate(entries, clean)
-    digest = hashlib.sha256((profile + str(qa_cycles) + str(qa_match)).encode())
+    digest = hashlib.sha256((profile + str(qa_cycles) + str(qa_match) + str(qa_ui) + str(qa_matches) + str(qa_specials) + str(qa_special_start) + str(qa_special_count)).encode())
     for path in sorted((ROOT/'integration').rglob('*')) + sorted((ROOT / 'src').rglob('*')) + sorted((ROOT/'tools/lib').glob('*.py')):
         if path.is_file():
             digest.update(path.relative_to(ROOT).as_posix().encode())
@@ -79,7 +79,10 @@ def prepare(profile, qa_cycles=0, qa_match=False):
     source = source.replace('config.libs = [', 'config.libs = [\n    MeleeLib("rogueMelee", [\n' + objects + '\n    ]),', 1)
     source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_DEBUG=' + ('1' if profile == 'debug' else '0') + '")\nconfig.libs = [', 1)
     source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_QA_CYCLES=' + str(qa_cycles) + '")\nconfig.libs = [', 1)
-    source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_QA_MODE=' + str(2 if qa_match else 1 if qa_cycles else 0) + '")\nconfig.libs = [', 1)
+    source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_QA_MODE=' + str(4 if qa_specials else 3 if qa_ui else 2 if qa_match else 1 if qa_cycles else 0) + '")\nconfig.libs = [', 1)
+    source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_QA_MATCHES=' + str(qa_matches) + '")\nconfig.libs = [', 1)
+    for key, value in [('START', qa_special_start), ('COUNT', qa_special_count)]:
+        source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_QA_SPECIAL_' + key + '=' + str(value) + '")\nconfig.libs = [', 1)
     source = source.replace('Object(Debug, "Runtime/eabi_save_restore.s")',
                             'Object(Equivalent, "Runtime/eabi_save_restore.s")')
     adapted = json.loads((ROOT/'integration/special_adapters.json').read_text())['files']

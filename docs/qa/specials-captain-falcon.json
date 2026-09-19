@@ -1,0 +1,20 @@
+{
+  "scenario": "specials",
+  "status": "pass",
+  "start": 0,
+  "iterations": 104,
+  "seconds": 141.55051520001143,
+  "log_sha256": "10b685f370fba974a25e956aa6f4c03577ee00b9122d4e5e4e3257189dc559fe",
+  "recipient_character": 0,
+  "recipient_name": "Captain Falcon",
+  "entries": 208,
+  "cleanups": 208,
+  "match_exits": 104,
+  "dol_sha1": "0fdf28c18aba2d3a52f364d1e2365aee08fefa60",
+  "image_sha256": "d954e3da63ee9aa4d3bc561801b78940e9fc78b11358e12f8ff2fb1b2171c3fc",
+  "limitations": [
+    "One of 26 recipient rows",
+    "Hand Slap airborne path intentionally returns to fall: native move is ground-only",
+    "Death, respawn, ledge, grab and visual/collision fidelity not certified by this fixture"
+  ]
+}

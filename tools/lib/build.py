@@ -56,10 +56,12 @@ def bootstrap(cfg, image=None):
     return result
 
 
-def build(cfg, profile='debug', target='all', qa_cycles=0, qa_match=False):
+def build(cfg, profile='debug', target='all', qa_cycles=0, qa_match=False, qa_ui=False, qa_matches=20, qa_specials=False, qa_special_start=0, qa_special_count=104):
     from .integration import prepare
     from generate_data import generate
     generate()
+    from generate_ui import generate as generate_ui
+    generate_ui()
     image = cfg['paths'].get('melee_iso')
     if not image:
         raise ValueError('Set MELEE_ISO_PATH')
@@ -69,7 +71,15 @@ def build(cfg, profile='debug', target='all', qa_cycles=0, qa_match=False):
         raise ValueError('Scene QA requires debug profile and 1..10000 cycles')
     if qa_match and (profile != 'debug' or qa_cycles):
         raise ValueError('Match QA requires debug profile and cannot combine with scene QA')
-    work = prepare(profile, qa_cycles, qa_match)
+    if qa_ui and (profile != 'debug' or qa_match or qa_cycles):
+        raise ValueError('UI QA requires an exclusive debug build')
+    if qa_specials and (profile != 'debug' or qa_match or qa_cycles or qa_ui):
+        raise ValueError('Special QA requires an exclusive debug build')
+    if not 1 <= qa_matches <= 10000:
+        raise ValueError('Match QA count must be 1..10000')
+    if qa_special_start < 0 or qa_special_count < 1 or qa_special_start + qa_special_count > 2704:
+        raise ValueError('Special matrix range must fit 26 recipients x 104 specials')
+    work = prepare(profile, qa_cycles, qa_match, qa_ui, qa_matches, qa_specials, qa_special_start, qa_special_count)
     run([sys.executable, 'configure.py', '--non-matching', '--map',
          '--compilers', clean / 'build/compilers',
          '--binutils', clean / 'build/binutils',
@@ -86,7 +96,7 @@ def build(cfg, profile='debug', target='all', qa_cycles=0, qa_match=False):
     shutil.copyfile(work / 'build/GALE01/main.elf.MAP', output.parent / 'GALE01.map')
     if file_hash(Path(image), 'md5') != source['md5']:
         raise ValueError('Source image changed')
-    result = dict(profile=profile, target=target, qa_scene_cycles=qa_cycles, qa_match=qa_match, source=source, work=str(work),
+    result = dict(profile=profile, target=target, qa_scene_cycles=qa_cycles, qa_match=qa_match, qa_ui=qa_ui, qa_matches=qa_matches, qa_specials=qa_specials, qa_special_start=qa_special_start, qa_special_count=qa_special_count, source=source, work=str(work),
                   dependency_lock_sha256=file_hash(ROOT / 'deps/lock.json'),
                   hook_manifest_sha256=file_hash(ROOT / 'integration/hook_manifest.toml'),
                   dol_sha1=file_hash(work / 'build/GALE01/main.dol','sha1'),

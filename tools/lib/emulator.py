@@ -9,7 +9,7 @@ from .config import ROOT
 from .hash import file_hash
 
 
-def launch(cfg):
+def launch(cfg, fast=False, movie=None):
     executable = Path(cfg['paths'].get('dolphin', ''))
     if not executable.is_file():
         raise ValueError('Set DOLPHIN_PATH to Dolphin.exe')
@@ -27,18 +27,22 @@ def launch(cfg):
     ini.read(path)
     for section, values in {'Interface': {'ConfirmStop': 'False'},
                             'Display': {'RenderToMain': 'True'},
-                            'Core': {'EnableCheats': 'False'}}.items():
+                            'Core': {'EnableCheats': 'False', 'EmulationSpeed': '0' if fast else '1'}}.items():
         if section not in ini: ini[section] = {}
         ini[section].update(values)
     with path.open('w') as stream: ini.write(stream)
     (config/'Logger.ini').write_text('[Options]\nWriteToFile = True\nVerbosity = 3\n[Logs]\nOSREPORT = True\n')
-    process = subprocess.Popen([str(executable), '-b', '-e', str(image), '-u', str(user)])
+    command = [str(executable), '-b', '-e', str(image), '-u', str(user)]
+    if movie is not None:
+        if not Path(movie).is_file(): raise ValueError('Controller movie does not exist')
+        command += ['-m', str(Path(movie).resolve())]
+    process = subprocess.Popen(command)
     print(f'Dolphin PID {process.pid}; log {user / "Logs/dolphin.log"}', flush=True)
     return process, manifest
 
 
 def verify_scene_log(log, expected):
-    if re.search(r'assertion|OSPanic|ERROR scene|Invalid (read|write)', log, re.I):
+    if re.search(r'assertion|OSPanic|ERROR scene|Invalid (read|write)|Memory Empty|on line [0-9]+\.', log, re.I):
         raise ValueError('Emulator assertion or resource failure; inspect saved log')
     generations = [int(x) for x in re.findall(r'\[rogue\] scene_enter=45 generation=(\d+)', log)]
     result = re.search(r'\[rogue\] scene_qa cycles=(\d+) resources=(\d+) active=(\d+)', log)
@@ -52,7 +56,7 @@ def verify_scene_log(log, expected):
 
 def verify_match_log(log, expected=20):
     """Require actual ordered native results, entity counts and successful entries."""
-    if re.search(r'assertion|OSPanic|ERROR scene|Invalid (read|write)', log, re.I):
+    if re.search(r'assertion|OSPanic|ERROR scene|Invalid (read|write)|Memory Empty|on line [0-9]+\.', log, re.I):
         raise ValueError('Emulator assertion or resource failure; inspect saved log')
     result = re.search(r'\[rogue\] match_qa_complete transitions=(\d+) failures=(\d+) phase=(\d+)', log)
     if not result: return False
@@ -72,31 +76,91 @@ def verify_match_log(log, expected=20):
     return '[rogue] native_scene=1 active=0' in log
 
 
-def scene_soak(cfg, iterations=100, timeout=180):
+def verify_special_log(log, start, count):
+    if re.search(r'assertion|OSPanic|ERROR scene|Invalid (read|write)|Memory Empty|on line [0-9]+\.', log, re.I):
+        raise ValueError('Emulator assertion or resource failure; inspect saved log')
+    results = [tuple(map(int, row)) for row in re.findall(
+        r'\[rogue\] special_result index=(\d+) won=(\d+) entries=(\d+) cleanups=(\d+) failures=(\d+)', log)]
+    if any(row[1:] != (1,2,2,0) for row in results):
+        raise ValueError('Special lifecycle result failed; inspect saved case index')
+    result = re.search(r'\[rogue\] special_matrix_complete start=(\d+) count=(\d+) failures=(\d+)', log)
+    if not result: return False
+    if tuple(map(int, result.groups())) != (start,count,0):
+        raise ValueError('Special matrix stopped before requested range completed')
+    if [row[0] for row in results] != list(range(start,start+count)):
+        raise ValueError('Special matrix has missing or repeated cases')
+    for label, field in [('entry','entered'), ('cleanup','restored')]:
+        actual = [tuple(map(int, row)) for row in re.findall(
+            r'\[rogue\] special_' + label + r' index=(\d+) air=(\d+) ' + field + r'=(\d+)', log)]
+        if actual != [(i, air, 1) for i in range(start,start+count) for air in (0,1)]:
+            raise ValueError('Special matrix lacks successful ground/air ' + label)
+    return '[rogue] native_scene=1 active=0' in log
+
+
+def soak(cfg, scenario='scenes', iterations=100, timeout=600, start=0):
     from .build import build
-    manifest = build(cfg, 'debug', 'all', iterations)
+    if iterations < 1 or timeout < 1:
+        raise ValueError('Iterations and timeout must be positive')
+    if scenario == 'scenes':
+        options = dict(qa_cycles=iterations)
+        verify = lambda log: verify_scene_log(log, iterations)
+    elif scenario == 'matches':
+        options = dict(qa_match=True, qa_matches=iterations)
+        verify = lambda log: verify_match_log(log, iterations)
+    elif scenario == 'specials':
+        options = dict(qa_specials=True, qa_special_start=start, qa_special_count=iterations)
+        verify = lambda log: verify_special_log(log, start, iterations)
+    else:
+        raise ValueError('Unknown soak scenario: ' + scenario)
+    manifest = build(cfg, 'debug', 'all', **options)
+    return run_soak(cfg, manifest, scenario, iterations, timeout, start, verify)
+
+
+def run_soak(cfg, manifest, scenario, iterations, timeout, start=0, verifier=None):
+    """Also usable to execute an already-built fixture without recompiling."""
+    if verifier is None:
+        verifier = (lambda log: verify_scene_log(log, iterations)) if scenario == 'scenes' else (lambda log: verify_match_log(log, iterations)) if scenario == 'matches' else (lambda log: verify_special_log(log, start, iterations))
     log_path = ROOT/'build/dolphin-user/Logs/dolphin.log'
     if log_path.exists(): log_path.write_text('')
-    process, manifest = launch(cfg)
+    process, launched = launch(cfg, fast=True)
+    if launched != manifest:
+        process.terminate()
+        raise ValueError('Build manifest changed before soak launch')
     started = time.monotonic()
+    folder = ROOT/'build/qa'
+    folder.mkdir(exist_ok=True)
+    stem = f'{scenario}-{start}-{iterations}'
+    result = {'scenario': scenario, 'status': 'failed', 'start': start,
+              'iterations': iterations, 'build': manifest}
+    log = ''
+    last_progress, last_size = started, 0
     try:
         while time.monotonic() - started < timeout:
             log = log_path.read_text(errors='replace') if log_path.exists() else ''
-            if verify_scene_log(log, iterations):
-                folder = ROOT/'build/qa'
-                folder.mkdir(exist_ok=True)
-                (folder/'scene-lifetimes.log').write_text(log)
-                result = {'scenario': 'native-scene-lifetimes', 'status': 'pass',
-                          'cycles': iterations, 'seconds': time.monotonic() - started,
-                          'build': manifest, 'log_sha256': file_hash(folder/'scene-lifetimes.log')}
-                (folder/'scene-lifetimes.json').write_text(json.dumps(result, indent=2)+'\n')
-                print(f'PASS: {iterations} native scene lifetimes and return to stock menu', flush=True)
+            if len(log) != last_size:
+                last_progress, last_size = time.monotonic(), len(log)
+            elif time.monotonic() - last_progress > 60:
+                raise ValueError('No native QA progress for 60 seconds; inspect Dolphin failure dialog and saved case index')
+            if verifier(log):
+                result['status'] = 'pass'
+                print(f'PASS: {scenario}, {iterations} iterations and return to stock menu', flush=True)
                 return result
             if process.poll() is not None:
-                raise ValueError('Emulator exited before completing scene QA')
+                raise ValueError('Emulator exited before completing ' + scenario + ' QA')
             time.sleep(0.25)
-        raise ValueError('Scene QA timed out; no pass recorded')
+        raise ValueError(scenario + ' QA timed out; no pass recorded')
+    except (ValueError, OSError) as error:
+        result['error'] = str(error)
+        raise
     finally:
+        result['seconds'] = time.monotonic() - started
+        (folder/(stem+'.log')).write_text(log)
+        result['log_sha256'] = file_hash(folder/(stem+'.log'))
+        (folder/(stem+'.json')).write_text(json.dumps(result,indent=2)+'\n')
         if process.poll() is None:
             process.terminate()
             process.wait(timeout=10)
+
+
+def scene_soak(cfg, iterations=100, timeout=180):
+    return soak(cfg, 'scenes', iterations, timeout)

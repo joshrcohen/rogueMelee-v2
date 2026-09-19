@@ -36,6 +36,10 @@ void RogueHooks_OnSceneEnter(int scene)
 void RogueHooks_OnSceneExit(void)
 {
     if (!RogueRuntime_IsActive()) return;
+#if ROGUE_DEBUG
+    OSReport("[rogue] scene_exit=%u generation=%u resources=%u\n", RogueRuntime_Get()->scene,
+        RogueRuntime_Get()->scene_generation, RogueRuntime_Get()->scene_resources);
+#endif
     if (!RogueRuntime_SceneExit()) {
 #if ROGUE_DEBUG
         OSReport("[rogue] ERROR scene resource leak count=%u\n",

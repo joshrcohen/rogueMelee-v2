@@ -45,626 +45,1874 @@
     {
       "id": 1,
       "key": "mario_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 2,
       "key": "mario_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 3,
       "key": "mario_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 4,
       "key": "mario_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 5,
       "key": "fox_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 6,
       "key": "fox_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 7,
       "key": "fox_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 8,
       "key": "fox_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 9,
       "key": "falcon_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 10,
       "key": "falcon_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 11,
       "key": "falcon_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 12,
       "key": "falcon_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 13,
       "key": "donkey_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 14,
       "key": "donkey_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 15,
       "key": "donkey_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 16,
       "key": "donkey_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 17,
       "key": "kirby_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 18,
       "key": "kirby_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 19,
       "key": "kirby_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 20,
       "key": "kirby_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 21,
       "key": "koopa_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 22,
       "key": "koopa_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 23,
       "key": "koopa_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 24,
       "key": "koopa_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 25,
       "key": "link_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 26,
       "key": "link_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 27,
       "key": "link_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 28,
       "key": "link_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 29,
       "key": "seak_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 30,
       "key": "seak_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 31,
       "key": "seak_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 32,
       "key": "seak_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 33,
       "key": "ness_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 34,
       "key": "ness_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 35,
       "key": "ness_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 36,
       "key": "ness_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 37,
       "key": "peach_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 38,
       "key": "peach_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 39,
       "key": "peach_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 40,
       "key": "peach_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 41,
       "key": "popo_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 42,
       "key": "popo_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 43,
       "key": "popo_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 44,
       "key": "popo_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 49,
       "key": "pikachu_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 50,
       "key": "pikachu_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 51,
       "key": "pikachu_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 52,
       "key": "pikachu_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 53,
       "key": "samus_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 54,
       "key": "samus_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 55,
       "key": "samus_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 56,
       "key": "samus_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 57,
       "key": "yoshi_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 58,
       "key": "yoshi_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 59,
       "key": "yoshi_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 60,
       "key": "yoshi_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 61,
       "key": "puff_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 62,
       "key": "puff_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 63,
       "key": "puff_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 64,
       "key": "puff_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 65,
       "key": "mewtwo_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 66,
       "key": "mewtwo_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 67,
       "key": "mewtwo_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 68,
       "key": "mewtwo_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 69,
       "key": "luigi_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 70,
       "key": "luigi_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 71,
       "key": "luigi_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 72,
       "key": "luigi_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 73,
       "key": "marth_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 74,
       "key": "marth_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 75,
       "key": "marth_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 76,
       "key": "marth_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 77,
       "key": "zelda_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 78,
       "key": "zelda_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 79,
       "key": "zelda_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 80,
       "key": "zelda_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 81,
       "key": "clink_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 82,
       "key": "clink_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 83,
       "key": "clink_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 84,
       "key": "clink_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 85,
       "key": "drmario_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 86,
       "key": "drmario_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 87,
       "key": "drmario_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 88,
       "key": "drmario_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 89,
       "key": "falco_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 90,
       "key": "falco_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 91,
       "key": "falco_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 92,
       "key": "falco_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 93,
       "key": "pichu_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 94,
       "key": "pichu_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 95,
       "key": "pichu_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 96,
       "key": "pichu_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 97,
       "key": "gamewatch_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 98,
       "key": "gamewatch_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 99,
       "key": "gamewatch_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 100,
       "key": "gamewatch_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 101,
       "key": "ganon_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 102,
       "key": "ganon_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 103,
       "key": "ganon_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 104,
       "key": "ganon_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 105,
       "key": "emblem_neutral",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 106,
       "key": "emblem_side",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 107,
       "key": "emblem_up",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     },
     {
       "id": 108,
       "key": "emblem_down",
-      "status": "pending",
-      "evidence": []
+      "status": "partial",
+      "evidence": [
+        {
+          "recipient_character": 0,
+          "checks": [
+            "ground-entry",
+            "air-entry-policy",
+            "explicit-cleanup",
+            "native-attributes-and-animation-restored",
+            "match-exit"
+          ],
+          "report": "docs/qa/specials-captain-falcon.json"
+        }
+      ]
     }
   ]
 }

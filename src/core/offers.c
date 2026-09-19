@@ -41,5 +41,6 @@ const char* RogueOffer_Description(unsigned id)
 {
     static const char* slots[4] = { "Replace neutral special", "Replace side special", "Replace up special", "Replace down special" };
     if (!id || id > ROGUE_OFFERS) return "";
+    if (id > ROGUE_UPGRADES && rogue_specials[id - ROGUE_UPGRADES - 1].id == 16) return "Down special. Ground only.";
     return id <= ROGUE_UPGRADES ? rogue_upgrades[id - 1].description : slots[rogue_specials[id - ROGUE_UPGRADES - 1].slot];
 }

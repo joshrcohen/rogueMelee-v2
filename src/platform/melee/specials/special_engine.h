@@ -23,7 +23,8 @@ enum RogueAbilityFlags {
     ROGUE_ABILITY_NEEDS_ATTRS = 1 << 1,
     ROGUE_ABILITY_NEEDS_ANIMATION = 1 << 2,
     ROGUE_ABILITY_NEEDS_BONE_MAP = 1 << 3,
-    ROGUE_ABILITY_NEEDS_STATE_TABLE = 1 << 4
+    ROGUE_ABILITY_NEEDS_STATE_TABLE = 1 << 4,
+    ROGUE_ABILITY_GROUND_ONLY = 1 << 5
 };
 typedef struct RogueAbilityDefinition {
     RogueAbilityID id;
@@ -49,8 +50,11 @@ void Rogue_AbilityFighterDestroyed(Fighter* fp);
 void Rogue_AbilityTransformed(Fighter* src, Fighter* dst);
 Fighter_GObj* Rogue_AbilityClimberPartner(Fighter* fp);
 void Rogue_AbilityCleanup(Fighter* fp);
+int Rogue_AbilityDebugRestored(Fighter* fp);
 MotionState* Rogue_AbilityMotionState(Fighter* fp, int motion);
 bool Rogue_TrySpecial(Fighter_GObj* gobj, RogueAbilitySlot slot, bool airborne);
+bool Rogue_AbilityResumeFamily(Fighter* fp, FighterKind family, RogueAbilitySlot slot);
+int Rogue_AbilityPartIndex(Fighter* fp, int part);
 int Rogue_AbilityMapBone(Fighter* fp, int bone);
 bool Rogue_IsAbilityState(const Fighter* fp);
 FighterKind Rogue_AbilitySourceKind(const Fighter* fp);
