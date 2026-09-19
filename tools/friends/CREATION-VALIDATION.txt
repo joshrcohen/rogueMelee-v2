@@ -1,0 +1,40 @@
+CREATION VALIDATION - RogueMelee v2 Friends Launcher
+
+Native build: Clang/LLD cross-compilation succeeded; -Wall -Wextra -Werror
+EXE SHA256: 14f3d2b12b65b65dcd9cfda77905289e2c694de95f0806e979b1c5b2f54b790b
+
+Executed artifact/static checks:
+PASS: Windows executable DOS header
+PASS: PE signature
+PASS: x64 machine type
+PASS: PE32+ optional header
+PASS: Windows GUI subsystem
+PASS: NX enabled
+PASS: Native envelope only imports Windows system DLLs
+PASS: Complete current C# source embedded byte-for-byte
+PASS: app.manifest embedded byte-for-byte
+PASS: launcher.ico embedded byte-for-byte
+PASS: launcher.config embedded byte-for-byte
+PASS: No administrator elevation requested
+PASS: Terminated block comment
+PASS: C# source lexical delimiters balanced (not semantic compilation)
+PASS: Correct v2 release repository pinned
+PASS: Existing v2 manifest field contract present
+PASS: No GitHub personal token/auth embedded
+PASS: Promotion uses explicit replacement/backup path
+PASS: Windows self-test entry included
+PASS: Publisher and embedded UI source match
+PASS: Publisher begins as draft
+PASS: Publisher has explicit final publication step
+PASS: Publisher checks package hashes
+PASS: Publisher requires Windows compile/self-test before upload
+
+NOT EXECUTED in the Linux creation environment:
+- C# semantic compilation in the creation environment
+- Windows .NET self-tests
+- Windows Forms GUI
+- actual clean ISO xdelta application
+- Dolphin launch
+- live update/rollback
+
+The Windows publishing helper compiles the actual C# app and runs its self-tests before publication. A first real ISO/Dolphin test still needs to be performed on Windows.
