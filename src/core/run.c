@@ -157,7 +157,7 @@ void RogueRun_Init(RogueRun* run, RogueSeed seed, unsigned character)
 {
     unsigned i, j;
     memset(run, 0, sizeof(*run));
-    run->version = 3; run->seed = seed; run->character = character % 26;
+    run->version = 4; run->seed = seed; run->character = character % 26;
     run->act = 1; run->gold = ROGUE_STARTING_GOLD;
     RogueRng_Init(&run->route_rng, seed, 0);
     RogueRng_Init(&run->encounter_rng, seed, 1);

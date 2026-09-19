@@ -4,6 +4,7 @@
 #include "ui_scene.h"
 #include "melee_fighter.h"
 #include "qa/special_matrix.h"
+#include "qa/aerial_matrix.h"
 #include "qa/passives.h"
 #include "../../director/rogue_director.h"
 #include "../../upgrades/upgrade_registry.h"
@@ -51,11 +52,12 @@ static void change_state(unsigned id)
 void RogueMode_Load(void)
 {
     RogueSpecialQa_Reset();
+    RogueAerialQa_Reset();
     gm_InitVsMode(&selection);
     selection.start.players[0].ckind = CKind_Fox;
     selection.start.players[0].slot_type = Gm_PKind_Human;
     css.unk_0x0 = 0;
-#if ROGUE_DEBUG && ROGUE_QA_MODE
+#if (ROGUE_DEBUG && ROGUE_QA_MODE) || ROGUE_QA_MODE == 5
     qa_cycles = qa_frames = 0;
     qa_matches = qa_failures = 0;
     RogueDirector_Start(ROGUE_FIXTURE_SEED, ROGUE_LAUNCH_RECIPIENT);
@@ -64,6 +66,11 @@ void RogueMode_Load(void)
         RogueRun* run = RogueDirector_Run();
         const RogueSpecialDef* special = RogueSpecial_Find(ROGUE_LAUNCH_SPECIAL);
         unsigned tries;
+        const unsigned aerials[5]=ROGUE_LAUNCH_AERIALS;
+        memcpy(run->aerials,aerials,sizeof(run->aerials));
+#if ROGUE_LAUNCH_GOLD >= 0
+        run->gold=ROGUE_LAUNCH_GOLD;
+#endif
 #if ROGUE_QA_PASSIVES
         for (tries = 0; tries < ROGUE_UPGRADES; ++tries) run->stacks[tries] = 1;
 #endif
@@ -137,7 +144,7 @@ static void enter_match(GameModeState* state)
         player->ckind = i ? run->current.fighters[i - 1] : run->character;
         player->slot_type = i ? Gm_PKind_Cpu : Gm_PKind_Human;
         player->stocks = i ? run->current.stocks[i - 1] : 3 + run->stacks[10];
-#if ROGUE_DEBUG && ROGUE_QA_MODE == 4
+#if (ROGUE_DEBUG && ROGUE_QA_MODE == 4) || ROGUE_QA_MODE == 5
         player->stocks = 99;
 #endif
         player->team = i ? 1 : 0;
@@ -183,6 +190,7 @@ static void exit_match(GameModeState* state)
         native_score);
     if (!won && result.match_end.outcome == OUTCOME_NO_CONTEST) RogueDirector_Run()->death_reason = 2;
     RogueSpecialQa_Result(won);
+    RogueAerialQa_Result(won);
 #if ROGUE_DEBUG && ROGUE_QA_MODE == 2
     qa_matches++;
     if (won != (qa_matches < ROGUE_QA_MATCHES)) qa_failures++;
@@ -195,7 +203,7 @@ static void exit_match(GameModeState* state)
 }
 
 GameModeState RogueMode_States[] = {
-#if ROGUE_DEBUG && ROGUE_QA_MODE
+#if (ROGUE_DEBUG && ROGUE_QA_MODE) || ROGUE_QA_MODE == 5
     { 0, lbDvdPreload_2, 0, NULL, NULL, { GS_ROGUE, NULL, NULL } },
 #else
     { 0, lbDvdPreload_3, 0, enter_css, exit_css, { GS_CSS, &css, &css } },
@@ -249,10 +257,16 @@ static void draw(void)
     if (build_view) {
         unsigned line = 0;
         const char* slots[4] = { "Neutral", "Side", "Up", "Down" };
+        const char* airs[5] = { "Nair", "Fair", "Bair", "Uair", "Dair" };
         for (i = 0; i < 4; ++i) {
             const RogueSpecialDef* special = RogueSpecial_Find(run->specials[i]);
             RogueText_Line(&screen, 32, 133+i*23, "%s: %s", slots[i], special ? special->name : "Native");
             RogueText_Style(&screen, 0.8f, 0xF6CD36);
+        }
+        for (i = 0; i < 5; ++i) {
+            const RogueAerialDef* aerial = RogueAerial_Find(run->aerials[i]);
+            RogueText_Line(&screen, 338, 133+i*20, "%s: %s", airs[i], aerial ? fighter_names[aerial->character] : "Native");
+            RogueText_Style(&screen, 0.70f, 0xDAE2FF);
         }
         for (i = 0; i < ROGUE_UPGRADES; ++i) if (run->stacks[i]) {
             RogueText_Line(&screen, 32 + (line / 8) * 198, 240 + (line % 8) * 19,
@@ -265,18 +279,28 @@ static void draw(void)
             RogueOfferState* offers = run->phase == ROGUE_SHOP ? &run->shop : &run->reward;
             for (i = 0; i < 3; ++i) {
                 unsigned id = offers->ids[i], x = 20+i*204;
-                const char* icon = id > ROGUE_UPGRADES ? "B" : "+";
+                const char* icon = id > ROGUE_AERIAL_OFFER_BASE ? "A" : id > ROGUE_UPGRADES ? "B" : "+";
                 RogueText_Line(&screen, x+21, 146, "%s", icon);
                 RogueText_Style(&screen, 1.2f, 0xF6CD36);
                 RogueText_Line(&screen, x+49, 144, "%s", RogueOffer_Name(id));
                 RogueText_Style(&screen, 0.53f, cursor == i ? 0xF6CD36 : 0xFFFFFF);
-                RogueText_Line(&screen, x+49, 154, "%s", id > ROGUE_UPGRADES ? "SPECIAL / COMMON" : "PASSIVE / COMMON");
+                RogueText_Line(&screen, x+49, 154, "%s", id > ROGUE_AERIAL_OFFER_BASE ? "AERIAL / COMMON" : id > ROGUE_UPGRADES ? "SPECIAL / COMMON" : "PASSIVE / COMMON");
                 RogueText_Style(&screen, 0.50f, 0xAEB9D5);
-                RogueText_Wrap(&screen, x+12, 183, 25, RogueOffer_Description(id));
+                if (id > ROGUE_AERIAL_OFFER_BASE) {
+                    const RogueAerialDef* move = RogueAerial_Find(id-ROGUE_AERIAL_OFFER_BASE);
+                    const RogueAerialDef* previous = RogueAerial_Find(run->aerials[move->slot]);
+                    RogueText_Line(&screen, x+12, 183, "%s", RogueOffer_Description(id));
+                    RogueText_Style(&screen, 0.65f, 0xBAC3E0);
+                    RogueText_Line(&screen, x+12, 199, "%s: %s", offers->sold[i] ? "Equipped" : "Replaces", previous ? fighter_names[previous->character] : "Native");
+                    RogueText_Style(&screen, 0.52f, 0xAEB9D5);
+                } else RogueText_Wrap(&screen, x+12, 183, 25, RogueOffer_Description(id));
                 if (run->phase == ROGUE_SHOP) {
                     if (offers->sold[i]) RogueText_Line(&screen, x+12, 217, "SOLD");
                     else RogueText_Line(&screen, x+12, 217, "%u GOLD", RogueOffer_Price(run,id));
                     RogueText_Style(&screen, 0.65f, offers->sold[i] ? 0x9299AA : run->gold < RogueOffer_Price(run,id) ? 0xD36B72 : 0xF6CD36);
+                } else {
+                    RogueText_Line(&screen, x+12, 217, "FREE CHOICE");
+                    RogueText_Style(&screen, 0.60f, 0xF6CD36);
                 }
             }
         } else if (run->phase == ROGUE_ROUTE) {
@@ -372,6 +396,7 @@ void RogueMode_Frame(void)
     }
     return;
 #endif
+    { int qa = RogueAerialQa_Progression(); if (qa) { if (qa == 2) change_state(2); return; } }
     { int qa = RogueSpecialQa_Progression(); if (qa) { if (qa == 2) change_state(2); return; } }
     /* The controlled fixture exercises native result computation, not player skill. */
 #if ROGUE_DEBUG && ROGUE_QA_MODE == 2
@@ -470,6 +495,7 @@ void RogueMode_MatchFrame(void)
 {
     if (gm_GetDbPauseFlag(1) || gm_GetDbPauseFlag(2)) return;
     RogueSpecialQa_Frame();
+    RogueAerialQa_Frame();
     if (RogueRuntime_IsActive() && RogueRuntime_Get()->scene == GS_VS) {
         RogueRun* run = RogueDirector_Run();
         ++encounter_frames;

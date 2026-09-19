@@ -24,6 +24,8 @@ Alternatively, copy `config/local.example.toml` to `config/local.toml` and edit 
 
 Press GameCube **X** at the main menu, select a fighter, then play a 15-floor run across three acts. On progression: left/right selects, **A** commits, **B** toggles the build panel, **X** rerolls rewards/shop offers for the displayed escalating cost, and **Start** leaves a shop/rest or returns from a finished run. Native Stage Clear shows bonus scoring after wins. Stocks reset each encounter; damage carries until healed. Native Classic and VS remain available. See `KNOWN_ISSUES.md` for tested scope and intentional limitations.
 
+Rewards and shops can equip neutral, forward, back, up and down air independently. Aerial cards name the donor and slot, show the replaced donor (or Native), and apply next encounter. Shops show the discounted gold price; reward choices cost no gold. An unselected slot stays native. The build panel lists all five slots. Purchases and rerolls only change run data; donor resources are prepared on the next match heap before control.
+
 Dolphin uses the workspace-owned `build/dolphin-user` profile. Configure your controller there if necessary. The validated keyboard mapping is A=X, B=Z, X=C, Start=Enter, main stick=arrow keys. Global Dolphin configuration is untouched. Do not rebuild an image while an emulator is reading it, or run two fixtures against the same profile.
 
 ## Reproduce validation
@@ -33,12 +35,18 @@ py -3 tools/rogue.py soak --scenario scenes --iterations 100
 py -3 tools/rogue.py soak --matches 100 --timeout 1200
 py -3 tools/rogue.py soak --scenario specials --start 0 --iterations 2704 --timeout 7200
 py -3 tools/rogue.py soak --scenario specials --iterations 104 --lifecycle --timeout 1200
+py -3 tools/rogue.py soak --scenario aerials --iterations 130 --lifecycle --timeout 2400
+py -3 tools/rogue.py soak --scenario aerials --iterations 130 --lifecycle --stress --timeout 3600
+py -3 tools/rogue.py soak --scenario aerials --profile release --iterations 130 --lifecycle --timeout 2400
+py -3 tools/rogue.py soak --scenario aerials --profile release --iterations 130 --lifecycle --stress --timeout 3600
 py -3 tools/rogue.py run --check-passives --seed 77
 ```
 
 Soaks run native Dolphin fixtures without a speed limit, record success/failure logs and exact hashes in `build/qa`, then terminate only their own emulator. Matrix index = character-select kind * 104 + sorted special-catalog index. `--start` and `--iterations` reproduce a subset. The extended fixture adds native hitstun, ledge hold, linked grab/release, blast-zone death/respawn, and full two-way transformations for transform moves. The passive fixture prints `passive_behavior checks=20 failures=0`; close its emulator after inspection.
 
 Recorded historical evidence lives in `docs/qa`. The full matrix aggregates successfully completed intervals from the builds that exposed and repaired three recipient-specific defects; it is not a claim that every matchup or visual effect was exhaustively tested.
+
+Aerial matrix index = recipient CSS index × 130 + aerial ID − 1. The ordinary 130-case interval covers every donor/slot on Captain Falcon. The 130-case stress schedule spreads five slots across all 26 recipients, carries equipment across encounters, purchases replacements in shops, equips four specials, adds three opponents, loses two stocks, and exercises borrowed and native transformations. These two schedules cover a subset of all 3380 combinations; see `docs/compatibility/aerials.md`. `--headless` selects Dolphin's Null renderer for logic-only testing; rendered and Null evidence are labeled separately. Release fixtures contain QA instrumentation, while the shipping release uses QA mode zero.
 
 ## Developer launch and focused builds
 
@@ -48,12 +56,16 @@ py -3 tools/rogue.py run --scene shop --seed 77
 py -3 tools/rogue.py run --scene rest --seed 77
 py -3 tools/rogue.py run --scene encounter --encounter elite_juggernaut --seed 77
 py -3 tools/rogue.py run --special fox_down --recipient mario --seed 12345
+py -3 tools/rogue.py run --aerial mr_game_and_watch_nair --aerial link_dair --special falco_neutral --recipient mario --seed 77
+py -3 tools/rogue.py build --profile debug --disable-aerials
 py -3 tools/rogue.py build --target hooks
 py -3 tools/rogue.py build --target assets
 py -3 tools/rogue.py build --target dol
 ```
 
 Seeds accept unsigned 64-bit decimal values. Character names use lowercase underscores; special keys are in `data/specials.json`. Launch overrides compile a debug fixture. Plain `run` launches the last verified image. `assets` emits the authored DAT, `hooks` validates ownership/anchors, and `dol` compiles only the executable/map. `progression` and `specials` targets link a complete image because the subsystems share native dependencies. Release builds omit developer shortcuts and the debug HUD line; normal Rogue entry remains available.
+
+Aerial keys are in `data/aerials.json`; repeat `--aerial` for distinct slots. `--disable-aerials` removes aerial acquisition and runtime dispatch independently of specials. Host tests compile both feature states, and the disabled native build has its own recorded encounter soak. Build manifests record this switch.
 
 ## Release patch
 
@@ -62,13 +74,13 @@ Seeds accept unsigned 64-bit decimal values. Character names use lowercase under
 py -3 tools/rogue.py package --profile release
 ```
 
-Packaging runs automated checks, verifies locked dependencies, builds release, encodes an xdelta, reconstructs a fresh image, compares hashes, and revalidates the original input. Only the patch, manifest, notices and instructions enter `dist/`; no full image or extracted retail assets are distributed. The pinned xdelta tool is compiled locally using MSVC.
+Packaging runs automated checks, verifies locked dependencies, builds release, encodes an xdelta, reconstructs a fresh image, compares hashes, and revalidates the original input. Only the patch, manifest, notices and instructions enter `dist/v0.2.0/`; the prior baseline package in `dist/` is preserved. No full image or extracted retail assets are distributed. The pinned xdelta tool is compiled locally using MSVC.
 
 Apply the resulting patch to your clean image:
 
 ```powershell
-& .\build\tools\xdelta3.exe -d -s $env:MELEE_ISO_PATH .\dist\rogueMelee-v0.1.0.xdelta .\patched.iso
+& .\build\tools\xdelta3.exe -d -s $env:MELEE_ISO_PATH .\dist\v0.2.0\rogueMelee-v0.2.0.xdelta .\patched.iso
 Get-FileHash .\patched.iso -Algorithm SHA256
 ```
 
-Compare with `output_sha256` in `dist/build-manifest.json`, then open the reconstructed image in Dolphin. Aerial swapping is disabled in v0.1.0.
+Compare with `output_sha256` in `dist/v0.2.0/build-manifest.json`, then open the reconstructed image in Dolphin. The v0.1.0 baseline remains separately identifiable by its commit and hashes in `docs/AERIAL_DEVELOPMENT.md`.

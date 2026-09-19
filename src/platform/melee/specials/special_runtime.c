@@ -24,7 +24,7 @@ bool Rogue_IsAbilityState(const Fighter* fp)
         OSPanic(__FILE__, __LINE__, "stale borrowed-special match generation");
 #endif
     return fp && fighter_state.fighter == fp &&
-           fighter_state.active != NULL;
+           (fighter_state.active != NULL || fighter_state.aerial != NULL);
 }
 
 void Rogue_AbilityCleanup(Fighter* fp)
@@ -34,11 +34,11 @@ void Rogue_AbilityCleanup(Fighter* fp)
     if (!Rogue_IsAbilityState(fp)) return;
 
 
-    source = fighter_state.active->internal_kind;
-    slot = fighter_state.active->native_slot;
-    RogueRuntime_Trace(6, fighter_state.active->id);
+    source = Rogue_AbilitySourceKind(fp);
+    slot = fighter_state.active ? fighter_state.active->native_slot : ROGUE_ABILITY_SLOTS;
+    RogueRuntime_Trace(6, fighter_state.active ? fighter_state.active->id : 1000 + fighter_state.aerial->id);
 #if ROGUE_DEBUG
-    OSReport("[rogue] special_restore id=%u match=%u\n", fighter_state.active->id, fighter_state.match_generation);
+    OSReport("[rogue] %s_restore id=%u match=%u\n", fighter_state.active ? "special" : "aerial", fighter_state.active ? fighter_state.active->id : fighter_state.aerial->id, fighter_state.match_generation);
 #endif
 
     /*
@@ -102,6 +102,7 @@ void Rogue_AbilityCleanup(Fighter* fp)
     fp->x58C = fighter_state.native_anim_count;
     fp->reflecting = false;
     fighter_state.active = NULL;
+    fighter_state.aerial = NULL;
 }
 
 FighterKind Rogue_AbilitySourceKind(const Fighter* fp)
@@ -111,7 +112,7 @@ FighterKind Rogue_AbilitySourceKind(const Fighter* fp)
         return fp->kind;
     if (fighter_state.active != NULL)
         return fighter_state.active->internal_kind;
-    return fp->kind;
+    return fighter_state.aerial ? fighter_state.aerial->donor : fp->kind;
 }
 
 ftData* Rogue_AbilityData(Fighter* fp)
@@ -142,11 +143,11 @@ union Fighter_FighterVars* Rogue_AbilityVars(Fighter* fp, FighterKind family)
     int source;
     if (fighter_state.fighter != fp) return &fp->u;
     family = abilityFamily(family);
-    if (fighter_state.active &&
-        abilityFamily(fighter_state.active->internal_kind) == family)
+    if (Rogue_IsAbilityState(fp) &&
+        abilityFamily(Rogue_AbilitySourceKind(fp)) == family)
         return &fp->u;
     if (abilityFamily(fp->kind) == family)
-        return fighter_state.active ? &fighter_state.native_vars : &fp->u;
+        return Rogue_IsAbilityState(fp) ? &fighter_state.native_vars : &fp->u;
     /* Projectiles can outlive the animation which created them. Their owner
      * callbacks must update the source's persistent state, never the unrelated
      * base fighter's overlapping union fields. Prefer the equipped clone. */
@@ -166,6 +167,7 @@ void Rogue_AbilityFighterDestroyed(Fighter* fp)
 {
     if (fighter_state.fighter != fp) return;
     Rogue_AbilityCleanup(fp);
+    Rogue_AerialRelease();
     RogueRuntime_MatchRelease(fighter_state.match_generation);
     RogueRuntime_Trace(8, fp->kind);
 #if ROGUE_DEBUG
@@ -207,6 +209,7 @@ MotionState* Rogue_AbilityMotionState(Fighter* fp, int motion)
     if (!Rogue_IsAbilityState(fp)) return NULL;
 
 
+    if (fighter_state.aerial) return Rogue_AerialMotionState(fp,motion);
     def = fighter_state.active;
     if (!def) return NULL;
     if (!Rogue_IsRunPlayer(fp) || motion < def->first_state || motion > def->last_state) {
@@ -233,16 +236,9 @@ int Rogue_AbilityMapBone(Fighter* fp, int bone)
     return mapped;
 }
 
-static bool install_ability(Fighter* fp, RogueAbilitySlot slot)
+void Rogue_BorrowBegin(Fighter* fp, FighterKind donor)
 {
-    const RogueAbilityDefinition* def;
     ftData* source;
-    if (!Rogue_IsRunPlayer(fp) || slot < 0 || slot >= ROGUE_ABILITY_SLOTS) return false;
-    def = Rogue_GetAbility(RogueDirector_Run()->specials[slot]);
-    if (!def) { Rogue_AbilityCleanup(fp); return false; }
-    if (!def->ground_enter || !def->air_enter) return false;
-    if (def->native_slot != slot || fighter_state.fighter != fp ||
-        !fighter_state.loaded[def->id]) return false;
     Rogue_AbilityCleanup(fp);
     fighter_state.native_attrs = fp->dat_attrs;
     fighter_state.native_anims = fp->x24;
@@ -251,13 +247,25 @@ static bool install_ability(Fighter* fp, RogueAbilitySlot slot)
     fighter_state.native_vars = fp->u;
     memcpy(fighter_state.native_callbacks, &fp->grab_cb,
            sizeof(fighter_state.native_callbacks));
-    fp->u = fighter_state.source_vars[def->internal_kind];
-    fighter_state.active = def;
-    source = gFtDataList[def->internal_kind];
-    fp->dat_attrs = fighter_state.attrs[def->internal_kind].bytes;
+    fp->u = fighter_state.source_vars[donor];
+    source = gFtDataList[donor];
+    fp->dat_attrs = fighter_state.attrs[donor].bytes;
     fp->x24 = source->xC;
     fp->x28 = source->x10;
-    fp->x58C = ftData_Table_Unk0[def->internal_kind].count;
+    fp->x58C = ftData_Table_Unk0[donor].count;
+}
+
+static bool install_ability(Fighter* fp, RogueAbilitySlot slot)
+{
+    const RogueAbilityDefinition* def;
+    if (!Rogue_IsRunPlayer(fp) || slot < 0 || slot >= ROGUE_ABILITY_SLOTS) return false;
+    def = Rogue_GetAbility(RogueDirector_Run()->specials[slot]);
+    if (!def) { Rogue_AbilityCleanup(fp); return false; }
+    if (!def->ground_enter || !def->air_enter) return false;
+    if (def->native_slot != slot || fighter_state.fighter != fp ||
+        !fighter_state.loaded[def->id]) return false;
+    Rogue_BorrowBegin(fp, def->internal_kind);
+    fighter_state.active = def;
     /* Source animation flags already identify the source skeleton. Melee's
      * ftPartsRemap path retargets its FigaTree to the unchanged base fighter. */
     return true;
@@ -295,7 +303,7 @@ int Rogue_AbilityPartIndex(Fighter* fp, int part)
 
 int Rogue_AbilityDebugRestored(Fighter* fp)
 {
-    return fp && fighter_state.fighter == fp && !fighter_state.active &&
+    return fp && fighter_state.fighter == fp && !fighter_state.active && !fighter_state.aerial &&
         fp->dat_attrs == fighter_state.native_attrs && fp->x24 == fighter_state.native_anims &&
         fp->x28 == fighter_state.native_anim_flags && fp->x58C == fighter_state.native_anim_count;
 }

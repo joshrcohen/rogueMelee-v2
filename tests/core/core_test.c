@@ -88,8 +88,8 @@ int main(void)
     assert(RogueRun_ChooseUpgrade(&a,0)); assert(RogueRun_ChooseRoute(&a,0));
     assert(RogueRun_MatchEnd(&a,0,0)); assert(a.phase==ROGUE_DEAD);
     fprintf(stderr,"Catalog snapshot=%08x\n",checksum);
-    assert(checksum==0x866924dfU);
-    /* Version 3 serializes all 64 master-seed bits, independent of host layout. */
+    assert(checksum==0x6445a236U);
+    /* Version 4 also carries five pointer-free aerial selections. */
     RogueRun_Init(&a,((RogueSeed) 0x12345678U << 32) | 42,0);
     RogueRun_Init(&b,42,0);
     assert(memcmp(&a.route_rng,&b.route_rng,sizeof(a.route_rng)) != 0);

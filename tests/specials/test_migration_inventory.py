@@ -16,10 +16,7 @@ class InventoryTests(unittest.TestCase):
             if not changed: continue
             self.assertIn(r['sha256'],covered,r['file']+' '+r['hunk'])
 
-    def test_no_aerial_runtime(self):
-        for path in (ROOT/'src').rglob('*'):
-            if path.suffix in ('.h','.c'):
-                self.assertNotIn('Rogue_Aerial',path.read_text())
+    def test_legacy_special_overlay_excludes_old_aerial_hooks(self):
         manifest=json.loads((ROOT/'integration/special_adapters.json').read_text())
         for d in manifest['files'].values():
             for e in d['edits']:

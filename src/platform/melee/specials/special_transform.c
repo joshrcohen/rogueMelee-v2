@@ -6,7 +6,7 @@ bool Rogue_BorrowedTransform(Fighter_GObj* gobj, HSD_GObjEvent finish)
     const RogueAbilityDefinition* next;
     FighterKind old_kind, next_kind;
     int slot;
-    if (!Rogue_IsAbilityState(fp)) return false;
+    if (!Rogue_IsAbilityState(fp) || !fighter_state.active) return false;
     old_kind = fighter_state.active->internal_kind;
     if (old_kind != Ft_Kind_Zelda && old_kind != Ft_Kind_Seak) return false;
     next_kind = old_kind == Ft_Kind_Zelda ? Ft_Kind_Seak : Ft_Kind_Zelda;

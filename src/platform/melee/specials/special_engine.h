@@ -66,4 +66,8 @@ bool Rogue_BorrowedTransform(Fighter_GObj* gobj, HSD_GObjEvent finish);
 RogueAbilityID Rogue_AbilityForOpponent(CharacterKind opponent, RogueAbilitySlot slot);
 FighterKind Rogue_InternalKindForCharacter(CharacterKind character);
 
+void Rogue_AerialPrepare(Fighter* fp);
+bool Rogue_AerialTryEnter(Fighter_GObj* gobj, int motion);
+float Rogue_AerialLandingLag(Fighter* fp, int motion, float native_lag);
+MotionState* Rogue_AerialMotionState(Fighter* fp, int motion);
 #endif

@@ -26,12 +26,13 @@ def validate(entries, upstream):
             raise ValueError('Missing hook ownership/ABI')
 
 
-def prepare(profile, qa_cycles=0, qa_match=False, qa_ui=False, qa_matches=20, qa_specials=False, qa_special_start=0, qa_special_count=104, qa_lifecycle=False, debug_launch=None):
+def prepare(profile, qa_cycles=0, qa_match=False, qa_ui=False, qa_matches=20, qa_specials=False, qa_special_start=0, qa_special_count=104, qa_lifecycle=False, debug_launch=None, aerials=True, qa_aerials=False, qa_aerial_stress=False):
     clean = ensure('melee')
     entries = hooks()
     validate(entries, clean)
     digest = hashlib.sha256((profile + str(qa_cycles) + str(qa_match) + str(qa_ui) + str(qa_matches) + str(qa_specials) + str(qa_special_start) + str(qa_special_count) + str(qa_lifecycle)).encode())
     digest.update(json.dumps(debug_launch,sort_keys=True).encode())
+    digest.update(str((aerials,qa_aerials,qa_aerial_stress)).encode())
     for path in sorted((ROOT/'integration').rglob('*')) + sorted((ROOT / 'src').rglob('*')) + sorted((ROOT/'tools/lib').glob('*.py')):
         if path.is_file():
             digest.update(path.relative_to(ROOT).as_posix().encode())
@@ -89,11 +90,13 @@ def prepare(profile, qa_cycles=0, qa_match=False, qa_ui=False, qa_matches=20, qa
     source = (clean / 'configure.py').read_text(encoding='utf-8')
     objects = ',\n'.join('            Object(Equivalent, "melee/rogue/' + p.relative_to(ROOT / 'src').as_posix() + '")' for p in sorted((ROOT / 'src').rglob('*.c')))
     source = source.replace('config.libs = [', 'config.libs = [\n    MeleeLib("rogueMelee", [\n' + objects + '\n    ]),', 1)
+    source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_ENABLE_AERIALS=' + str(int(aerials)) + '")\nconfig.libs = [', 1)
     source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_DEBUG=' + ('1' if profile == 'debug' else '0') + '")\nconfig.libs = [', 1)
     source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_QA_CYCLES=' + str(qa_cycles) + '")\nconfig.libs = [', 1)
-    source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_QA_MODE=' + str(4 if qa_specials else 3 if qa_ui else 2 if qa_match else 1 if qa_cycles else 0) + '")\nconfig.libs = [', 1)
+    source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_QA_MODE=' + str(5 if qa_aerials else 4 if qa_specials else 3 if qa_ui else 2 if qa_match else 1 if qa_cycles else 0) + '")\nconfig.libs = [', 1)
     source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_QA_MATCHES=' + str(qa_matches) + '")\nconfig.libs = [', 1)
     source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_QA_LIFECYCLE=' + str(int(qa_lifecycle)) + '")\nconfig.libs = [', 1)
+    source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_QA_AERIAL_STRESS=' + str(int(qa_aerial_stress)) + '")\nconfig.libs = [', 1)
     for key, value in [('START', qa_special_start), ('COUNT', qa_special_count)]:
         source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_QA_SPECIAL_' + key + '=' + str(value) + '")\nconfig.libs = [', 1)
     source = source.replace('Object(Debug, "Runtime/eabi_save_restore.s")',

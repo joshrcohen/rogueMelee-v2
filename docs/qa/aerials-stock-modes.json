@@ -1,0 +1,96 @@
+{
+  "status": "pass",
+  "scenario": "aerials-stock-modes",
+  "emulator": "Dolphin 2606a Direct3D 11",
+  "ordinary_build": {
+    "profile": "debug",
+    "target": "all",
+    "aerials": true,
+    "qa_aerials": false,
+    "qa_aerial_stress": false,
+    "qa_scene_cycles": 0,
+    "qa_match": false,
+    "qa_ui": false,
+    "qa_matches": 20,
+    "qa_specials": false,
+    "qa_special_start": 0,
+    "qa_special_count": 104,
+    "qa_lifecycle": false,
+    "debug_launch": null,
+    "source": {
+      "image": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\.iso\\Super Smash Bros. Melee (USA) (En,Ja) (v1.02).iso",
+      "game_id": "GALE01",
+      "revision": 2,
+      "bytes": 1459978240,
+      "md5": "0e63d4223b01d9aba596259dc155a174",
+      "dol_sha1": "08e0bf20134dfcb260699671004527b2d6bb1a45",
+      "dol_bytes": 4425184
+    },
+    "work": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\work\\b27105d75aa8566e",
+    "dependency_lock_sha256": "e8b497891457b5abb7332bea863410dafce442c70fd690847ed024c6afc29246",
+    "hook_manifest_sha256": "960991cf9ae7c444d27c6a3b1e4c5a30f17c005670efef310b577995c4e90841",
+    "dol_sha1": "e3387890e65debc0553dec5ceb8ae4f0c5742d49",
+    "output_sha256": "7d40d3665c01ca9e9a090750da1e555a3722f618627e749017fc7c4f49da00bf",
+    "output": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\output\\aerials-stock-debug.iso"
+  },
+  "same_session_build": {
+    "profile": "debug",
+    "target": "all",
+    "aerials": true,
+    "qa_aerials": false,
+    "qa_aerial_stress": false,
+    "qa_scene_cycles": 0,
+    "qa_match": false,
+    "qa_ui": true,
+    "qa_matches": 20,
+    "qa_specials": false,
+    "qa_special_start": 0,
+    "qa_special_count": 104,
+    "qa_lifecycle": false,
+    "debug_launch": {
+      "seed": 77,
+      "scene": "shop",
+      "recipient": 8,
+      "special": 89,
+      "encounter": 0,
+      "aerials": [
+        16,
+        12,
+        48,
+        84,
+        35
+      ],
+      "gold": 300
+    },
+    "source": {
+      "image": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\.iso\\Super Smash Bros. Melee (USA) (En,Ja) (v1.02).iso",
+      "game_id": "GALE01",
+      "revision": 2,
+      "bytes": 1459978240,
+      "md5": "0e63d4223b01d9aba596259dc155a174",
+      "dol_sha1": "08e0bf20134dfcb260699671004527b2d6bb1a45",
+      "dol_bytes": 4425184
+    },
+    "work": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\work\\b1880fb34e8478ae",
+    "dependency_lock_sha256": "e8b497891457b5abb7332bea863410dafce442c70fd690847ed024c6afc29246",
+    "hook_manifest_sha256": "960991cf9ae7c444d27c6a3b1e4c5a30f17c005670efef310b577995c4e90841",
+    "dol_sha1": "b8396e2a49e9084eda8ec9b7df19ee8bab9597d7",
+    "output_sha256": "1f8ce37ff2ec4abf53c276f263e13669db7e4a93f44cca476acbdbcfd1f87931",
+    "output": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\output\\aerials-ui.iso"
+  },
+  "checks": [
+    "Purchased borrowed aerial/special encounter -> natural loss -> main menu -> native VS CSS/stage/match/results in the same emulator session; Rogue inactive and no borrowed resource entries after exit",
+    "Ordinary QA-mode-zero debug image also reaches native VS match/results and native Classic CSS/gameplay with Rogue inactive"
+  ],
+  "scope": "One native VS match after Rogue and separate ordinary VS/Classic smoke checks; not a full Classic campaign",
+  "artifact_sha256": {
+    "docs/evidence/aerials/stock/aerials-return-vs.dtm": "5e1bf622711d19d372df617699d03780fbca501a567429ac3fd0822e391b90a4",
+    "docs/evidence/aerials/stock/aerials-stock-classic.dtm": "919488ec1d8cb8006a58d2f803528832fb1d1075ecb373f0bb1509f4c65e4a16",
+    "docs/evidence/aerials/stock/aerials-stock-vs.dtm": "33c877e74a3ac62d65804418c2a8ce8bb57cd4bdaede50b57287caf069320afe",
+    "docs/evidence/aerials/stock/classic-gameplay.jpg": "a6845f615773cce6200fa13158ebe8fe20db9859d24d13a80858d6699816012a",
+    "docs/evidence/aerials/stock/classic.log.gz": "771ed7d595ce1d60eeb1729d62f2d4dfc638aa8ff8536177f623fb706686d17b",
+    "docs/evidence/aerials/stock/return-to-vs-result.jpg": "80b60ed1881eae46e9b67914658f6f0c50aae47b486ef8a8608184dfcb69c596",
+    "docs/evidence/aerials/stock/return-to-vs.log.gz": "0994a01e23beffb6ba7b182f2b0c4f6af5319e7f3b4611e199bfe5684f94481d",
+    "docs/evidence/aerials/stock/vs.log.gz": "a86cee357013d5a1cac2e80ded0291b1c93d30328d857a5086e9a5c0375a4b9c"
+  }
+}

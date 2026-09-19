@@ -261,3 +261,188 @@ file = "src/melee/gm/gmregclear.c"
 anchor = "    if (lbl_80472D28.x116 == 1) {"
 replacement = "    if (RogueHooks_AdvanceStageClear() || lbl_80472D28.x116 == 1) {"
 reason = "Log native result entry. Automated match fixtures retain the retail screen for 120 frames then continue; ordinary debug and release builds require the native confirmation input."
+
+[[fix]]
+id = "aerial-header-ftCo_AttackAir"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftCommon/ftCo_AttackAir.c"
+anchor = "#include \"ftCo_AttackAir.h\""
+replacement = "#include \"ftCo_AttackAir.h\"\n#include <melee/rogue/platform/melee/specials/special_engine.h>"
+occurrences = 1
+reason = "Declare the match-owned aerial facade."
+
+[[fix]]
+id = "aerial-header-ftCo_LandingAir"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftCommon/ftCo_LandingAir.c"
+anchor = "#include \"ftCo_LandingAir.h\""
+replacement = "#include \"ftCo_LandingAir.h\"\n#include <melee/rogue/platform/melee/specials/special_engine.h>"
+occurrences = 1
+reason = "Declare the match-owned aerial facade."
+
+[[fix]]
+id = "aerial-header-ftgamewatchattackair"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftGameWatch/ftgamewatchattackair.c"
+anchor = "#include \"ftgamewatchattackair.h\""
+replacement = "#include \"ftgamewatchattackair.h\"\n#include <melee/rogue/platform/melee/specials/special_engine.h>"
+occurrences = 1
+reason = "Declare the match-owned aerial facade."
+
+[[fix]]
+id = "aerial-native-input"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftCommon/ftCo_AttackAir.c"
+anchor = "static void decideFighter(Fighter_GObj* gobj)\n{"
+replacement = "static void decideFighter(Fighter_GObj* gobj)\n{\n    if (Rogue_AerialTryEnter(gobj, ftCo_AttackAir_GetMsidFromCStick(GET_FIGHTER(gobj)))) return;"
+occurrences = 1
+reason = "Dispatch purchased aerials before recipient-specific native aerial logic."
+
+[[fix]]
+id = "aerial-landing-before-lcancel"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftCommon/ftCo_LandingAir.c"
+anchor = "        if (msid != ftCo_MS_None && fp->x67F"
+replacement = "        if (msid != ftCo_MS_None) lag = Rogue_AerialLandingLag(fp, fp->motion_id, lag);\n        if (msid != ftCo_MS_None && fp->x67F"
+occurrences = 1
+reason = "Use donor landing lag and Soft Landing before native L-cancel reduction."
+
+[[fix]]
+id = "aerial-gamewatch-vars"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftGameWatch/ftgamewatchattackair.c"
+anchor = "fp->u.gw"
+replacement = "Rogue_AbilityVars(fp, Ft_Kind_GameWatch)->gw"
+occurrences = 54
+reason = "Article callbacks can outlive their animation and must use their source variable bank."
+
+[[fix]]
+id = "aerial-gamewatch-bone-TransN"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftGameWatch/ftgamewatchattackair.c"
+anchor = "FtPart_TransN"
+replacement = "Rogue_AbilityMapBone(fp, FtPart_TransN)"
+occurrences = 2
+reason = "Retarget article spawn and attachment joints to the recipient skeleton."
+
+[[fix]]
+id = "aerial-gamewatch-bone-LShoulderN"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftGameWatch/ftgamewatchattackair.c"
+anchor = "FtPart_LShoulderN"
+replacement = "Rogue_AbilityMapBone(fp, FtPart_LShoulderN)"
+occurrences = 2
+reason = "Retarget article spawn and attachment joints to the recipient skeleton."
+
+[[fix]]
+id = "aerial-gamewatch-bone-LHandN"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftGameWatch/ftgamewatchattackair.c"
+anchor = "FtPart_LHandN"
+replacement = "Rogue_AbilityMapBone(fp, FtPart_LHandN)"
+occurrences = 2
+reason = "Retarget article spawn and attachment joints to the recipient skeleton."
+
+[[fix]]
+id = "aerial-gamewatch-landing-n"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftGameWatch/ftgamewatchattackair.c"
+anchor = "fp->co_attrs.landingairn_lag"
+replacement = "Rogue_AerialLandingLag(fp, fp->motion_id, fp->co_attrs.landingairn_lag)"
+occurrences = 1
+reason = "Use donor landing lag, preserving retail Game and Watch up-air use of back-air lag and its uncancelable article landings."
+
+[[fix]]
+id = "aerial-gamewatch-landing-b"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftGameWatch/ftgamewatchattackair.c"
+anchor = "fp->co_attrs.landingairb_lag"
+replacement = "Rogue_AerialLandingLag(fp, fp->motion_id, fp->co_attrs.landingairb_lag)"
+occurrences = 2
+reason = "Use donor landing lag, preserving retail Game and Watch up-air use of back-air lag and its uncancelable article landings."
+
+[[fix]]
+id = "aerial-link-down-entry"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftLink/ftlinkattackair.c"
+anchor = "static void lwOnHit(HSD_GObj* gobj)\n{"
+replacement = "void Rogue_LinkAerialDownEnter(Fighter_GObj* gobj)\n{\n    Fighter* fp = GET_FIGHTER(gobj);\n    ftCo_AttackAir_EnterFromMsid(gobj, ftCo_MS_AttackAirLw);\n    fp->deal_dmg_cb = lwOnHit;\n    fp->anim_cb = lwOnAnim;\n    fp->mv.lk.attackair.lw_frame_start = 0;\n}\n\nstatic void lwOnHit(HSD_GObj* gobj)\n{"
+reason = "Reuse Link and Young Link's actual down-air bounce callbacks and attributes without consulting recipient input or replacing the special state machine."
+
+[[fix]]
+id = "aerial-gw-cleanup-ftgamewatchattack11-header"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftGameWatch/ftgamewatchattack11.c"
+anchor = "#include \"ftgamewatchattack11.h\""
+replacement = "#include \"ftgamewatchattack11.h\"\n#include <melee/rogue/platform/melee/specials/special_engine.h>"
+occurrences = 1
+reason = "Game and Watch landing may call OnDamage after shared ownership has restored the recipient. Every article cleanup helper must read its persistent source bank, including grounded article removers invoked by OnDamage."
+
+[[fix]]
+id = "aerial-gw-cleanup-ftgamewatchattack11-vars"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftGameWatch/ftgamewatchattack11.c"
+anchor = "fp->u.gw"
+replacement = "Rogue_AbilityVars(fp, Ft_Kind_GameWatch)->gw"
+occurrences = 15
+reason = "Game and Watch landing may call OnDamage after shared ownership has restored the recipient. Every article cleanup helper must read its persistent source bank, including grounded article removers invoked by OnDamage."
+
+[[fix]]
+id = "aerial-gw-cleanup-ftgamewatchattacklw3-header"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftGameWatch/ftgamewatchattacklw3.c"
+anchor = "#include \"ftgamewatchattacklw3.h\""
+replacement = "#include \"ftgamewatchattacklw3.h\"\n#include <melee/rogue/platform/melee/specials/special_engine.h>"
+occurrences = 1
+reason = "Game and Watch landing may call OnDamage after shared ownership has restored the recipient. Every article cleanup helper must read its persistent source bank, including grounded article removers invoked by OnDamage."
+
+[[fix]]
+id = "aerial-gw-cleanup-ftgamewatchattacklw3-vars"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftGameWatch/ftgamewatchattacklw3.c"
+anchor = "fp->u.gw"
+replacement = "Rogue_AbilityVars(fp, Ft_Kind_GameWatch)->gw"
+occurrences = 13
+reason = "Game and Watch landing may call OnDamage after shared ownership has restored the recipient. Every article cleanup helper must read its persistent source bank, including grounded article removers invoked by OnDamage."
+
+[[fix]]
+id = "aerial-gw-cleanup-ftgamewatchattacks4-header"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftGameWatch/ftgamewatchattacks4.c"
+anchor = "#include \"ftgamewatchattacks4.h\""
+replacement = "#include \"ftgamewatchattacks4.h\"\n#include <melee/rogue/platform/melee/specials/special_engine.h>"
+occurrences = 1
+reason = "Game and Watch landing may call OnDamage after shared ownership has restored the recipient. Every article cleanup helper must read its persistent source bank, including grounded article removers invoked by OnDamage."
+
+[[fix]]
+id = "aerial-gw-cleanup-ftgamewatchattacks4-vars"
+owner = "platform/aerials"
+file = "src/melee/ft/kinds/ftGameWatch/ftgamewatchattacks4.c"
+anchor = "fp->u.gw"
+replacement = "Rogue_AbilityVars(fp, Ft_Kind_GameWatch)->gw"
+occurrences = 9
+reason = "Game and Watch landing may call OnDamage after shared ownership has restored the recipient. Every article cleanup helper must read its persistent source bank, including grounded article removers invoked by OnDamage."
+
+[[fix]]
+id = "encounter-animation-capacity"
+owner = "platform/encounter-assets"
+file = "src/melee/lb/lbheap.c"
+anchor = "void* lbHeap_80015BD0(int heap_id, size_t size)"
+replacement = "int Rogue_AramCanFit(unsigned bytes)\n{\n    Handle* heap=lbHeap_80431FA0.heap_array[1].handle;\n    Handle* item;\n    uintptr_t start;\n    if(lbHeap_80431FA0.heap_array[1].status != LbHeapStatus_Create) return 0;\n    start=(uintptr_t)heap->x4_lo;\n    for(item=heap->xC_prev;item;item=item->x0_next) {\n        if((uintptr_t)item->x4_lo-start>=bytes) return 1;\n        start=(uintptr_t)item->x4_lo+(uintptr_t)item->x8_hi;\n    }\n    return (uintptr_t)heap->x8_hi-start>=bytes;\n}\n\nvoid* lbHeap_80015BD0(int heap_id, size_t size)"
+reason = "Expose a read-only contiguous animation-heap capacity check; retain the stock allocator unchanged."
+
+[[fix]]
+id = "encounter-animation-header"
+owner = "platform/encounter-assets"
+file = "src/melee/ft/ftdata.c"
+anchor = "#include \"ftdata.h\""
+replacement = "#include \"ftdata.h\"\n#include <melee/rogue/platform/melee/encounter_assets.h>"
+reason = "Declare encounter-scoped animation archive fallback."
+
+[[fix]]
+id = "encounter-animation-fallback"
+owner = "platform/encounter-assets"
+file = "src/melee/ft/ftdata.c"
+anchor = "        lbFile_800168A0(1, ftData_803C23E4[kind], &sp18, &sp10);"
+replacement = "        if (!Rogue_AnimationArchiveLoad(kind, &sp18, &sp10))\n            lbFile_800168A0(1, ftData_803C23E4[kind], &sp18, &sp10);"
+reason = "When aerials are enabled in a run and ARAM cannot fit a complete native/special archive, use the existing RAM-backed animation path. Ordinary Melee and fitting archives retain the stock loader."

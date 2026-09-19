@@ -56,7 +56,7 @@ def bootstrap(cfg, image=None):
     return result
 
 
-def build(cfg, profile='debug', target='all', qa_cycles=0, qa_match=False, qa_ui=False, qa_matches=20, qa_specials=False, qa_special_start=0, qa_special_count=104, qa_lifecycle=False, debug_launch=None):
+def build(cfg, profile='debug', target='all', qa_cycles=0, qa_match=False, qa_ui=False, qa_matches=20, qa_specials=False, qa_special_start=0, qa_special_count=104, qa_lifecycle=False, debug_launch=None, aerials=True, qa_aerials=False, qa_aerial_stress=False):
     from .integration import prepare, hooks, validate
     if target not in ('all', 'dol', 'hooks', 'progression', 'specials', 'assets'):
         raise ValueError('Unknown build target: ' + target)
@@ -87,13 +87,17 @@ def build(cfg, profile='debug', target='all', qa_cycles=0, qa_match=False, qa_ui
         raise ValueError('Special QA requires an exclusive debug build')
     if not 1 <= qa_matches <= 10000:
         raise ValueError('Match QA count must be 1..10000')
-    if qa_special_start < 0 or qa_special_count < 1 or qa_special_start + qa_special_count > 2704:
+    if qa_special_start < 0 or qa_special_count < 1 or qa_special_start + qa_special_count > (3380 if qa_aerials else 2704):
         raise ValueError('Special matrix range must fit 26 recipients x 104 specials')
     if debug_launch is not None and profile != 'debug':
         raise ValueError('Developer launch overrides require a debug build')
-    if qa_lifecycle and not qa_specials:
+    if qa_lifecycle and not (qa_specials or qa_aerials):
         raise ValueError('Extended lifecycle QA requires --qa-specials')
-    work = prepare(profile, qa_cycles, qa_match, qa_ui, qa_matches, qa_specials, qa_special_start, qa_special_count, qa_lifecycle, debug_launch)
+    if qa_aerials and (not aerials or qa_specials or qa_match or qa_cycles or qa_ui):
+        raise ValueError('Aerial QA requires an exclusive build with aerials enabled')
+    if qa_aerial_stress and (not qa_aerials or not qa_lifecycle or qa_special_start+qa_special_count>130):
+        raise ValueError('Aerial stress requires extended aerial QA and a range within 130 spread cases')
+    work = prepare(profile, qa_cycles, qa_match, qa_ui, qa_matches, qa_specials, qa_special_start, qa_special_count, qa_lifecycle, debug_launch, aerials, qa_aerials, qa_aerial_stress)
     run([sys.executable, 'configure.py', '--non-matching', '--map',
          '--compilers', clean / 'build/compilers',
          '--binutils', clean / 'build/binutils',
@@ -120,7 +124,7 @@ def build(cfg, profile='debug', target='all', qa_cycles=0, qa_match=False, qa_ui
     shutil.copyfile(work / 'build/GALE01/main.elf.MAP', output.parent / 'GALE01.map')
     if file_hash(Path(image), 'md5') != source['md5']:
         raise ValueError('Source image changed')
-    result = dict(profile=profile, target=target, qa_scene_cycles=qa_cycles, qa_match=qa_match, qa_ui=qa_ui, qa_matches=qa_matches, qa_specials=qa_specials, qa_special_start=qa_special_start, qa_special_count=qa_special_count, qa_lifecycle=qa_lifecycle, debug_launch=debug_launch, source=source, work=str(work),
+    result = dict(profile=profile, target=target, aerials=bool(aerials), qa_aerials=qa_aerials, qa_aerial_stress=qa_aerial_stress, qa_scene_cycles=qa_cycles, qa_match=qa_match, qa_ui=qa_ui, qa_matches=qa_matches, qa_specials=qa_specials, qa_special_start=qa_special_start, qa_special_count=qa_special_count, qa_lifecycle=qa_lifecycle, debug_launch=debug_launch, source=source, work=str(work),
                   dependency_lock_sha256=file_hash(ROOT / 'deps/lock.json'),
                   hook_manifest_sha256=file_hash(ROOT / 'integration/hook_manifest.toml'),
                   dol_sha1=file_hash(work / 'build/GALE01/main.dol','sha1'),

@@ -1,6 +1,8 @@
 #ifndef ROGUE_RUN_H
 #define ROGUE_RUN_H
 #include "rng.h"
+#include "../combat/aerials/aerial_catalog.h"
+#include "features.h"
 
 #define ROGUE_FLOORS 15
 #define ROGUE_UPGRADES 24
@@ -24,6 +26,7 @@ typedef struct RogueRun {
     unsigned version, character, act, floor, phase, gold, score;
     unsigned route[ROGUE_FLOORS][2], selected_route[ROGUE_FLOORS];
     unsigned stacks[ROGUE_UPGRADES], specials[4];
+    unsigned aerials[ROGUE_AERIAL_SLOTS];
     unsigned recent_recipes[4], recent_stages[3], encounters;
     unsigned gold_spent, rerolls_used, history_count, carried_percent;
     unsigned fights_won, death_reason, native_score, reroll_gold_spent;

@@ -1,0 +1,65 @@
+{
+  "pulses": [
+    [
+      300,
+      320,
+      2
+    ],
+    [
+      600,
+      620,
+      8
+    ],
+    [
+      900,
+      920,
+      1
+    ]
+  ],
+  "count": 1200,
+  "build": {
+    "profile": "debug",
+    "target": "all",
+    "aerials": true,
+    "qa_aerials": false,
+    "qa_aerial_stress": false,
+    "qa_scene_cycles": 0,
+    "qa_match": false,
+    "qa_ui": true,
+    "qa_matches": 20,
+    "qa_specials": false,
+    "qa_special_start": 0,
+    "qa_special_count": 104,
+    "qa_lifecycle": false,
+    "debug_launch": {
+      "seed": 77,
+      "scene": "shop",
+      "recipient": 8,
+      "special": 89,
+      "encounter": 0,
+      "aerials": [
+        16,
+        12,
+        48,
+        84,
+        35
+      ],
+      "gold": 300
+    },
+    "source": {
+      "image": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\.iso\\Super Smash Bros. Melee (USA) (En,Ja) (v1.02).iso",
+      "game_id": "GALE01",
+      "revision": 2,
+      "bytes": 1459978240,
+      "md5": "0e63d4223b01d9aba596259dc155a174",
+      "dol_sha1": "08e0bf20134dfcb260699671004527b2d6bb1a45",
+      "dol_bytes": 4425184
+    },
+    "work": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\work\\b1880fb34e8478ae",
+    "dependency_lock_sha256": "e8b497891457b5abb7332bea863410dafce442c70fd690847ed024c6afc29246",
+    "hook_manifest_sha256": "960991cf9ae7c444d27c6a3b1e4c5a30f17c005670efef310b577995c4e90841",
+    "dol_sha1": "b8396e2a49e9084eda8ec9b7df19ee8bab9597d7",
+    "output_sha256": "1f8ce37ff2ec4abf53c276f263e13669db7e4a93f44cca476acbdbcfd1f87931",
+    "output": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\output\\aerials-ui.iso"
+  }
+}

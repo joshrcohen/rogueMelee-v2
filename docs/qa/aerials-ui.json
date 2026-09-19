@@ -1,0 +1,73 @@
+{
+  "status": "pass",
+  "scenario": "aerials-ui",
+  "emulator": "Dolphin 2606a Direct3D 11",
+  "build": {
+    "profile": "debug",
+    "target": "all",
+    "aerials": true,
+    "qa_aerials": false,
+    "qa_aerial_stress": false,
+    "qa_scene_cycles": 0,
+    "qa_match": false,
+    "qa_ui": true,
+    "qa_matches": 20,
+    "qa_specials": false,
+    "qa_special_start": 0,
+    "qa_special_count": 104,
+    "qa_lifecycle": false,
+    "debug_launch": {
+      "seed": 77,
+      "scene": "shop",
+      "recipient": 8,
+      "special": 89,
+      "encounter": 0,
+      "aerials": [
+        16,
+        12,
+        48,
+        84,
+        35
+      ],
+      "gold": 300
+    },
+    "source": {
+      "image": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\.iso\\Super Smash Bros. Melee (USA) (En,Ja) (v1.02).iso",
+      "game_id": "GALE01",
+      "revision": 2,
+      "bytes": 1459978240,
+      "md5": "0e63d4223b01d9aba596259dc155a174",
+      "dol_sha1": "08e0bf20134dfcb260699671004527b2d6bb1a45",
+      "dol_bytes": 4425184
+    },
+    "work": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\work\\b1880fb34e8478ae",
+    "dependency_lock_sha256": "e8b497891457b5abb7332bea863410dafce442c70fd690847ed024c6afc29246",
+    "hook_manifest_sha256": "960991cf9ae7c444d27c6a3b1e4c5a30f17c005670efef310b577995c4e90841",
+    "dol_sha1": "b8396e2a49e9084eda8ec9b7df19ee8bab9597d7",
+    "output_sha256": "1f8ce37ff2ec4abf53c276f263e13669db7e4a93f44cca476acbdbcfd1f87931",
+    "output": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\output\\aerials-ui.iso"
+  },
+  "checks": [
+    "Controller movie buys Bowser Nair for 60 gold: 300 -> 240; four other aerial slots and Falco blaster remain equipped",
+    "Shop reroll costs 25, preserves sold Bowser slot, displays new Zelda Nair replacing Bowser, next reroll costs 40",
+    "Five aerial donors and four special slots are legible in the build panel",
+    "Aerial shop cards show donor, slot, replacement, next-fight timing and price; reward cards explicitly show FREE CHOICE",
+    "No donor preload or controlled-fighter creation in shop browsing/purchase/reroll log",
+    "Next encounter preloads new Bowser donor, not replaced Game & Watch donor; real controller aerial and Falco special inputs enter/restore; natural loss releases all tracked resources"
+  ],
+  "scope": "Seed 77 Mario developer shop fixture with 300 gold and five pre-equipped aerials; assertions plus reviewed screenshots, not exhaustive UI localization/layout coverage",
+  "artifact_sha256": {
+    "docs/evidence/aerials/ui/build-after-purchase-inputs.json": "8cf09efe1a32647b108fd28105b6fd42a2ae1cc25a064744cc01758f60ad3c63",
+    "docs/evidence/aerials/ui/build-after-purchase.jpg": "2b3e993188e8448c8032d5cb506b1f08dd9929b1656f9aeb498e19fff8eebc27",
+    "docs/evidence/aerials/ui/build-after-purchase.log.gz": "3697e940a6c1ceb597041d3c6777156aebc080d53b7db917e34e64c5bbe8251e",
+    "docs/evidence/aerials/ui/purchased-moves-inputs.json": "252ddc40c3277cb2e170a7c29429b934fef032af177aafdc53f9b83a12a661ef",
+    "docs/evidence/aerials/ui/purchased-moves-run-end.jpg": "6c50282cd916fc759de16a10df5f7d37ef2b3e28e1d3e2c19623ac56c0a387aa",
+    "docs/evidence/aerials/ui/purchased-moves.log.gz": "6dcd273fa1d192ffe096c41d5e2b9eae6ec182d60ad54988c48a9c4d122c059f",
+    "docs/evidence/aerials/ui/reward-free-choice-inputs.json": "914321a001845a9fea727acdb54ecc59908ebdf0a1c45e688563d9ec6d0953f4",
+    "docs/evidence/aerials/ui/reward-free-choice.jpg": "446b1487c13c943f94c2ea11ada37bb097909d4e359216d608df9a3c6aa63555",
+    "docs/evidence/aerials/ui/reward-free-choice.log.gz": "7d98cd8505dda926facda6bfbf562a2d826d4b989103aedde56691d242170e02",
+    "docs/evidence/aerials/ui/shop-after-reroll-inputs.json": "608d4b3cac9f0157c2afea275c0898aac12f92eb1a69f27e0b2a953be46d7238",
+    "docs/evidence/aerials/ui/shop-after-reroll.jpg": "9679ff7b8ed9fc0d6dd29e3248396919f8bcd6c4bc4b942db7aba68d18016337",
+    "docs/evidence/aerials/ui/shop-after-reroll.log.gz": "0821a85b59086cffefeec65d31b3a159c0b373fe109cc2ed8f19f6f9fa6f8db1"
+  }
+}

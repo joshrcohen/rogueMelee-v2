@@ -34,6 +34,10 @@ typedef struct RogueFighterState {
     Fighter* fighter;
     unsigned match_generation;
     const RogueAbilityDefinition* active;
+    const RogueAerialDef* aerial;
+    unsigned aerial_equipped[ROGUE_AERIAL_SLOTS];
+    Fighter_WaitAnimData* aerial_anims[Ft_Kind_Max];
+    void* aerial_blobs[ROGUE_AERIAL_SLOTS][2];
     bool loaded[ROGUE_ABILITY_COUNT];
     bool loaded_sources[Ft_Kind_Max];
     void* native_attrs;
@@ -47,5 +51,8 @@ typedef struct RogueFighterState {
     u8 native_callbacks[0x6C];
 } RogueFighterState;
 extern RogueFighterState fighter_state;
+/* Both borrowers capture exactly once after restoring the previous owner. */
+void Rogue_BorrowBegin(Fighter* fp, FighterKind source);
+void Rogue_AerialRelease(void);
 
 #endif

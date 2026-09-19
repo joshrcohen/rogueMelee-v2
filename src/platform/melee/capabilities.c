@@ -1,4 +1,5 @@
 #include "capabilities.h"
+#include "../../core/features.h"
 #include <dolphin/dvd.h>
 #include <dolphin/os.h>
 #include <melee/ft/forward.h>
@@ -19,11 +20,11 @@ void RogueCapabilities_Detect(void)
     capabilities.player_slots = GM_MAX_PLAYERS;
     capabilities.stage_count = 6;
     capabilities.borrowed_specials = capabilities.supported;
-    capabilities.aerial_swapping = 0;
+    capabilities.aerial_swapping = capabilities.supported && ROGUE_ENABLE_AERIALS;
 #if ROGUE_DEBUG
-    OSReport("[rogue] capabilities supported=%u roster=%u slots=%u stages=%u specials=%u aerials=0\n",
+    OSReport("[rogue] capabilities supported=%u roster=%u slots=%u stages=%u specials=%u aerials=%u\n",
         capabilities.supported, capabilities.roster_count, capabilities.player_slots,
-        capabilities.stage_count, capabilities.borrowed_specials);
+        capabilities.stage_count, capabilities.borrowed_specials, capabilities.aerial_swapping);
 #endif
 }
 const RogueCapabilities* RogueCapabilities_Get(void) { return &capabilities; }

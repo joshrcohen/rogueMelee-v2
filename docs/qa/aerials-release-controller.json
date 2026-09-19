@@ -1,0 +1,45 @@
+{
+  "status": "pass",
+  "scenario": "aerials-release-controller",
+  "build": {
+    "profile": "release",
+    "target": "all",
+    "aerials": true,
+    "qa_aerials": false,
+    "qa_aerial_stress": false,
+    "qa_scene_cycles": 0,
+    "qa_match": false,
+    "qa_ui": false,
+    "qa_matches": 20,
+    "qa_specials": false,
+    "qa_special_start": 0,
+    "qa_special_count": 104,
+    "qa_lifecycle": false,
+    "debug_launch": null,
+    "source": {
+      "image": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\.iso\\Super Smash Bros. Melee (USA) (En,Ja) (v1.02).iso",
+      "game_id": "GALE01",
+      "revision": 2,
+      "bytes": 1459978240,
+      "md5": "0e63d4223b01d9aba596259dc155a174",
+      "dol_sha1": "08e0bf20134dfcb260699671004527b2d6bb1a45",
+      "dol_bytes": 4425184
+    },
+    "work": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\work\\5be38652256ed75b",
+    "dependency_lock_sha256": "e8b497891457b5abb7332bea863410dafce442c70fd690847ed024c6afc29246",
+    "hook_manifest_sha256": "960991cf9ae7c444d27c6a3b1e4c5a30f17c005670efef310b577995c4e90841",
+    "dol_sha1": "36601dc8eeee7c24623fdf6303b53e077b85a7ec",
+    "output_sha256": "ec5c3270e3e3ec272dfcc495014483550f19cfb327a1734c528e8d18ca23521d",
+    "output": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\output\\aerials-release-preview.iso"
+  },
+  "checks": [
+    "Shipping QA-mode-zero release: ordinary boot/menu/CSS/reward/route/native encounter/natural loss",
+    "No developer HUD or QA fixture dispatch; reviewed final run-end screenshot"
+  ],
+  "artifact_sha256": {
+    "docs/evidence/aerials/ui/aerials-release-controller.dtm": "b628ea2b5d6d6a24c4b0ebff5d8a60e14c300ef86b53c0b7669c5c642a7d83c7",
+    "docs/evidence/aerials/ui/release-controller-manifest.json": "4cad7775a5d1708f304cdc7f4edc90cd668706c82efc0f755831f2b6c0262cb6",
+    "docs/evidence/aerials/ui/release-controller-run-end.jpg": "68f2b504440fa2942fc97bcbcbc1d8ef38e062855d5b13fb20275032f21d0986",
+    "docs/evidence/aerials/ui/release-controller.log.gz": "107e51b5e3a37ac5683e88a5f6027a61518f72b1fa64c998e880cbe7be3ce9db"
+  }
+}

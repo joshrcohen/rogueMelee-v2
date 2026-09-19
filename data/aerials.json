@@ -1,0 +1,1172 @@
+[
+  {
+    "id": 1,
+    "character": 0,
+    "donor": 2,
+    "slot": 0,
+    "price": 60,
+    "key": "captain_falcon_nair",
+    "name": "Captain Falcon Neutral Air"
+  },
+  {
+    "id": 2,
+    "character": 0,
+    "donor": 2,
+    "slot": 1,
+    "price": 60,
+    "key": "captain_falcon_fair",
+    "name": "Captain Falcon Forward Air"
+  },
+  {
+    "id": 3,
+    "character": 0,
+    "donor": 2,
+    "slot": 2,
+    "price": 60,
+    "key": "captain_falcon_bair",
+    "name": "Captain Falcon Back Air"
+  },
+  {
+    "id": 4,
+    "character": 0,
+    "donor": 2,
+    "slot": 3,
+    "price": 60,
+    "key": "captain_falcon_uair",
+    "name": "Captain Falcon Up Air"
+  },
+  {
+    "id": 5,
+    "character": 0,
+    "donor": 2,
+    "slot": 4,
+    "price": 60,
+    "key": "captain_falcon_dair",
+    "name": "Captain Falcon Down Air"
+  },
+  {
+    "id": 6,
+    "character": 1,
+    "donor": 3,
+    "slot": 0,
+    "price": 60,
+    "key": "donkey_kong_nair",
+    "name": "Donkey Kong Neutral Air"
+  },
+  {
+    "id": 7,
+    "character": 1,
+    "donor": 3,
+    "slot": 1,
+    "price": 60,
+    "key": "donkey_kong_fair",
+    "name": "Donkey Kong Forward Air"
+  },
+  {
+    "id": 8,
+    "character": 1,
+    "donor": 3,
+    "slot": 2,
+    "price": 60,
+    "key": "donkey_kong_bair",
+    "name": "Donkey Kong Back Air"
+  },
+  {
+    "id": 9,
+    "character": 1,
+    "donor": 3,
+    "slot": 3,
+    "price": 60,
+    "key": "donkey_kong_uair",
+    "name": "Donkey Kong Up Air"
+  },
+  {
+    "id": 10,
+    "character": 1,
+    "donor": 3,
+    "slot": 4,
+    "price": 60,
+    "key": "donkey_kong_dair",
+    "name": "Donkey Kong Down Air"
+  },
+  {
+    "id": 11,
+    "character": 2,
+    "donor": 1,
+    "slot": 0,
+    "price": 60,
+    "key": "fox_nair",
+    "name": "Fox Neutral Air"
+  },
+  {
+    "id": 12,
+    "character": 2,
+    "donor": 1,
+    "slot": 1,
+    "price": 60,
+    "key": "fox_fair",
+    "name": "Fox Forward Air"
+  },
+  {
+    "id": 13,
+    "character": 2,
+    "donor": 1,
+    "slot": 2,
+    "price": 60,
+    "key": "fox_bair",
+    "name": "Fox Back Air"
+  },
+  {
+    "id": 14,
+    "character": 2,
+    "donor": 1,
+    "slot": 3,
+    "price": 60,
+    "key": "fox_uair",
+    "name": "Fox Up Air"
+  },
+  {
+    "id": 15,
+    "character": 2,
+    "donor": 1,
+    "slot": 4,
+    "price": 60,
+    "key": "fox_dair",
+    "name": "Fox Down Air"
+  },
+  {
+    "id": 16,
+    "character": 3,
+    "donor": 24,
+    "slot": 0,
+    "price": 60,
+    "key": "mr_game_and_watch_nair",
+    "name": "Mr Game and Watch Neutral Air"
+  },
+  {
+    "id": 17,
+    "character": 3,
+    "donor": 24,
+    "slot": 1,
+    "price": 60,
+    "key": "mr_game_and_watch_fair",
+    "name": "Mr Game and Watch Forward Air"
+  },
+  {
+    "id": 18,
+    "character": 3,
+    "donor": 24,
+    "slot": 2,
+    "price": 60,
+    "key": "mr_game_and_watch_bair",
+    "name": "Mr Game and Watch Back Air"
+  },
+  {
+    "id": 19,
+    "character": 3,
+    "donor": 24,
+    "slot": 3,
+    "price": 60,
+    "key": "mr_game_and_watch_uair",
+    "name": "Mr Game and Watch Up Air"
+  },
+  {
+    "id": 20,
+    "character": 3,
+    "donor": 24,
+    "slot": 4,
+    "price": 60,
+    "key": "mr_game_and_watch_dair",
+    "name": "Mr Game and Watch Down Air"
+  },
+  {
+    "id": 21,
+    "character": 4,
+    "donor": 4,
+    "slot": 0,
+    "price": 60,
+    "key": "kirby_nair",
+    "name": "Kirby Neutral Air"
+  },
+  {
+    "id": 22,
+    "character": 4,
+    "donor": 4,
+    "slot": 1,
+    "price": 60,
+    "key": "kirby_fair",
+    "name": "Kirby Forward Air"
+  },
+  {
+    "id": 23,
+    "character": 4,
+    "donor": 4,
+    "slot": 2,
+    "price": 60,
+    "key": "kirby_bair",
+    "name": "Kirby Back Air"
+  },
+  {
+    "id": 24,
+    "character": 4,
+    "donor": 4,
+    "slot": 3,
+    "price": 60,
+    "key": "kirby_uair",
+    "name": "Kirby Up Air"
+  },
+  {
+    "id": 25,
+    "character": 4,
+    "donor": 4,
+    "slot": 4,
+    "price": 60,
+    "key": "kirby_dair",
+    "name": "Kirby Down Air"
+  },
+  {
+    "id": 26,
+    "character": 5,
+    "donor": 5,
+    "slot": 0,
+    "price": 60,
+    "key": "bowser_nair",
+    "name": "Bowser Neutral Air"
+  },
+  {
+    "id": 27,
+    "character": 5,
+    "donor": 5,
+    "slot": 1,
+    "price": 60,
+    "key": "bowser_fair",
+    "name": "Bowser Forward Air"
+  },
+  {
+    "id": 28,
+    "character": 5,
+    "donor": 5,
+    "slot": 2,
+    "price": 60,
+    "key": "bowser_bair",
+    "name": "Bowser Back Air"
+  },
+  {
+    "id": 29,
+    "character": 5,
+    "donor": 5,
+    "slot": 3,
+    "price": 60,
+    "key": "bowser_uair",
+    "name": "Bowser Up Air"
+  },
+  {
+    "id": 30,
+    "character": 5,
+    "donor": 5,
+    "slot": 4,
+    "price": 60,
+    "key": "bowser_dair",
+    "name": "Bowser Down Air"
+  },
+  {
+    "id": 31,
+    "character": 6,
+    "donor": 6,
+    "slot": 0,
+    "price": 60,
+    "key": "link_nair",
+    "name": "Link Neutral Air"
+  },
+  {
+    "id": 32,
+    "character": 6,
+    "donor": 6,
+    "slot": 1,
+    "price": 60,
+    "key": "link_fair",
+    "name": "Link Forward Air"
+  },
+  {
+    "id": 33,
+    "character": 6,
+    "donor": 6,
+    "slot": 2,
+    "price": 60,
+    "key": "link_bair",
+    "name": "Link Back Air"
+  },
+  {
+    "id": 34,
+    "character": 6,
+    "donor": 6,
+    "slot": 3,
+    "price": 60,
+    "key": "link_uair",
+    "name": "Link Up Air"
+  },
+  {
+    "id": 35,
+    "character": 6,
+    "donor": 6,
+    "slot": 4,
+    "price": 60,
+    "key": "link_dair",
+    "name": "Link Down Air"
+  },
+  {
+    "id": 36,
+    "character": 7,
+    "donor": 17,
+    "slot": 0,
+    "price": 60,
+    "key": "luigi_nair",
+    "name": "Luigi Neutral Air"
+  },
+  {
+    "id": 37,
+    "character": 7,
+    "donor": 17,
+    "slot": 1,
+    "price": 60,
+    "key": "luigi_fair",
+    "name": "Luigi Forward Air"
+  },
+  {
+    "id": 38,
+    "character": 7,
+    "donor": 17,
+    "slot": 2,
+    "price": 60,
+    "key": "luigi_bair",
+    "name": "Luigi Back Air"
+  },
+  {
+    "id": 39,
+    "character": 7,
+    "donor": 17,
+    "slot": 3,
+    "price": 60,
+    "key": "luigi_uair",
+    "name": "Luigi Up Air"
+  },
+  {
+    "id": 40,
+    "character": 7,
+    "donor": 17,
+    "slot": 4,
+    "price": 60,
+    "key": "luigi_dair",
+    "name": "Luigi Down Air"
+  },
+  {
+    "id": 41,
+    "character": 8,
+    "donor": 0,
+    "slot": 0,
+    "price": 60,
+    "key": "mario_nair",
+    "name": "Mario Neutral Air"
+  },
+  {
+    "id": 42,
+    "character": 8,
+    "donor": 0,
+    "slot": 1,
+    "price": 60,
+    "key": "mario_fair",
+    "name": "Mario Forward Air"
+  },
+  {
+    "id": 43,
+    "character": 8,
+    "donor": 0,
+    "slot": 2,
+    "price": 60,
+    "key": "mario_bair",
+    "name": "Mario Back Air"
+  },
+  {
+    "id": 44,
+    "character": 8,
+    "donor": 0,
+    "slot": 3,
+    "price": 60,
+    "key": "mario_uair",
+    "name": "Mario Up Air"
+  },
+  {
+    "id": 45,
+    "character": 8,
+    "donor": 0,
+    "slot": 4,
+    "price": 60,
+    "key": "mario_dair",
+    "name": "Mario Down Air"
+  },
+  {
+    "id": 46,
+    "character": 9,
+    "donor": 18,
+    "slot": 0,
+    "price": 60,
+    "key": "marth_nair",
+    "name": "Marth Neutral Air"
+  },
+  {
+    "id": 47,
+    "character": 9,
+    "donor": 18,
+    "slot": 1,
+    "price": 60,
+    "key": "marth_fair",
+    "name": "Marth Forward Air"
+  },
+  {
+    "id": 48,
+    "character": 9,
+    "donor": 18,
+    "slot": 2,
+    "price": 60,
+    "key": "marth_bair",
+    "name": "Marth Back Air"
+  },
+  {
+    "id": 49,
+    "character": 9,
+    "donor": 18,
+    "slot": 3,
+    "price": 60,
+    "key": "marth_uair",
+    "name": "Marth Up Air"
+  },
+  {
+    "id": 50,
+    "character": 9,
+    "donor": 18,
+    "slot": 4,
+    "price": 60,
+    "key": "marth_dair",
+    "name": "Marth Down Air"
+  },
+  {
+    "id": 51,
+    "character": 10,
+    "donor": 16,
+    "slot": 0,
+    "price": 60,
+    "key": "mewtwo_nair",
+    "name": "Mewtwo Neutral Air"
+  },
+  {
+    "id": 52,
+    "character": 10,
+    "donor": 16,
+    "slot": 1,
+    "price": 60,
+    "key": "mewtwo_fair",
+    "name": "Mewtwo Forward Air"
+  },
+  {
+    "id": 53,
+    "character": 10,
+    "donor": 16,
+    "slot": 2,
+    "price": 60,
+    "key": "mewtwo_bair",
+    "name": "Mewtwo Back Air"
+  },
+  {
+    "id": 54,
+    "character": 10,
+    "donor": 16,
+    "slot": 3,
+    "price": 60,
+    "key": "mewtwo_uair",
+    "name": "Mewtwo Up Air"
+  },
+  {
+    "id": 55,
+    "character": 10,
+    "donor": 16,
+    "slot": 4,
+    "price": 60,
+    "key": "mewtwo_dair",
+    "name": "Mewtwo Down Air"
+  },
+  {
+    "id": 56,
+    "character": 11,
+    "donor": 8,
+    "slot": 0,
+    "price": 60,
+    "key": "ness_nair",
+    "name": "Ness Neutral Air"
+  },
+  {
+    "id": 57,
+    "character": 11,
+    "donor": 8,
+    "slot": 1,
+    "price": 60,
+    "key": "ness_fair",
+    "name": "Ness Forward Air"
+  },
+  {
+    "id": 58,
+    "character": 11,
+    "donor": 8,
+    "slot": 2,
+    "price": 60,
+    "key": "ness_bair",
+    "name": "Ness Back Air"
+  },
+  {
+    "id": 59,
+    "character": 11,
+    "donor": 8,
+    "slot": 3,
+    "price": 60,
+    "key": "ness_uair",
+    "name": "Ness Up Air"
+  },
+  {
+    "id": 60,
+    "character": 11,
+    "donor": 8,
+    "slot": 4,
+    "price": 60,
+    "key": "ness_dair",
+    "name": "Ness Down Air"
+  },
+  {
+    "id": 61,
+    "character": 12,
+    "donor": 9,
+    "slot": 0,
+    "price": 60,
+    "key": "peach_nair",
+    "name": "Peach Neutral Air"
+  },
+  {
+    "id": 62,
+    "character": 12,
+    "donor": 9,
+    "slot": 1,
+    "price": 60,
+    "key": "peach_fair",
+    "name": "Peach Forward Air"
+  },
+  {
+    "id": 63,
+    "character": 12,
+    "donor": 9,
+    "slot": 2,
+    "price": 60,
+    "key": "peach_bair",
+    "name": "Peach Back Air"
+  },
+  {
+    "id": 64,
+    "character": 12,
+    "donor": 9,
+    "slot": 3,
+    "price": 60,
+    "key": "peach_uair",
+    "name": "Peach Up Air"
+  },
+  {
+    "id": 65,
+    "character": 12,
+    "donor": 9,
+    "slot": 4,
+    "price": 60,
+    "key": "peach_dair",
+    "name": "Peach Down Air"
+  },
+  {
+    "id": 66,
+    "character": 13,
+    "donor": 12,
+    "slot": 0,
+    "price": 60,
+    "key": "pikachu_nair",
+    "name": "Pikachu Neutral Air"
+  },
+  {
+    "id": 67,
+    "character": 13,
+    "donor": 12,
+    "slot": 1,
+    "price": 60,
+    "key": "pikachu_fair",
+    "name": "Pikachu Forward Air"
+  },
+  {
+    "id": 68,
+    "character": 13,
+    "donor": 12,
+    "slot": 2,
+    "price": 60,
+    "key": "pikachu_bair",
+    "name": "Pikachu Back Air"
+  },
+  {
+    "id": 69,
+    "character": 13,
+    "donor": 12,
+    "slot": 3,
+    "price": 60,
+    "key": "pikachu_uair",
+    "name": "Pikachu Up Air"
+  },
+  {
+    "id": 70,
+    "character": 13,
+    "donor": 12,
+    "slot": 4,
+    "price": 60,
+    "key": "pikachu_dair",
+    "name": "Pikachu Down Air"
+  },
+  {
+    "id": 71,
+    "character": 14,
+    "donor": 10,
+    "slot": 0,
+    "price": 60,
+    "key": "ice_climbers_nair",
+    "name": "Ice Climbers Neutral Air"
+  },
+  {
+    "id": 72,
+    "character": 14,
+    "donor": 10,
+    "slot": 1,
+    "price": 60,
+    "key": "ice_climbers_fair",
+    "name": "Ice Climbers Forward Air"
+  },
+  {
+    "id": 73,
+    "character": 14,
+    "donor": 10,
+    "slot": 2,
+    "price": 60,
+    "key": "ice_climbers_bair",
+    "name": "Ice Climbers Back Air"
+  },
+  {
+    "id": 74,
+    "character": 14,
+    "donor": 10,
+    "slot": 3,
+    "price": 60,
+    "key": "ice_climbers_uair",
+    "name": "Ice Climbers Up Air"
+  },
+  {
+    "id": 75,
+    "character": 14,
+    "donor": 10,
+    "slot": 4,
+    "price": 60,
+    "key": "ice_climbers_dair",
+    "name": "Ice Climbers Down Air"
+  },
+  {
+    "id": 76,
+    "character": 15,
+    "donor": 15,
+    "slot": 0,
+    "price": 60,
+    "key": "jigglypuff_nair",
+    "name": "Jigglypuff Neutral Air"
+  },
+  {
+    "id": 77,
+    "character": 15,
+    "donor": 15,
+    "slot": 1,
+    "price": 60,
+    "key": "jigglypuff_fair",
+    "name": "Jigglypuff Forward Air"
+  },
+  {
+    "id": 78,
+    "character": 15,
+    "donor": 15,
+    "slot": 2,
+    "price": 60,
+    "key": "jigglypuff_bair",
+    "name": "Jigglypuff Back Air"
+  },
+  {
+    "id": 79,
+    "character": 15,
+    "donor": 15,
+    "slot": 3,
+    "price": 60,
+    "key": "jigglypuff_uair",
+    "name": "Jigglypuff Up Air"
+  },
+  {
+    "id": 80,
+    "character": 15,
+    "donor": 15,
+    "slot": 4,
+    "price": 60,
+    "key": "jigglypuff_dair",
+    "name": "Jigglypuff Down Air"
+  },
+  {
+    "id": 81,
+    "character": 16,
+    "donor": 13,
+    "slot": 0,
+    "price": 60,
+    "key": "samus_nair",
+    "name": "Samus Neutral Air"
+  },
+  {
+    "id": 82,
+    "character": 16,
+    "donor": 13,
+    "slot": 1,
+    "price": 60,
+    "key": "samus_fair",
+    "name": "Samus Forward Air"
+  },
+  {
+    "id": 83,
+    "character": 16,
+    "donor": 13,
+    "slot": 2,
+    "price": 60,
+    "key": "samus_bair",
+    "name": "Samus Back Air"
+  },
+  {
+    "id": 84,
+    "character": 16,
+    "donor": 13,
+    "slot": 3,
+    "price": 60,
+    "key": "samus_uair",
+    "name": "Samus Up Air"
+  },
+  {
+    "id": 85,
+    "character": 16,
+    "donor": 13,
+    "slot": 4,
+    "price": 60,
+    "key": "samus_dair",
+    "name": "Samus Down Air"
+  },
+  {
+    "id": 86,
+    "character": 17,
+    "donor": 14,
+    "slot": 0,
+    "price": 60,
+    "key": "yoshi_nair",
+    "name": "Yoshi Neutral Air"
+  },
+  {
+    "id": 87,
+    "character": 17,
+    "donor": 14,
+    "slot": 1,
+    "price": 60,
+    "key": "yoshi_fair",
+    "name": "Yoshi Forward Air"
+  },
+  {
+    "id": 88,
+    "character": 17,
+    "donor": 14,
+    "slot": 2,
+    "price": 60,
+    "key": "yoshi_bair",
+    "name": "Yoshi Back Air"
+  },
+  {
+    "id": 89,
+    "character": 17,
+    "donor": 14,
+    "slot": 3,
+    "price": 60,
+    "key": "yoshi_uair",
+    "name": "Yoshi Up Air"
+  },
+  {
+    "id": 90,
+    "character": 17,
+    "donor": 14,
+    "slot": 4,
+    "price": 60,
+    "key": "yoshi_dair",
+    "name": "Yoshi Down Air"
+  },
+  {
+    "id": 91,
+    "character": 18,
+    "donor": 19,
+    "slot": 0,
+    "price": 60,
+    "key": "zelda_nair",
+    "name": "Zelda Neutral Air"
+  },
+  {
+    "id": 92,
+    "character": 18,
+    "donor": 19,
+    "slot": 1,
+    "price": 60,
+    "key": "zelda_fair",
+    "name": "Zelda Forward Air"
+  },
+  {
+    "id": 93,
+    "character": 18,
+    "donor": 19,
+    "slot": 2,
+    "price": 60,
+    "key": "zelda_bair",
+    "name": "Zelda Back Air"
+  },
+  {
+    "id": 94,
+    "character": 18,
+    "donor": 19,
+    "slot": 3,
+    "price": 60,
+    "key": "zelda_uair",
+    "name": "Zelda Up Air"
+  },
+  {
+    "id": 95,
+    "character": 18,
+    "donor": 19,
+    "slot": 4,
+    "price": 60,
+    "key": "zelda_dair",
+    "name": "Zelda Down Air"
+  },
+  {
+    "id": 96,
+    "character": 19,
+    "donor": 7,
+    "slot": 0,
+    "price": 60,
+    "key": "sheik_nair",
+    "name": "Sheik Neutral Air"
+  },
+  {
+    "id": 97,
+    "character": 19,
+    "donor": 7,
+    "slot": 1,
+    "price": 60,
+    "key": "sheik_fair",
+    "name": "Sheik Forward Air"
+  },
+  {
+    "id": 98,
+    "character": 19,
+    "donor": 7,
+    "slot": 2,
+    "price": 60,
+    "key": "sheik_bair",
+    "name": "Sheik Back Air"
+  },
+  {
+    "id": 99,
+    "character": 19,
+    "donor": 7,
+    "slot": 3,
+    "price": 60,
+    "key": "sheik_uair",
+    "name": "Sheik Up Air"
+  },
+  {
+    "id": 100,
+    "character": 19,
+    "donor": 7,
+    "slot": 4,
+    "price": 60,
+    "key": "sheik_dair",
+    "name": "Sheik Down Air"
+  },
+  {
+    "id": 101,
+    "character": 20,
+    "donor": 22,
+    "slot": 0,
+    "price": 60,
+    "key": "falco_nair",
+    "name": "Falco Neutral Air"
+  },
+  {
+    "id": 102,
+    "character": 20,
+    "donor": 22,
+    "slot": 1,
+    "price": 60,
+    "key": "falco_fair",
+    "name": "Falco Forward Air"
+  },
+  {
+    "id": 103,
+    "character": 20,
+    "donor": 22,
+    "slot": 2,
+    "price": 60,
+    "key": "falco_bair",
+    "name": "Falco Back Air"
+  },
+  {
+    "id": 104,
+    "character": 20,
+    "donor": 22,
+    "slot": 3,
+    "price": 60,
+    "key": "falco_uair",
+    "name": "Falco Up Air"
+  },
+  {
+    "id": 105,
+    "character": 20,
+    "donor": 22,
+    "slot": 4,
+    "price": 60,
+    "key": "falco_dair",
+    "name": "Falco Down Air"
+  },
+  {
+    "id": 106,
+    "character": 21,
+    "donor": 20,
+    "slot": 0,
+    "price": 60,
+    "key": "young_link_nair",
+    "name": "Young Link Neutral Air"
+  },
+  {
+    "id": 107,
+    "character": 21,
+    "donor": 20,
+    "slot": 1,
+    "price": 60,
+    "key": "young_link_fair",
+    "name": "Young Link Forward Air"
+  },
+  {
+    "id": 108,
+    "character": 21,
+    "donor": 20,
+    "slot": 2,
+    "price": 60,
+    "key": "young_link_bair",
+    "name": "Young Link Back Air"
+  },
+  {
+    "id": 109,
+    "character": 21,
+    "donor": 20,
+    "slot": 3,
+    "price": 60,
+    "key": "young_link_uair",
+    "name": "Young Link Up Air"
+  },
+  {
+    "id": 110,
+    "character": 21,
+    "donor": 20,
+    "slot": 4,
+    "price": 60,
+    "key": "young_link_dair",
+    "name": "Young Link Down Air"
+  },
+  {
+    "id": 111,
+    "character": 22,
+    "donor": 21,
+    "slot": 0,
+    "price": 60,
+    "key": "dr_mario_nair",
+    "name": "Dr Mario Neutral Air"
+  },
+  {
+    "id": 112,
+    "character": 22,
+    "donor": 21,
+    "slot": 1,
+    "price": 60,
+    "key": "dr_mario_fair",
+    "name": "Dr Mario Forward Air"
+  },
+  {
+    "id": 113,
+    "character": 22,
+    "donor": 21,
+    "slot": 2,
+    "price": 60,
+    "key": "dr_mario_bair",
+    "name": "Dr Mario Back Air"
+  },
+  {
+    "id": 114,
+    "character": 22,
+    "donor": 21,
+    "slot": 3,
+    "price": 60,
+    "key": "dr_mario_uair",
+    "name": "Dr Mario Up Air"
+  },
+  {
+    "id": 115,
+    "character": 22,
+    "donor": 21,
+    "slot": 4,
+    "price": 60,
+    "key": "dr_mario_dair",
+    "name": "Dr Mario Down Air"
+  },
+  {
+    "id": 116,
+    "character": 23,
+    "donor": 26,
+    "slot": 0,
+    "price": 60,
+    "key": "roy_nair",
+    "name": "Roy Neutral Air"
+  },
+  {
+    "id": 117,
+    "character": 23,
+    "donor": 26,
+    "slot": 1,
+    "price": 60,
+    "key": "roy_fair",
+    "name": "Roy Forward Air"
+  },
+  {
+    "id": 118,
+    "character": 23,
+    "donor": 26,
+    "slot": 2,
+    "price": 60,
+    "key": "roy_bair",
+    "name": "Roy Back Air"
+  },
+  {
+    "id": 119,
+    "character": 23,
+    "donor": 26,
+    "slot": 3,
+    "price": 60,
+    "key": "roy_uair",
+    "name": "Roy Up Air"
+  },
+  {
+    "id": 120,
+    "character": 23,
+    "donor": 26,
+    "slot": 4,
+    "price": 60,
+    "key": "roy_dair",
+    "name": "Roy Down Air"
+  },
+  {
+    "id": 121,
+    "character": 24,
+    "donor": 23,
+    "slot": 0,
+    "price": 60,
+    "key": "pichu_nair",
+    "name": "Pichu Neutral Air"
+  },
+  {
+    "id": 122,
+    "character": 24,
+    "donor": 23,
+    "slot": 1,
+    "price": 60,
+    "key": "pichu_fair",
+    "name": "Pichu Forward Air"
+  },
+  {
+    "id": 123,
+    "character": 24,
+    "donor": 23,
+    "slot": 2,
+    "price": 60,
+    "key": "pichu_bair",
+    "name": "Pichu Back Air"
+  },
+  {
+    "id": 124,
+    "character": 24,
+    "donor": 23,
+    "slot": 3,
+    "price": 60,
+    "key": "pichu_uair",
+    "name": "Pichu Up Air"
+  },
+  {
+    "id": 125,
+    "character": 24,
+    "donor": 23,
+    "slot": 4,
+    "price": 60,
+    "key": "pichu_dair",
+    "name": "Pichu Down Air"
+  },
+  {
+    "id": 126,
+    "character": 25,
+    "donor": 25,
+    "slot": 0,
+    "price": 60,
+    "key": "ganondorf_nair",
+    "name": "Ganondorf Neutral Air"
+  },
+  {
+    "id": 127,
+    "character": 25,
+    "donor": 25,
+    "slot": 1,
+    "price": 60,
+    "key": "ganondorf_fair",
+    "name": "Ganondorf Forward Air"
+  },
+  {
+    "id": 128,
+    "character": 25,
+    "donor": 25,
+    "slot": 2,
+    "price": 60,
+    "key": "ganondorf_bair",
+    "name": "Ganondorf Back Air"
+  },
+  {
+    "id": 129,
+    "character": 25,
+    "donor": 25,
+    "slot": 3,
+    "price": 60,
+    "key": "ganondorf_uair",
+    "name": "Ganondorf Up Air"
+  },
+  {
+    "id": 130,
+    "character": 25,
+    "donor": 25,
+    "slot": 4,
+    "price": 60,
+    "key": "ganondorf_dair",
+    "name": "Ganondorf Down Air"
+  }
+]

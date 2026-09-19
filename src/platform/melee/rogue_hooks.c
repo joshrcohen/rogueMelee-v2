@@ -1,5 +1,6 @@
 #include "rogue_hooks.h"
 #include "capabilities.h"
+#include "encounter_assets.h"
 #include "rogue_mode.h"
 #include "rogue_hud.h"
 #include "specials/special_engine.h"
@@ -30,7 +31,7 @@ static void observe_run(const RogueRun* run, unsigned event, unsigned a, unsigne
 
 unsigned RogueHooks_BootMode(unsigned native_mode)
 {
-#if ROGUE_DEBUG && ROGUE_QA_MODE
+#if (ROGUE_DEBUG && ROGUE_QA_MODE) || ROGUE_QA_MODE == 5
     return GM_ROGUE;
 #else
     return native_mode;
@@ -44,7 +45,7 @@ void RogueHooks_OnBoot(void)
     RogueRun_SetObserver(observe_run);
 #endif
 #if ROGUE_DEBUG
-    OSReport("[rogue] build=0.1.0-dev/%s boot aerials=disabled\n", ROGUE_BUILD_ID);
+    OSReport("[rogue] build=0.2.0-dev/%s boot aerials=%u\n", ROGUE_BUILD_ID, ROGUE_ENABLE_AERIALS);
 #endif
 }
 
@@ -52,7 +53,7 @@ void RogueHooks_OnSceneEnter(int scene)
 {
     RogueCapabilities_Detect();
     if (!RogueCapabilities_Get()->supported) RogueRuntime_SetActive(0);
-#if ROGUE_DEBUG
+#if ROGUE_DEBUG || ROGUE_QA_MODE == 5
     OSReport("[rogue] native_scene=%d active=%d\n", scene, RogueRuntime_IsActive());
 #endif
     if (!RogueRuntime_IsActive()) return;
@@ -72,7 +73,8 @@ void RogueHooks_OnSceneExit(void)
     if (RogueRuntime_Get()->scene == GS_VS) {
         RogueHud_Destroy();
         Rogue_AbilityMatchEnd();
-#if ROGUE_DEBUG
+        Rogue_EncounterAssetsRelease();
+#if ROGUE_DEBUG || ROGUE_QA_MODE == 5
         OSReport("[rogue] match_generation=%u resources=%u\n", RogueRuntime_Get()->match_generation, RogueRuntime_Get()->match_resources);
 #endif
         if (!RogueRuntime_MatchExit()) OSPanic(__FILE__, __LINE__, "rogue match resource leak");
@@ -108,6 +110,8 @@ void RogueHooks_DumpContext(void)
         ROGUE_BUILD_ID, runtime->active, (unsigned) (run->seed >> 32), (unsigned) run->seed, run->act, run->floor, runtime->scene, run->current.recipe, run->current.tags);
     OSReport("[rogue] crash specials=%u,%u,%u,%u reward_generation=%u shop_generation=%u\n",
         run->specials[0], run->specials[1], run->specials[2], run->specials[3], run->reward.generation, run->shop.generation);
+    OSReport("[rogue] crash aerials=%u,%u,%u,%u,%u match=%u resources=%u\n",
+        run->aerials[0],run->aerials[1],run->aerials[2],run->aerials[3],run->aerials[4],runtime->match_generation,runtime->match_resources);
     for (i = 0; i < count; ++i) {
         const RogueTrace* trace = &runtime->trace[(runtime->trace_count-count+i)%32];
         OSReport("[rogue] trace event=%u scene=%u generation=%u value=%u\n", trace->event, trace->scene, trace->generation, trace->value);
@@ -131,10 +135,10 @@ void RogueHooks_OnPause(int paused)
 
 int RogueHooks_AdvanceStageClear(void)
 {
-#if ROGUE_DEBUG
+#if ROGUE_DEBUG || ROGUE_QA_MODE == 5
     if (!RogueRuntime_IsActive()) return 0;
     if (!clear_frames++) OSReport("[rogue] native_stage_clear score=%d match=%u\n", fn_8017F294(), RogueRuntime_Get()->match_generation);
-#if ROGUE_QA_MODE == 2 || ROGUE_QA_MODE == 4
+#if ROGUE_QA_MODE == 2 || ROGUE_QA_MODE == 4 || ROGUE_QA_MODE == 5
     return clear_frames >= 120;
 #endif
 #endif

@@ -7,6 +7,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def generate():
+    aerials = json.loads((ROOT/'data/aerials.json').read_text())
+    if len(aerials) != 130 or [r['id'] for r in aerials] != list(range(1,131)):
+        raise ValueError('Aerial catalog requires 130 ordered unique entries')
+    lines = ['#include "aerial_catalog.h"', 'const RogueAerialDef rogue_aerials[ROGUE_AERIALS] = {']
+    for row in aerials:
+        if row['character'] != (row['id']-1)//5 or row['slot'] != (row['id']-1)%5 or row['price'] < 1:
+            raise ValueError('Invalid aerial catalog slot or price')
+        lines.append('    { ' + ', '.join(json.dumps(row[f]) for f in ['id','character','donor','slot','price','key','name']) + ' },')
+    (ROOT/'src/combat/aerials/aerial_catalog_data.c').write_text('\n'.join(lines + ['};','']))
     specials = json.loads((ROOT/'data/specials.json').read_text())
     if len(specials) != 104 or len({r['id'] for r in specials}) != 104:
         raise ValueError('Special catalog must contain 104 unique definitions')

@@ -166,5 +166,6 @@ void Rogue_AbilityFighterCreated(Fighter* fp)
             fighter_state.source_vars[source].gw.x2244_chefVar2 = 3;
         }
     }
+    Rogue_AerialPrepare(fp);
 }
 

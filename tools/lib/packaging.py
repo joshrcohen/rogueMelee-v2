@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from .config import ROOT
 from .deps import ensure
-from .hash import file_hash
+from .hash import file_hash, review_hash
 from .process import run
 
 
@@ -42,21 +42,38 @@ def package(cfg):
     for dependency in dependencies():
         ensure(dependency['name'])
     gates = {}
-    for name in ['100-matches-stage-clear', 'specials-full-matrix', 'extended-ledge-grab', 'normal-controller-flow', 'passive-behavior', 'borrowed-transform', 'stock-classic', 'stock-vs']:
+    for name in ['100-matches-stage-clear', 'specials-full-matrix', 'extended-ledge-grab', 'normal-controller-flow', 'passive-behavior', 'borrowed-transform', 'stock-classic', 'stock-vs', 'aerials-validation', 'aerials-ui', 'aerials-stock-modes', 'aerials-release-controller']:
         path = ROOT/'docs/qa'/f'{name}.json'
         if not path.is_file() or json.loads(path.read_text()).get('status') != 'pass':
             raise ValueError('Required native release gate is missing or failed: '+name)
-        gates[name] = file_hash(path)
+        gates[name] = review_hash(path)
+        record=json.loads(path.read_text())
+        for relative,expected in record.get('artifact_sha256',{}).items():
+            artifact=(ROOT/relative).resolve()
+            if not artifact.is_relative_to(ROOT/'docs') or review_hash(artifact)!=expected:
+                raise ValueError('Native gate artifact drift: '+relative)
+    campaign=json.loads((ROOT/'docs/qa/aerials-validation.json').read_text())
+    for relative,expected in campaign['artifact_sha256'].items():
+        path=(ROOT/relative).resolve()
+        if not path.is_relative_to(ROOT/'docs') or review_hash(path)!=expected:
+            raise ValueError('Aerial campaign artifact drift: '+relative)
+    for relative,expected in campaign['source_sha256'].items():
+        path=(ROOT/relative).resolve()
+        if not path.is_relative_to(ROOT) or review_hash(path)!=expected:
+            raise ValueError('Source changed after aerial campaign review: '+relative)
     run([sys.executable, ROOT/'tools/rogue.py', 'test', '--suite', 'all'], ROOT)
     manifest = build(cfg, 'release')
+    controller=json.loads((ROOT/'docs/qa/aerials-release-controller.json').read_text())
+    if controller['build']['dol_sha1']!=manifest['dol_sha1']:
+        raise ValueError('Shipping executable differs from release controller gate; rerun native acceptance')
     if subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True).strip():
         raise ValueError('Build changed tracked source or generated registries; review and commit before packaging')
     tool = xdelta()
     output = Path(manifest['output'])
     original = Path(cfg['paths']['melee_iso'])
-    stage = ROOT/'build/release-staging'
+    stage = ROOT/'build/release-staging-v0.2.0'
     stage.mkdir(parents=True, exist_ok=True)
-    patch = stage/'rogueMelee-v0.1.0.xdelta'
+    patch = stage/'rogueMelee-v0.2.0.xdelta'
     run([tool, '-f', '-e', '-9', '-s', original, output, patch])
     reconstructed = stage/'reconstructed.iso'
     run([tool, '-f', '-d', '-s', original, patch, reconstructed])
@@ -65,8 +82,8 @@ def package(cfg):
     verify(original, ROOT)  # Revalidate the immutable source after encoding/decoding.
     manifest.update(native_gate_sha256=gates, git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(), patch_sha256=file_hash(patch), reconstructed_sha256=file_hash(reconstructed), xdelta_sha256=file_hash(tool))
     # Explicit allowlist: never copy the staging tree or any retail data into dist.
-    dist = ROOT/'dist'
-    dist.mkdir(exist_ok=True)
+    dist = ROOT/'dist/v0.2.0'
+    dist.mkdir(parents=True,exist_ok=True)
     allowed = {patch.name,'build-manifest.json','THIRD_PARTY_NOTICES.md','README.txt'}
     unexpected = [p.name for p in dist.iterdir() if p.name not in allowed or not p.is_file()]
     if unexpected:
@@ -74,6 +91,6 @@ def package(cfg):
     shutil.copyfile(patch, dist/patch.name)
     (dist/'build-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     shutil.copyfile(ROOT/'THIRD_PARTY_NOTICES.md', dist/'THIRD_PARTY_NOTICES.md')
-    (dist/'README.txt').write_text('rogueMelee v0.1.0\nRequires a clean NTSC-U Melee v1.02 image.\nInput MD5: 0e63d4223b01d9aba596259dc155a174\nApply with xdelta3 v3.1.0 or a compatible VCDIFF patcher:\nxdelta3 -d -s "clean.iso" "rogueMelee-v0.1.0.xdelta" "rogueMelee.iso"\nOutput SHA256: '+manifest['output_sha256']+'\nThis package contains no full game image. Aerial swapping is disabled.\n')
+    (dist/'README.txt').write_text('rogueMelee v0.2.0\nRequires a clean NTSC-U Melee v1.02 image.\nInput MD5: 0e63d4223b01d9aba596259dc155a174\nApply with xdelta3 v3.1.0 or a compatible VCDIFF patcher:\nxdelta3 -d -s "clean.iso" "rogueMelee-v0.2.0.xdelta" "rogueMelee.iso"\nOutput SHA256: '+manifest['output_sha256']+'\nThis package contains no full game image. Five aerial slots are independently equippable.\nSee docs/compatibility/aerials.md in the source repository for tested and untested combinations.\nThe previous legacy freeze is not claimed diagnosed or fixed.\n')
     print('Verified release patch: '+str(dist/patch.name))
     return manifest

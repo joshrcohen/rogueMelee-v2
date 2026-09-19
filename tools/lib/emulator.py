@@ -9,7 +9,7 @@ from .config import ROOT
 from .hash import file_hash
 
 
-def launch(cfg, fast=False, movie=None, manifest=None, user=None):
+def launch(cfg, fast=False, movie=None, manifest=None, user=None, backend=None):
     executable = Path(cfg['paths'].get('dolphin', ''))
     if not executable.is_file():
         raise ValueError('Set DOLPHIN_PATH to Dolphin.exe')
@@ -37,6 +37,7 @@ def launch(cfg, fast=False, movie=None, manifest=None, user=None):
     if movie is not None:
         if not Path(movie).is_file(): raise ValueError('Controller movie does not exist')
         command += ['-m', str(Path(movie).resolve())]
+    if backend is not None: command += ['-v',backend]
     process = subprocess.Popen(command)
     print(f'Dolphin PID {process.pid}; log {user / "Logs/dolphin.log"}', flush=True)
     return process, manifest
@@ -123,11 +124,49 @@ def verify_extended_log(log, start, count):
     return True
 
 
-def soak(cfg, scenario='scenes', iterations=100, timeout=600, start=0, lifecycle=False, seed=None):
+def verify_aerial_log(log, start, count, lifecycle=False, stress=False):
+    # Reuse the existing strict completion/entry/restoration gate without
+    # changing the special fixture or weakening its checks.
+    indices=[(i%26)*130+(i//26)*26+i%26 if stress else i for i in range(start,start+count)]
+    normalized={value:start+i for i,value in enumerate(indices)}
+    adapted=re.sub(r'index=(\d+)',lambda m:'index='+str(normalized.get(int(m[1]),int(m[1]))),log)
+    complete = verify_special_log(adapted.replace('[rogue] aerial_', '[rogue] special_'), start, count)
+    if not complete: return False
+    mixed = [tuple(map(int,row)) for row in re.findall(r'aerial_mixed index=(\d+) valid=(\d+)',log)]
+    if mixed != [(i,1) for i in indices]:
+        raise ValueError('Missing native/aerial/special/native ownership transition')
+    landings = [tuple(map(int,row)) for row in re.findall(r'aerial_landing index=(\d+) cancel=(\d+).* failures=(\d+)',log)]
+    if landings != [(i,c,0) for i in indices for c in (0,1)]:
+        raise ValueError('Missing donor landing and L-cancel rate assertions')
+    if lifecycle:
+        for label,tail,expected in [
+            ('interrupt',r'restored=(\d+)',(1,)),
+            ('ledge',r'restored=(\d+) motion=(\d+)',(1,252)),
+            ('grab',r'restored=(\d+) linked=(\d+)',(1,1)),
+            ('respawn',r'stocks=(\d+) restored=(\d+)',(98,1))]:
+            rows=[tuple(map(int,row)) for row in re.findall(r'aerial_'+label+r' index=(\d+) '+tail,log)]
+            if rows != [(i,*expected) for i in indices]:
+                raise ValueError('Missing native aerial '+label+' evidence')
+    resources=[int(v) for v in re.findall(r'match_generation=\d+ resources=(\d+)',log)]
+    if resources != [0]*count: raise ValueError('Aerial fixture did not release every match-owned allocation')
+    if stress:
+        shops=[tuple(map(int,row)) for row in re.findall(r'aerial_shop_heap index=(\d+) resources=(\d+)',log)]
+        if shops != [(i,0) for i in indices]: raise ValueError('Aerial purchases retained a match resource')
+        for label in ('five_donors','second_stock'):
+            rows=[tuple(map(int,row)) for row in re.findall(r'aerial_'+label+r' index=(\d+) valid=(\d+)',log)]
+            if rows != [(i,1) for i in indices]: raise ValueError('Missing aerial stress '+label+' evidence')
+        for label,native_only in [('transform',False),('native_transform',True)]:
+            rows=[tuple(map(int,row)) for row in re.findall(r'aerial_'+label+r' index=(\d+) step=(\d+) valid=(\d+)',log)]
+            expected=[(i,step,1) for i in indices if not native_only or i//130 in (18,19) for step in (1,2)]
+            if rows != expected: raise ValueError('Missing aerial '+label+' evidence')
+    return True
+
+
+def soak(cfg, scenario='scenes', iterations=100, timeout=600, start=0, lifecycle=False, seed=None, profile="debug", stress=False, headless=False):
     from .build import build
     if iterations < 1 or timeout < 1:
         raise ValueError('Iterations and timeout must be positive')
-    if lifecycle and scenario != 'specials':
+    if lifecycle and scenario not in ('specials','aerials'):
         raise ValueError('--lifecycle requires --scenario specials')
     if scenario == 'scenes':
         options = dict(qa_cycles=iterations)
@@ -135,6 +174,9 @@ def soak(cfg, scenario='scenes', iterations=100, timeout=600, start=0, lifecycle
     elif scenario == 'matches':
         options = dict(qa_match=True, qa_matches=iterations)
         verify = lambda log: verify_match_log(log, iterations)
+    elif scenario == 'aerials':
+        options = dict(qa_aerials=True, qa_aerial_stress=stress, qa_special_start=start, qa_special_count=iterations, qa_lifecycle=lifecycle)
+        verify = lambda log: verify_aerial_log(log,start,iterations,lifecycle,stress)
     elif scenario == 'specials':
         options = dict(qa_specials=True, qa_special_start=start, qa_special_count=iterations, qa_lifecycle=lifecycle)
         verify = lambda log: (verify_extended_log if lifecycle else verify_special_log)(log, start, iterations)
@@ -143,18 +185,18 @@ def soak(cfg, scenario='scenes', iterations=100, timeout=600, start=0, lifecycle
     if seed is not None:
         from .debug_launch import options as launch_options
         options['debug_launch'] = launch_options(seed=seed)
-    manifest = build(cfg, 'debug', 'all', **options)
-    return run_soak(cfg, manifest, 'extended' if lifecycle else scenario, iterations, timeout, start, verify)
+    manifest = build(cfg, profile, 'all', **options)
+    return run_soak(cfg, manifest, ('aerials-'+profile+('-stress' if stress else '-extended' if lifecycle else '')) if scenario == 'aerials' else 'extended' if lifecycle else scenario, iterations, timeout, start, verify, backend="Null" if headless else None)
 
 
-def run_soak(cfg, manifest, scenario, iterations, timeout, start=0, verifier=None, user=None):
+def run_soak(cfg, manifest, scenario, iterations, timeout, start=0, verifier=None, user=None, backend=None):
     """Also usable to execute an already-built fixture without recompiling."""
     if verifier is None:
         verifier = (lambda log: verify_scene_log(log, iterations)) if scenario == 'scenes' else (lambda log: verify_match_log(log, iterations)) if scenario == 'matches' else (lambda log: verify_special_log(log, start, iterations))
     user = Path(user) if user is not None else ROOT/'build/dolphin-user'
     log_path = user/'Logs/dolphin.log'
     if log_path.exists(): log_path.write_text('')
-    process, launched = launch(cfg, fast=True, manifest=manifest, user=user)
+    process, launched = launch(cfg, fast=True, manifest=manifest, user=user, backend=backend)
     if launched != manifest:
         process.terminate()
         raise ValueError('Build manifest changed before soak launch')
@@ -163,7 +205,7 @@ def run_soak(cfg, manifest, scenario, iterations, timeout, start=0, verifier=Non
     folder.mkdir(exist_ok=True)
     stem = f'{scenario}-{start}-{iterations}'
     result = {'scenario': scenario, 'status': 'failed', 'start': start,
-              'iterations': iterations, 'build': manifest}
+              'iterations': iterations, 'build': manifest, 'video_backend': backend or 'profile-default'}
     log = ''
     last_progress, last_size = started, 0
     try:

@@ -32,9 +32,12 @@ def main():
     p.add_argument("--image", type=Path)
     p = sub.add_parser("build", help="Compile the source overlay and assemble a separate ISO")
     p.add_argument("--profile", choices=['debug','release'], default='debug')
+    p.add_argument('--disable-aerials', action='store_true', help='Compile out aerial acquisition and runtime dispatch')
     p.add_argument('--qa-scene-cycles', type=int, default=0, help='Debug-only real scene lifecycle test')
     p.add_argument('--qa-match', action='store_true', help='Debug-only controlled native match lifecycle fixture')
     p.add_argument("--qa-matches", type=int, default=20)
+    p.add_argument("--qa-aerial-stress", action="store_true")
+    p.add_argument("--qa-aerials", action="store_true", help="Native aerial matrix; also supported in release fixtures")
     p.add_argument("--qa-specials", action="store_true", help="Debug-only 104-special native lifecycle fixture")
     p.add_argument("--qa-special-start", type=int, default=0)
     p.add_argument("--qa-special-count", type=int, default=104)
@@ -53,14 +56,19 @@ def main():
     p.add_argument('--scene', choices=['progression','encounter','shop','rest'])
     p.add_argument('--encounter')
     p.add_argument('--special')
+    p.add_argument('--aerial', action='append', help='Equip an aerial key; repeat for different slots (debug fixture)')
+    p.add_argument('--gold', type=int, help='Starting gold for a developer fixture')
     p.add_argument('--recipient')
     p.add_argument('--check-passives', action='store_true', help='Native controlled passive-behavior assertions')
     p = sub.add_parser('soak', help='Run native lifecycle fixtures and save pass/failure evidence')
-    p.add_argument('--scenario', choices=['scenes','matches','specials'], default='scenes')
+    p.add_argument('--scenario', choices=['scenes','matches','specials','aerials'], default='scenes')
+    p.add_argument('--profile', choices=['debug','release'], default='debug')
     p.add_argument('--iterations', '--transitions', type=int)
     p.add_argument('--matches', type=int, help='Shorthand for --scenario matches --iterations N')
     p.add_argument('--seed', type=int)
     p.add_argument('--start', type=int, default=0, help='First recipient x special matrix index')
+    p.add_argument('--headless', action='store_true', help='Use Dolphin Null renderer for logic-only lifecycle coverage')
+    p.add_argument('--stress', action='store_true', help='Aerials only: spread recipients, five donors, purchases, multi-fighter matches and repeated stocks')
     p.add_argument('--lifecycle', action='store_true', help='Include native damage interruption and death/respawn special cases')
     p.add_argument('--timeout', type=int, default=600)
     sub.add_parser("migrate-specials", help="Inventory the prepared pinned special migration oracle")
@@ -74,7 +82,7 @@ def main():
             bootstrap(cfg, args.image)
         elif args.command == 'build':
             from lib.build import build
-            build(cfg, args.profile, args.target, args.qa_scene_cycles, args.qa_match, args.qa_ui, args.qa_matches, args.qa_specials, args.qa_special_start, args.qa_special_count, args.qa_lifecycle)
+            build(cfg, args.profile, args.target, args.qa_scene_cycles, args.qa_match, args.qa_ui, args.qa_matches, args.qa_specials, args.qa_special_start, args.qa_special_count, args.qa_lifecycle, aerials=not args.disable_aerials, qa_aerials=args.qa_aerials, qa_aerial_stress=args.qa_aerial_stress)
         elif args.command == 'verify-image':
             image = args.image or cfg['paths'].get('melee_iso')
             if not image:
@@ -88,16 +96,16 @@ def main():
             inventory()
         elif args.command == 'run':
             from lib.emulator import launch
-            if args.check_passives or any(getattr(args,key) is not None for key in ('seed','scene','encounter','special','recipient')):
+            if args.check_passives or any(getattr(args,key) is not None for key in ('seed','scene','encounter','special','recipient','aerial','gold')):
                 from lib.debug_launch import options
                 from lib.build import build
                 if args.check_passives:
-                    if args.special or args.encounter or args.recipient not in (None,'fox') or args.scene not in (None,'encounter'):
+                    if args.special or args.aerial or args.encounter or args.recipient not in (None,'fox') or args.scene not in (None,'encounter'):
                         raise ValueError('--check-passives requires the controlled Fox/duel fixture; only --seed may be customized')
                     fixture = options(args.seed,'encounter',recipient='fox')
                     fixture['passives'] = 1
                 else:
-                    fixture = options(args.seed,args.scene,args.encounter,args.special,args.recipient)
+                    fixture = options(args.seed,args.scene,args.encounter,args.special,args.recipient,args.aerial,args.gold)
                 build(cfg,'debug',qa_ui=True,debug_launch=fixture)
             launch(cfg)
         elif args.command == 'package':
@@ -108,7 +116,7 @@ def main():
             scenario = 'matches' if args.matches is not None else args.scenario
             iterations = args.matches if args.matches is not None else args.iterations
             if iterations is None: iterations = 104 if scenario == 'specials' else 100
-            soak(cfg, scenario, iterations, args.timeout, args.start, args.lifecycle, args.seed)
+            soak(cfg, scenario, iterations, args.timeout, args.start, args.lifecycle, args.seed, args.profile, args.stress, args.headless)
         else:
             print((ROOT / 'IMPLEMENTATION_STATUS.md').read_text(encoding='utf-8'))
         return 0

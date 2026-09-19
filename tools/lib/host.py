@@ -5,12 +5,12 @@ from .config import ROOT
 from .process import run
 
 
-def compile_test(name, sources):
+def compile_test(name, sources, defines=()):
     output = ROOT / 'build/tests' / name
     output.parent.mkdir(parents=True, exist_ok=True)
     compiler = shutil.which('cc') or shutil.which('gcc') or shutil.which('clang')
     if compiler:
-        run([compiler, '-std=c99', '-Wall', '-Wextra', '-Werror', *sources, '-o', output])
+        run([compiler, '-std=c99', '-Wall', '-Wextra', '-Werror', *('-D'+d for d in defines), *sources, '-o', output])
     elif os.name == 'nt':
         vswhere = os.path.join(os.environ.get('ProgramFiles(x86)', ''), 'Microsoft Visual Studio/Installer/vswhere.exe')
         install = subprocess.check_output([vswhere, '-latest', '-products', '*', '-requires', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', '-property', 'installationPath'], text=True).strip()
@@ -18,7 +18,7 @@ def compile_test(name, sources):
             raise ValueError('Install a host C compiler (MSVC, GCC or Clang)')
         vcvars = install + '/VC/Auxiliary/Build/vcvars64.bat'
         output = output.with_suffix('.exe')
-        args = ['cl', '/nologo', '/W4', '/WX', '/std:c11', *map(str,sources), '/Fe:' + str(output)]
+        args = ['cl', '/nologo', '/W4', '/WX', '/std:c11', *('/D'+d for d in defines), *map(str,sources), '/Fe:' + str(output)]
         # All values are discovered paths and repo-owned source names, never user shell fragments.
         script = output.with_suffix('.cmd')
         script.write_text('@echo off\ncall "' + vcvars + '" >nul\n' + subprocess.list2cmdline(args) + '\n', encoding='utf-8')
