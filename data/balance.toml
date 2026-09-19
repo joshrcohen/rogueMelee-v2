@@ -1,0 +1,9 @@
+[economy]
+upgrade_reroll_base = 15
+upgrade_reroll_step = 10
+shop_reroll_base = 25
+shop_reroll_step = 15
+starting_gold = 50
+normal_reward = 30
+elite_reward = 55
+boss_reward = 100

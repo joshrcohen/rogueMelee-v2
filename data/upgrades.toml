@@ -1,0 +1,215 @@
+[[entry]]
+key = "power"
+name = "Power"
+description = "Deal 8% more damage."
+price = 35
+max_stacks = 3
+stat = 0
+amount = 8
+
+[[entry]]
+key = "guard"
+name = "Thick Skin"
+description = "Take 8% less damage."
+price = 40
+max_stacks = 3
+stat = 1
+amount = 8
+
+[[entry]]
+key = "stride"
+name = "Long Stride"
+description = "Run 6% faster."
+price = 45
+max_stacks = 3
+stat = 2
+amount = 6
+
+[[entry]]
+key = "air"
+name = "Air Control"
+description = "Move 6% faster in the air."
+price = 50
+max_stacks = 3
+stat = 3
+amount = 6
+
+[[entry]]
+key = "jump"
+name = "High Jump"
+description = "Jump 5% higher."
+price = 35
+max_stacks = 3
+stat = 4
+amount = 5
+
+[[entry]]
+key = "shield"
+name = "Shield Core"
+description = "Increase shield capacity by 10%."
+price = 40
+max_stacks = 3
+stat = 5
+amount = 10
+
+[[entry]]
+key = "regen"
+name = "Shield Recovery"
+description = "Recover shield 8% faster."
+price = 45
+max_stacks = 3
+stat = 6
+amount = 8
+
+[[entry]]
+key = "weight"
+name = "Anchor"
+description = "Increase weight by 5%."
+price = 50
+max_stacks = 3
+stat = 7
+amount = 5
+
+[[entry]]
+key = "grip"
+name = "Strong Grip"
+description = "Deal 10% more throw damage."
+price = 35
+max_stacks = 3
+stat = 8
+amount = 10
+
+[[entry]]
+key = "reach"
+name = "Recovery Window"
+description = "Gain 5 frames of ledge invulnerability."
+price = 40
+max_stacks = 3
+stat = 9
+amount = 5
+
+[[entry]]
+key = "stock"
+name = "Second Wind"
+description = "Gain one stock for the next fight."
+price = 45
+max_stacks = 3
+stat = 10
+amount = 1
+
+[[entry]]
+key = "gold"
+name = "Bounty"
+description = "Earn 10% more combat gold."
+price = 50
+max_stacks = 3
+stat = 11
+amount = 10
+
+[[entry]]
+key = "score"
+name = "Showmanship"
+description = "Earn 10% more run score."
+price = 35
+max_stacks = 3
+stat = 12
+amount = 10
+
+[[entry]]
+key = "heal"
+name = "Campfire"
+description = "Recover 10% damage at rest."
+price = 40
+max_stacks = 3
+stat = 13
+amount = 10
+
+[[entry]]
+key = "launch"
+name = "Launcher"
+description = "Increase outgoing knockback by 5%."
+price = 45
+max_stacks = 3
+stat = 14
+amount = 5
+
+[[entry]]
+key = "poise"
+name = "Poise"
+description = "Reduce received knockback by 5%."
+price = 50
+max_stacks = 3
+stat = 15
+amount = 5
+
+[[entry]]
+key = "dash"
+name = "Quick Start"
+description = "Accelerate on the ground 6% faster."
+price = 35
+max_stacks = 3
+stat = 16
+amount = 6
+
+[[entry]]
+key = "fall"
+name = "Feather"
+description = "Fall 5% more slowly."
+price = 40
+max_stacks = 3
+stat = 17
+amount = 5
+
+[[entry]]
+key = "landing"
+name = "Soft Landing"
+description = "Reduce landing lag by 5%."
+price = 45
+max_stacks = 3
+stat = 18
+amount = 5
+
+[[entry]]
+key = "dodge"
+name = "Evasion"
+description = "Gain 2 frames of dodge invulnerability."
+price = 50
+max_stacks = 3
+stat = 19
+amount = 2
+
+[[entry]]
+key = "vampire"
+name = "Victory Snack"
+description = "Recover 8% damage after a KO."
+price = 35
+max_stacks = 3
+stat = 20
+amount = 8
+
+[[entry]]
+key = "thorns"
+name = "Retaliation"
+description = "Return 4% of received damage."
+price = 40
+max_stacks = 3
+stat = 21
+amount = 4
+
+[[entry]]
+key = "discount"
+name = "Haggler"
+description = "Shop items cost 5% less."
+price = 45
+max_stacks = 3
+stat = 22
+amount = 5
+
+[[entry]]
+key = "first"
+name = "Opening Strike"
+description = "First hit each stock deals 15% more damage."
+price = 50
+max_stacks = 3
+stat = 23
+amount = 15

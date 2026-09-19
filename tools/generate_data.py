@@ -1,0 +1,32 @@
+"""Generate deterministic C registries from project-owned TOML."""
+import json
+from pathlib import Path
+import tomllib
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def generate():
+    economy = tomllib.loads((ROOT / 'data/balance.toml').read_text())['economy']
+    header = '#ifndef ROGUE_BALANCE_H\n#define ROGUE_BALANCE_H\n'
+    for key, value in economy.items():
+        if not isinstance(value, int) or value < 0:
+            raise ValueError('Invalid economy integer: ' + key)
+        header += f'#define ROGUE_{key.upper()} {value}U\n'
+    (ROOT / 'src/core/balance.h').write_text(header + '#endif\n')
+    for name, array, ctype, fields in [
+        ('upgrades','rogue_upgrades','RogueUpgradeDef',['key','name','description','price','max_stacks','stat','amount']),
+        ('encounters','rogue_recipes','RogueRecipe',['key','name','tier','enemies','tags','damage','defense','speed','scale','percent','stocks','cooldown','weight','stage_mask'])]:
+        rows = tomllib.loads((ROOT / f'data/{name}.toml').read_text())['entry']
+        if len({r['key'] for r in rows}) != len(rows):
+            raise ValueError('Duplicate registry key')
+        folder, stem = ('upgrades','upgrade_registry') if name == 'upgrades' else ('encounters','encounter_registry')
+        lines = [f'#include "{stem}.h"', f'const {ctype} {array}[{len(rows)}] = {{']
+        for row in rows:
+            lines.append('    { ' + ', '.join(json.dumps(row[f],ensure_ascii=True) for f in fields) + ' },')
+        lines += ['};','']
+        (ROOT / f'src/{folder}/{stem}.c').write_text('\n'.join(lines))
+
+
+if __name__ == '__main__':
+    generate()

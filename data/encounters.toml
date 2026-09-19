@@ -1,0 +1,239 @@
+[[entry]]
+key = "duel"
+name = "Duel"
+tier = 0
+enemies = 1
+tags = 0
+damage = 100
+defense = 100
+speed = 100
+scale = 100
+percent = 0
+stocks = 2
+cooldown = 0
+weight = 1
+stage_mask = 63
+
+[[entry]]
+key = "juggernaut"
+name = "Juggernaut"
+tier = 1
+enemies = 1
+tags = 1
+damage = 110
+defense = 135
+speed = 85
+scale = 135
+percent = 0
+stocks = 2
+cooldown = 3
+weight = 1
+stage_mask = 63
+
+[[entry]]
+key = "glass_cannon"
+name = "Glass Cannon"
+tier = 1
+enemies = 1
+tags = 2
+damage = 140
+defense = 75
+speed = 105
+scale = 100
+percent = 45
+stocks = 2
+cooldown = 3
+weight = 1
+stage_mask = 63
+
+[[entry]]
+key = "speed_demon"
+name = "Speed Demon"
+tier = 1
+enemies = 1
+tags = 4
+damage = 105
+defense = 85
+speed = 130
+scale = 95
+percent = 0
+stocks = 2
+cooldown = 3
+weight = 1
+stage_mask = 63
+
+[[entry]]
+key = "metal_sentinel"
+name = "Metal Sentinel"
+tier = 1
+enemies = 1
+tags = 8
+damage = 105
+defense = 120
+speed = 90
+scale = 100
+percent = 0
+stocks = 2
+cooldown = 3
+weight = 1
+stage_mask = 63
+
+[[entry]]
+key = "tag_team"
+name = "Tag Team"
+tier = 1
+enemies = 2
+tags = 16
+damage = 90
+defense = 90
+speed = 100
+scale = 100
+percent = 0
+stocks = 1
+cooldown = 3
+weight = 1
+stage_mask = 63
+
+[[entry]]
+key = "swarm"
+name = "Swarm"
+tier = 1
+enemies = 3
+tags = 32
+damage = 75
+defense = 75
+speed = 100
+scale = 85
+percent = 30
+stocks = 1
+cooldown = 3
+weight = 1
+stage_mask = 63
+
+[[entry]]
+key = "specialist"
+name = "Specialist"
+tier = 1
+enemies = 1
+tags = 64
+damage = 110
+defense = 100
+speed = 105
+scale = 100
+percent = 0
+stocks = 2
+cooldown = 3
+weight = 1
+stage_mask = 63
+
+[[entry]]
+key = "rival"
+name = "Rival"
+tier = 1
+enemies = 1
+tags = 128
+damage = 115
+defense = 110
+speed = 105
+scale = 100
+percent = 0
+stocks = 2
+cooldown = 3
+weight = 1
+stage_mask = 63
+
+[[entry]]
+key = "champion"
+name = "Champion"
+tier = 2
+enemies = 1
+tags = 256
+damage = 120
+defense = 120
+speed = 110
+scale = 110
+percent = 0
+stocks = 3
+cooldown = 3
+weight = 1
+stage_mask = 63
+
+[[entry]]
+key = "duo_boss"
+name = "Twin Champions"
+tier = 2
+enemies = 2
+tags = 512
+damage = 100
+defense = 105
+speed = 105
+scale = 100
+percent = 0
+stocks = 2
+cooldown = 3
+weight = 1
+stage_mask = 63
+
+[[entry]]
+key = "commander"
+name = "Squad Commander"
+tier = 2
+enemies = 3
+tags = 1024
+damage = 85
+defense = 90
+speed = 100
+scale = 100
+percent = 0
+stocks = 1
+cooldown = 3
+weight = 1
+stage_mask = 63
+
+[[entry]]
+key = "build_check"
+name = "Shadow Rival"
+tier = 2
+enemies = 1
+tags = 128
+damage = 125
+defense = 110
+speed = 110
+scale = 100
+percent = 0
+stocks = 3
+cooldown = 3
+weight = 1
+stage_mask = 63
+
+[[entry]]
+key = "arena"
+name = "Arena Guardian"
+tier = 2
+enemies = 1
+tags = 2048
+damage = 115
+defense = 115
+speed = 110
+scale = 110
+percent = 0
+stocks = 3
+cooldown = 3
+weight = 1
+stage_mask = 3
+
+[[entry]]
+key = "finale"
+name = "Act Finale"
+tier = 2
+enemies = 2
+tags = 4096
+damage = 110
+defense = 100
+speed = 110
+scale = 105
+percent = 0
+stocks = 2
+cooldown = 3
+weight = 1
+stage_mask = 63
