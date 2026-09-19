@@ -1,0 +1,50 @@
+version = 1
+upstream = "11749c9ccbaf73bfc28a569650dfec5e18665a74"
+
+[[hook]]
+id = "boot"
+owner = "runtime"
+kind = "source"
+file = "src/melee/gm/gmmain.c"
+symbol = "main"
+anchor = "    gm_801A4510();"
+replacement = "    RogueHooks_OnBoot();\n    gm_801A4510();"
+callback = "RogueHooks_OnBoot"
+abi = "Ordinary C call; compiler preserves ABI; initializes only rogue-owned storage"
+clobbers = []
+
+[[hook]]
+id = "scene_enter"
+owner = "runtime"
+kind = "source"
+file = "src/melee/gm/gm_1A3F.c"
+symbol = "gm_801A4014"
+anchor = "    gm_801A4B88(info);"
+replacement = "    gm_801A4B88(info);\n    RogueHooks_OnSceneEnter(info->scene_kind);"
+callback = "RogueHooks_OnSceneEnter"
+abi = "Ordinary C call after scene heap setup; inactive path returns immediately"
+clobbers = []
+
+[[hook]]
+id = "scene_exit"
+owner = "runtime"
+kind = "source"
+file = "src/melee/gm/gm_1A3F.c"
+symbol = "gm_801A4014"
+anchor = "    gm_801A4D34(scene->on_frame, info);"
+replacement = "    gm_801A4D34(scene->on_frame, info);\n    RogueHooks_OnSceneExit();"
+callback = "RogueHooks_OnSceneExit"
+abi = "Ordinary C call before retail scene teardown; inactive path returns immediately"
+clobbers = []
+
+[[hook]]
+id = "frame"
+owner = "runtime"
+kind = "source"
+file = "src/melee/gm/gmscene.c"
+symbol = "gm_801A4D34"
+anchor = "                    on_frame();"
+replacement = "                    on_frame();\n                    RogueHooks_OnFrame();"
+callback = "RogueHooks_OnFrame"
+abi = "Ordinary C call after native scene update; inactive path returns immediately"
+clobbers = []

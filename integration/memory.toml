@@ -1,0 +1,4 @@
+version = 1
+strategy = "decomp-linker"
+# No fixed-address injection ranges. Linker owns resident code and data layout.
+region = []

@@ -54,3 +54,40 @@ def bootstrap(cfg, image=None):
     (ROOT / 'build/build-manifest.json').write_text(json.dumps(result,indent=2)+'\n')
     print(f'Baseline image: {output}')
     return result
+
+
+def build(cfg, profile='debug', target='all'):
+    from .integration import prepare
+    from generate_data import generate
+    generate()
+    image = cfg['paths'].get('melee_iso')
+    if not image:
+        raise ValueError('Set MELEE_ISO_PATH')
+    source = verify(image, ROOT)
+    clean = ensure('melee')
+    work = prepare(profile)
+    run([sys.executable, 'configure.py', '--non-matching', '--map',
+         '--compilers', clean / 'build/compilers',
+         '--binutils', clean / 'build/binutils',
+         '--dtk', clean / 'build/tools/dtk.exe',
+         '--objdiff', clean / 'build/tools/objdiff-cli.exe',
+         '--sjiswrap', clean / 'build/tools/sjiswrap.exe',
+         '--ninja', ninja()], work)
+    run([ninja(), '-j', cfg['build']['jobs']], work)
+    output = ROOT / 'build/output/rogueMelee.iso'
+    if Path(image).resolve() == output.resolve():
+        raise ValueError('Input and output images must differ')
+    shutil.copyfile(image, output)
+    fst = ROOT / '.cache/deps/gc_fst/target/release/gc_fst.exe'
+    run([fst, 'fs', output, 'insert', 'Start.dol', work / 'build/GALE01/main.dol'])
+    shutil.copyfile(work / 'build/GALE01/main.elf.MAP', output.parent / 'GALE01.map')
+    if file_hash(Path(image), 'md5') != source['md5']:
+        raise ValueError('Source image changed')
+    result = dict(profile=profile, target=target, source=source, work=str(work),
+                  dependency_lock_sha256=file_hash(ROOT / 'deps/lock.json'),
+                  hook_manifest_sha256=file_hash(ROOT / 'integration/hook_manifest.toml'),
+                  dol_sha1=file_hash(work / 'build/GALE01/main.dol','sha1'),
+                  output_sha256=file_hash(output), output=str(output))
+    (ROOT / 'build/build-manifest.json').write_text(json.dumps(result,indent=2)+'\n')
+    print(f'Built {profile}: {output}')
+    return result

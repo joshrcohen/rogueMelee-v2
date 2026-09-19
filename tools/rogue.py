@@ -30,6 +30,9 @@ def main():
     sub.add_parser("doctor", help="Inspect local build environment")
     p = sub.add_parser("bootstrap", help="Build exact pinned retail baseline and separate ISO")
     p.add_argument("--image", type=Path)
+    p = sub.add_parser("build", help="Compile the source overlay and assemble a separate ISO")
+    p.add_argument("--profile", choices=['debug','release'], default='debug')
+    p.add_argument("--target", choices=['all','dol','hooks','progression','specials','assets'], default='all')
     p = sub.add_parser("verify-image", help="Verify immutable NTSC-U 1.02 input")
     p.add_argument("--image", type=Path)
     p = sub.add_parser("test", help="Execute automated tests")
@@ -43,6 +46,9 @@ def main():
         elif args.command == 'bootstrap':
             from lib.build import bootstrap
             bootstrap(cfg, args.image)
+        elif args.command == 'build':
+            from lib.build import build
+            build(cfg, args.profile, args.target)
         elif args.command == 'verify-image':
             image = args.image or cfg['paths'].get('melee_iso')
             if not image:
