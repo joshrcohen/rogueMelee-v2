@@ -1,0 +1,7 @@
+[paths]
+melee_iso = "D:/Melee/GALE01.iso"
+dolphin = "C:/Dolphin/Dolphin.exe"
+
+[build]
+jobs = 8
+profile = "debug"

@@ -1,0 +1,15 @@
+.iso/
+.work/
+.cache/
+.local/
+build/
+dist/
+config/local.toml
+*.iso
+*.gcm
+*.rvz
+*.dol
+*.elf
+*.o
+__pycache__/
+*.pyc
