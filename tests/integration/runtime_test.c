@@ -21,6 +21,19 @@ int main(void)
         assert(!RogueRuntime_Get()->scene_resources);
     }
     assert(RogueRuntime_Get()->trace_count == 300);
+    for (i = 0; i < 100; ++i) {
+        generation = RogueRuntime_Get()->match_generation;
+        assert(RogueRuntime_MatchEnter());
+        assert(!RogueRuntime_MatchEnter());
+        assert(RogueRuntime_MatchAcquire(generation));
+        assert(!RogueRuntime_MatchExit());
+        assert(RogueRuntime_MatchRelease(generation));
+        assert(!RogueRuntime_MatchRelease(generation));
+        assert(RogueRuntime_MatchExit());
+        assert(!RogueRuntime_MatchAcquire(generation));
+        assert(!RogueRuntime_MatchRelease(generation));
+        assert(!RogueRuntime_MatchExit());
+    }
     RogueRuntime_SetActive(0);
     assert(!RogueRuntime_IsActive());
     puts("PASS: 100 host resource lifetimes, stale handles and double release rejected");

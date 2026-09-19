@@ -1,8 +1,9 @@
 #include "rng.h"
 
-void RogueRng_Init(RogueRng* rng, unsigned seed, unsigned stream)
+void RogueRng_Init(RogueRng* rng, RogueSeed seed, unsigned stream)
 {
-    unsigned x = seed ^ (0x9e3779b9U * (stream + 1));
+    unsigned high = (unsigned) (seed >> 32);
+    unsigned x = (unsigned) seed ^ (high * (0x85ebca6bU + 2 * stream)) ^ (0x9e3779b9U * (stream + 1));
     x ^= x >> 16; x *= 0x85ebca6bU;
     x ^= x >> 13; x *= 0xc2b2ae35U; x ^= x >> 16;
     rng->state = x ? x : 1;

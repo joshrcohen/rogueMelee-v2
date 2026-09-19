@@ -55,3 +55,140 @@ file = "src/melee/ft/kinds/ftLink/ftlinkspecialhi.c"
 anchor = "    return ftParts_GetBoneIndex(GET_FIGHTER(gobj), FtPart_LThumbNb);"
 replacement = "    return Rogue_AbilityPartIndex(GET_FIGHTER(gobj), FtPart_LThumbNb);"
 reason = "Some recipients lack Link's thumb part; attach the returning article to TransN rather than indexing the invalid native part sentinel."
+
+[[fix]]
+id = "run-shield-capacity"
+owner = "platform/fighter"
+file = "src/melee/ft/fighter.c"
+anchor = "p_ftCommonData->x260_startShieldHealth"
+replacement = "RogueFighter_ShieldCapacity(fp, p_ftCommonData->x260_startShieldHealth)"
+occurrences = 4
+fighter_api = true
+reason = "Use the per-run shield maximum for initialization, regeneration and clamping without modifying shared fighter data."
+
+[[fix]]
+id = "run-shield-recovery"
+owner = "platform/fighter"
+file = "src/melee/ft/fighter.c"
+anchor = "fp->shield_health += p_ftCommonData->x27C;"
+replacement = "fp->shield_health += RogueFighter_ShieldRecovery(fp, p_ftCommonData->x27C);"
+reason = "Scale native shield regeneration per player while retaining the native maximum clamp."
+
+[[fix]]
+id = "run-shield-radius-denominator"
+owner = "platform/fighter"
+file = "src/melee/ft/kinds/ftCommon/ftCo_Guard.c"
+anchor = "fp->shield_health / p_ftCommonData->x260_startShieldHealth"
+replacement = "fp->shield_health / RogueFighter_ShieldCapacity(fp, p_ftCommonData->x260_startShieldHealth)"
+fighter_api = true
+reason = "Keep full shield visual radius at native size when maximum capacity increases."
+
+[[fix]]
+id = "run-ledge-window"
+owner = "platform/fighter"
+file = "src/melee/ft/kinds/ftCommon/ftCo_CliffWait.c"
+anchor = "ftColl_8007B760(gobj, p_ftCommonData->x49C);"
+replacement = "ftColl_8007B760(gobj, RogueFighter_LedgeFrames(fp, p_ftCommonData->x49C));"
+fighter_api = true
+reason = "Extend the native ledge intangibility timer for Recovery Window stacks."
+
+[[fix]]
+id = "run-dodge-window"
+owner = "platform/fighter"
+file = "src/melee/ft/ftcoll.c"
+anchor = "    fp->x1988 = arg1;"
+replacement = "    RogueFighter_HurtState(fp, arg1);\n    fp->x1988 = arg1;"
+fighter_api = true
+reason = "Extend an ending native dodge intangible window with the per-fighter native timer."
+
+[[fix]]
+id = "run-victory-recovery"
+owner = "platform/fighter"
+file = "src/melee/pl/player.c"
+anchor = "            player->kos_by_player[other_slot]++;"
+replacement = "            player->kos_by_player[other_slot]++;\n            RogueFighter_OnKO(slot, bool_arg, other_slot);"
+fighter_api = true
+reason = "Queue native healing only after a credited non-partner KO; self-destructs do not grant recovery."
+
+[[fix]]
+id = "menu-rogue-entry-api"
+owner = "platform/menu"
+file = "src/melee/mn/mnmain.c"
+anchor = '#include "mnmain.h"'
+replacement = '''#include "mnmain.h"
+#include <melee/rogue/platform/melee/rogue_mode.h>'''
+reason = "Declare the additive mode entry label renderer."
+
+[[fix]]
+id = "menu-rogue-entry-label"
+owner = "platform/menu"
+file = "src/melee/mn/mnmain.c"
+anchor = "    mn_804D6BB4 = HSD_SisLib_803A611C(0, temp_r3, 7, 8, 0x80, 7, 0x80, 0);"
+replacement = "    mn_804D6BB4 = HSD_SisLib_803A611C(0, temp_r3, 7, 8, 0x80, 7, 0x80, 0);\n    RogueMode_MenuHint(mn_804D6BB4);"
+reason = "Expose the GameCube X entry on the native main menu using its existing SIS camera and lifetime."
+
+[[fix]]
+id = "native-panic-rogue-context"
+owner = "platform/diagnostics"
+file = "src/sysdolphin/baselib/debug.c"
+anchor = "void HSD_Panic(const char* arg0, u32 line, const char* arg2)\n{"
+replacement = "void HSD_Panic(const char* arg0, u32 line, const char* arg2)\n{\n    extern void RogueHooks_DumpContext(void);\n    RogueHooks_DumpContext();"
+reason = "Attach build, seed, encounter, equipped-special and bounded lifecycle trace context to native HSD panics. Release dump is an empty function."
+
+[[fix]]
+id = "rogue-css-roster-api"
+owner = "platform/menu"
+file = "src/melee/mn/mncharsel.c"
+anchor = '#include "mncharsel.h"'
+replacement = '''#include "mncharsel.h"
+#include <melee/rogue/platform/melee/rogue_mode.h>'''
+reason = "Declare the rogue-only roster policy."
+
+[[fix]]
+id = "rogue-css-full-roster"
+owner = "platform/menu"
+file = "src/melee/mn/mncharsel.c"
+anchor = "gm_IsCKindUnlocked("
+replacement = "RogueMode_CharacterUnlocked("
+occurrences = 4
+reason = "Expose the playable roster inside Rogue character select without changing save data or stock-mode unlock status."
+
+[[fix]]
+id = "menu-exit-preserve-rogue-request"
+owner = "platform/menu"
+file = "src/melee/gm/gmmenumode.c"
+anchor = "    gm_SetPendingGameMode(data->pending_mode);"
+replacement = "    extern unsigned RogueMode_MenuDestination(unsigned);\n    gm_SetPendingGameMode(RogueMode_MenuDestination(data->pending_mode));"
+reason = "The native menu exit handler owns final routing and otherwise overwrites an earlier rogue request with its default title destination."
+
+[[fix]]
+id = "debug-blaster-pointer-guard"
+owner = "platform/diagnostics"
+file = "src/melee/it/kinds/itfoxblaster.c"
+anchor = "    HSD_JObj* child_jobj;\n\n    if (item_gobj == NULL) {"
+replacement = "    HSD_JObj* child_jobj;\n#if ROGUE_DEBUG\n    extern void HSD_Panic(const char*, unsigned, const char*);\n    if (item_gobj && ((u32) item_gobj < 0x80000000U || (u32) item_gobj >= 0x81800000U))\n        HSD_Panic(__FILE__, __LINE__, \"[rogue] invalid blaster callback context\");\n#endif\n\n    if (item_gobj == NULL) {"
+reason = "Emit the native callback backtrace before dereferencing a non-pointer donor variable as a blaster object."
+
+[[fix]]
+id = "peach-native-float-donor-isolation"
+owner = "platform/specials/peach-recipient"
+file = "src/melee/ft/fighter.c"
+anchor = "            fp->u.pe.has_float = true;"
+replacement = "            Rogue_AbilityVars(fp, Ft_Kind_Peach)->pe.has_float = true;"
+reason = "Native grounded motion changes replenish Peach's float. During a borrowed move that boolean must update her saved native bank, not overwrite the donor's overlapping item pointer (Fox Blaster reproduced this as pointer 1)."
+
+[[fix]]
+id = "debug-css-start-context"
+owner = "platform/diagnostics"
+file = "src/melee/mn/mncharsel.c"
+anchor = "        if (mnCharSel_804D6CF2 == 0 && (trigger & HSD_PAD_START)) {"
+replacement = "#if ROGUE_DEBUG\n        if (trigger & HSD_PAD_START) OSReport(\"[rogue] css_start timer=%u ready=%u cursor=%u icon=%u port=%u\\n\", mnCharSel_804D6CF2, mnCharSel_804D6CF7, mnCharSel_804A0BC0[0]->x5, mnCharSel_803F0DFC.doors[0].sel_icon, mnCharSel_804D6CF0);\n#endif\n        if (mnCharSel_804D6CF2 == 0 && (trigger & HSD_PAD_START)) {"
+reason = "Capture native character-confirmation readiness during controller-flow validation."
+
+[[fix]]
+id = "samus-charge-recipient-attachment"
+owner = "platform/specials/samus"
+file = "src/melee/ft/kinds/ftSamus/ftsamusspecialn.c"
+anchor = "result = it_802B55C8(gobj, &vec1, FtPart_RHandNb, It_Kind_Samus_Charge,"
+replacement = "result = it_802B55C8(gobj, &vec1, Rogue_AbilityMapBone(fp, FtPart_RHandNb), It_Kind_Samus_Charge,"
+reason = "The charging item's persistent attachment stores a raw recipient bone index. Remap it at creation just like its spawn position; the donor hand index is not a valid joint on Ice Climbers."

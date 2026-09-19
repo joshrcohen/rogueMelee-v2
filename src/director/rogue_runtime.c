@@ -51,3 +51,31 @@ int RogueRuntime_ResourceRelease(unsigned generation)
     runtime.scene_resources--;
     return 1;
 }
+
+int RogueRuntime_MatchEnter(void)
+{
+    if (runtime.match_active || runtime.match_resources) return 0;
+    runtime.match_active = 1;
+    RogueRuntime_Trace(3, runtime.match_generation);
+    return 1;
+}
+int RogueRuntime_MatchExit(void)
+{
+    if (!runtime.match_active || runtime.match_resources) return 0;
+    RogueRuntime_Trace(4, runtime.match_generation);
+    runtime.match_active = 0;
+    runtime.match_generation++;
+    return 1;
+}
+int RogueRuntime_MatchAcquire(unsigned generation)
+{
+    if (!runtime.match_active || generation != runtime.match_generation) return 0;
+    runtime.match_resources++;
+    return 1;
+}
+int RogueRuntime_MatchRelease(unsigned generation)
+{
+    if (!runtime.match_active || generation != runtime.match_generation || !runtime.match_resources) return 0;
+    runtime.match_resources--;
+    return 1;
+}

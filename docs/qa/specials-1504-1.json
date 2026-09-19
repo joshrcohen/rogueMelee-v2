@@ -1,0 +1,10 @@
+{
+  "scenario": "specials",
+  "status": "pass",
+  "start": 1504,
+  "iterations": 1,
+  "seconds": 4.544406600063667,
+  "log_sha256": "62e9d643cdf3e8448c4ae0b0978f9981878a43e43348a2570ba33af5e6dde690",
+  "dol_sha1": "f4438a4631c4d0d0c1f285988b847d6f990061b9",
+  "image_sha256": "5a7669e6b6cd0bb8d5dbc1dd32b3bf99166c5c6697d5284c43024e87a4a5f035"
+}

@@ -25,7 +25,7 @@ py -3 tools/rogue.py test --suite all
 py -3 tools/rogue.py run
 ```
 
-The mode entry is GameCube **X** from the stock main menu. Choose a fighter on the native character-select screen. In progression, left/right selects, A commits, B toggles the build panel, X spends gold on a reroll, and Start leaves a shop/rest or returns from a finished run. Normal controller entry and full gameplay remain under validation; consult the status table.
+The mode entry is GameCube **X** from the stock main menu. Choose a fighter on the native character-select screen. In progression, left/right selects, A commits, B toggles the build panel, X spends gold on a reroll, and Start leaves a shop/rest or returns from a finished run. Normal menu/CSS/reward/route/combat/loss controller flow has passed. Broader gameplay validation remains in progress; consult the status table.
 
 A fixed-seed interactive layout preview bypasses character selection:
 
@@ -47,3 +47,7 @@ py -3 tools/rogue.py soak --scenario specials --start 0 --iterations 2704 --time
 Matrix index = character-select kind * 104 + sorted special-catalog index. A smaller `--start`/`--iterations` range reproduces a failing combination. The current fixture checks ground/air entry, native attribute/animation restoration, surviving articles, and native match teardown. It does not yet certify all collision, grab, ledge or respawn scenarios. Donkey Kong's Hand Slap has no native airborne attack; its airborne policy consumes the input and returns to native fall.
 
 The authored panel/route asset is emitted as `build/assets/RogueUi.dat` and embedded in the executable. Fighter portraits and font data are loaded from the user's original image. No retail art is copied into repository sources.
+
+## Release packaging
+
+Install Visual Studio C++ Build Tools to compile the pinned xdelta3 utility. `py -3 tools/rogue.py package --profile release` requires a clean committed worktree, runs automated checks, builds the release image and verifies xdelta reconstruction. The final native release gates remain pending; this command is not yet a certified distribution workflow.

@@ -38,6 +38,8 @@ def prepare(profile, qa_cycles=0, qa_match=False, qa_ui=False, qa_matches=20, qa
     work = ROOT / 'build/work' / digest.hexdigest()[:16]
     if not work.exists():
         run(['git', 'worktree', 'add', '--detach', work, 'HEAD'], clean)
+    for name in {h['file'] for h in entries}:
+        shutil.copyfile(clean/name,work/name)
     from .special_adapters import apply
     apply(clean, work)
     from .native_mode import apply as register_mode
@@ -49,15 +51,21 @@ def prepare(profile, qa_cycles=0, qa_match=False, qa_ui=False, qa_matches=20, qa
     for fix in fixes:
         path = work/fix['file']
         source = path.read_text()
-        if source.count(fix['anchor']) != 1:
+        if source.count(fix['anchor']) != fix.get('occurrences', 1):
             raise ValueError('Platform anchor drift: ' + fix['id'])
         path.write_text(source.replace(fix['anchor'], fix['replacement']))
-    for h in entries:
-        p = work / h['file']
-        # Rebuild each retail file from the exact clean source, never cumulative edits.
-        source = (clean / h['file']).read_text(encoding='utf-8')
+    for name in {fix['file'] for fix in fixes if fix.get('fighter_api')}:
+        path = work/name
+        path.write_text('#include <melee/rogue/platform/melee/melee_fighter.h>\n' + path.read_text())
+    for name in {h['file'] for h in entries}:
+        p = work / name
+        # Earlier stages reset their inputs; preserve any named adapters/fixes
+        # on the same file while applying each hook exactly once.
+        source = p.read_text(encoding='utf-8')
         for same in entries:
-            if same['file'] == h['file']:
+            if same['file'] == name:
+                if source.count(same['anchor']) != 1:
+                    raise ValueError('Hook conflicts with a platform adapter: '+same['id'])
                 source = source.replace(same['anchor'], same['replacement'], 1)
         source = '#include <melee/rogue/platform/melee/rogue_hooks.h>\n' + source
         p.write_text(source, encoding='utf-8')
@@ -74,6 +82,7 @@ def prepare(profile, qa_cycles=0, qa_match=False, qa_ui=False, qa_matches=20, qa
             return match.group(0)
         text = re.sub(r'#include "([^"]+)"', normalize, owned.read_text())
         (work / 'src/melee/rogue' / owned.relative_to(ROOT / 'src')).write_text(text)
+    (work/'src/melee/rogue/build_id.h').write_text('#define ROGUE_BUILD_ID "'+work.name+'"\n')
     source = (clean / 'configure.py').read_text(encoding='utf-8')
     objects = ',\n'.join('            Object(Equivalent, "melee/rogue/' + p.relative_to(ROOT / 'src').as_posix() + '")' for p in sorted((ROOT / 'src').rglob('*.c')))
     source = source.replace('config.libs = [', 'config.libs = [\n    MeleeLib("rogueMelee", [\n' + objects + '\n    ]),', 1)

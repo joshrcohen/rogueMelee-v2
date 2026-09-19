@@ -1,4 +1,5 @@
 #include "../../src/core/run.h"
+#include "../../src/core/score.h"
 #include "../../src/core/offers.h"
 #include "../../src/encounters/encounter_registry.h"
 #include <assert.h>
@@ -72,8 +73,28 @@ int main(void)
     assert(RogueRun_ChooseUpgrade(&a,0)); assert(RogueRun_ChooseRoute(&a,0));
     assert(RogueRun_MatchEnd(&a,0,0)); assert(a.phase==ROGUE_DEAD);
     fprintf(stderr,"Catalog snapshot=%08x\n",checksum);
-    assert(checksum==0xfaec0b7fU);
-    /* Catalog expansion intentionally changes reward draws; route streams stay isolated. */
+    assert(checksum==0x4a55e066U);
+    /* Version 3 serializes all 64 master-seed bits, independent of host layout. */
+    RogueRun_Init(&a,((RogueSeed) 0x12345678U << 32) | 42,0);
+    RogueRun_Init(&b,42,0);
+    assert(memcmp(&a.route_rng,&b.route_rng,sizeof(a.route_rng)) != 0);
+    n=RogueRun_Serialize(&a,first,sizeof(first));
+    assert(RogueRun_Deserialize(&c,first,n)); assert(c.seed==a.seed);
+    RogueRun_Init(&a,42,0); a.phase=ROGUE_REST; a.carried_percent=83; a.stacks[13]=2;
+    assert(RogueRun_LeaveService(&a)); assert(a.carried_percent==43);
+    a.phase=ROGUE_REST; a.carried_percent=5;
+    assert(RogueRun_LeaveService(&a)); assert(a.carried_percent==0);
+    a.phase=ROGUE_SHOP; a.carried_percent=83;
+    assert(RogueRun_LeaveService(&a)); assert(a.carried_percent==83);
+    assert(RogueScore_Combat(40,ROGUE_ELITE,2,1)==348);
+    assert(RogueScore_Combat(40,ROGUE_ELITE,2,0)==48);
+    RogueRun_Init(&a,42,0);
+    assert(RogueRun_ChooseUpgrade(&a,0));
+    assert(a.history_count==1 && a.history[0].kind==3);
+    assert(RogueRun_ChooseRoute(&a,0));
+    assert(a.history_count==2 && a.history[1].kind==4);
+    assert(RogueRun_MatchEnd(&a,1,40));
+    assert(a.fights_won==1 && a.native_score==40 && a.history[2].kind==5);
     for(i=0;i<ROGUE_SPECIALS;++i) {
         RogueRun_Init(&a,42,(rogue_specials[i].character+1)%26);
         a.reward.ids[0]=ROGUE_UPGRADES+i+1;

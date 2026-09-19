@@ -47,6 +47,7 @@ const RogueAbilityDefinition* Rogue_GetAbility(RogueAbilityID id);
 bool Rogue_DebugGrantAbility(const char* key);
 void Rogue_AbilityFighterCreated(Fighter* fp);
 void Rogue_AbilityFighterDestroyed(Fighter* fp);
+void Rogue_AbilityMatchEnd(void);
 void Rogue_AbilityTransformed(Fighter* src, Fighter* dst);
 Fighter_GObj* Rogue_AbilityClimberPartner(Fighter* fp);
 void Rogue_AbilityCleanup(Fighter* fp);

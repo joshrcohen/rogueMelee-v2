@@ -1,4 +1,5 @@
 [[entry]]
+rule = "STANDARD DUEL"
 key = "duel"
 name = "Duel"
 tier = 0
@@ -13,8 +14,10 @@ stocks = 2
 cooldown = 0
 weight = 1
 stage_mask = 63
+roster = [255, 255, 255]
 
 [[entry]]
+rule = "GIANT / HEAVY / SLOW"
 key = "juggernaut"
 name = "Juggernaut"
 tier = 1
@@ -29,8 +32,10 @@ stocks = 2
 cooldown = 3
 weight = 1
 stage_mask = 63
+roster = [1, 5, 25]
 
 [[entry]]
+rule = "HIGH POWER / FRAGILE"
 key = "glass_cannon"
 name = "Glass Cannon"
 tier = 1
@@ -45,8 +50,10 @@ stocks = 2
 cooldown = 3
 weight = 1
 stage_mask = 63
+roster = [13, 24, 20]
 
 [[entry]]
+rule = "FAST / LIGHTWEIGHT"
 key = "speed_demon"
 name = "Speed Demon"
 tier = 1
@@ -61,8 +68,10 @@ stocks = 2
 cooldown = 3
 weight = 1
 stage_mask = 63
+roster = [2, 0, 19]
 
 [[entry]]
+rule = "METAL BODY"
 key = "metal_sentinel"
 name = "Metal Sentinel"
 tier = 1
@@ -77,8 +86,10 @@ stocks = 2
 cooldown = 3
 weight = 1
 stage_mask = 63
+roster = [8, 6, 16]
 
 [[entry]]
+rule = "COMPLEMENTARY DUO"
 key = "tag_team"
 name = "Tag Team"
 tier = 1
@@ -93,8 +104,10 @@ stocks = 1
 cooldown = 3
 weight = 1
 stage_mask = 63
+roster = [2, 20, 13]
 
 [[entry]]
+rule = "THREE LIGHT OPPONENTS"
 key = "swarm"
 name = "Swarm"
 tier = 1
@@ -109,8 +122,10 @@ stocks = 1
 cooldown = 3
 weight = 1
 stage_mask = 63
+roster = [24, 7, 4]
 
 [[entry]]
+rule = "PROJECTILE PRESSURE"
 key = "specialist"
 name = "Specialist"
 tier = 1
@@ -125,8 +140,10 @@ stocks = 2
 cooldown = 3
 weight = 1
 stage_mask = 63
+roster = [16, 6, 20]
 
 [[entry]]
+rule = "YOUR FIGHTER / BUILD COUNTER"
 key = "rival"
 name = "Rival"
 tier = 1
@@ -141,8 +158,10 @@ stocks = 2
 cooldown = 3
 weight = 1
 stage_mask = 63
+roster = [255, 255, 255]
 
 [[entry]]
+rule = "CURATED CHAMPION / 3 STOCKS"
 key = "champion"
 name = "Champion"
 tier = 2
@@ -157,8 +176,10 @@ stocks = 3
 cooldown = 3
 weight = 1
 stage_mask = 63
+roster = [25, 9, 5]
 
 [[entry]]
+rule = "TWIN CHAMPIONS"
 key = "duo_boss"
 name = "Twin Champions"
 tier = 2
@@ -173,8 +194,10 @@ stocks = 2
 cooldown = 3
 weight = 1
 stage_mask = 63
+roster = [8, 7, 23]
 
 [[entry]]
+rule = "STRONG LEADER / TWO SUPPORTS"
 key = "commander"
 name = "Squad Commander"
 tier = 2
@@ -189,8 +212,10 @@ stocks = 1
 cooldown = 3
 weight = 1
 stage_mask = 63
+roster = [25, 2, 20]
 
 [[entry]]
+rule = "DOMINANT BUILD COUNTER"
 key = "build_check"
 name = "Shadow Rival"
 tier = 2
@@ -205,8 +230,10 @@ stocks = 3
 cooldown = 3
 weight = 1
 stage_mask = 63
+roster = [255, 255, 255]
 
 [[entry]]
+rule = "CURATED FLAT ARENA"
 key = "arena"
 name = "Arena Guardian"
 tier = 2
@@ -221,8 +248,10 @@ stocks = 3
 cooldown = 3
 weight = 1
 stage_mask = 3
+roster = [16, 6, 10]
 
 [[entry]]
+rule = "ACT-SPECIFIC DUO"
 key = "finale"
 name = "Act Finale"
 tier = 2
@@ -237,3 +266,4 @@ stocks = 2
 cooldown = 3
 weight = 1
 stage_mask = 63
+roster = [9, 23, 25]

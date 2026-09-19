@@ -6,7 +6,7 @@ typedef struct RogueTrace {
 } RogueTrace;
 typedef struct RogueRuntime {
     unsigned active, scene, scene_generation, match_generation;
-    unsigned scene_resources, match_resources, trace_count;
+    unsigned scene_resources, match_resources, trace_count, match_active;
     RogueTrace trace[32];
 } RogueRuntime;
 
@@ -19,4 +19,8 @@ void RogueRuntime_Trace(unsigned event, unsigned value);
 const RogueRuntime* RogueRuntime_Get(void);
 int RogueRuntime_ResourceAcquire(unsigned generation);
 int RogueRuntime_ResourceRelease(unsigned generation);
+int RogueRuntime_MatchEnter(void);
+int RogueRuntime_MatchExit(void);
+int RogueRuntime_MatchAcquire(unsigned generation);
+int RogueRuntime_MatchRelease(unsigned generation);
 #endif

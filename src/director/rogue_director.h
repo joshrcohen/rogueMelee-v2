@@ -3,6 +3,6 @@
 #include "../core/run.h"
 #include "rogue_runtime.h"
 RogueRun* RogueDirector_Run(void);
-void RogueDirector_Start(unsigned seed, unsigned character);
+void RogueDirector_Start(RogueSeed seed, unsigned character);
 void RogueDirector_End(void);
 #endif

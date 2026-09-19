@@ -1,0 +1,20 @@
+{
+  "scenario": "normal-controller-flow",
+  "status": "pass",
+  "dol_sha1": "3459cc02dee8f579bef3d34726524b36ee37473b",
+  "image_sha256": "a158935d513704397d5eaa6ff3c923ce030372bde5bff15ba1b82a6cef774cf6",
+  "log_sha256": "1bc61f241bab4cd46eed42774cac2c7c0db1edf8ad635a0fc1af3601fb50e357",
+  "movie_sha256": "7747664e1036f34400d3a83476b5813d66c574229acef950cdb702201a2b5787",
+  "checks": [
+    "Stock main menu X shortcut",
+    "Native character select chooses Fox",
+    "A commits reward and route",
+    "Native combat ends with natural loss",
+    "Donor context released before native match exit",
+    "Run ended scene reentered"
+  ],
+  "limitations": [
+    "One character and one naturally lost fight",
+    "Screenshot identified header overlap for follow-up correction"
+  ]
+}

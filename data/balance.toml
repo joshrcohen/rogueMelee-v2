@@ -7,3 +7,8 @@ starting_gold = 50
 normal_reward = 30
 elite_reward = 55
 boss_reward = 100
+
+[score]
+normal_clear = 100
+elite_clear = 250
+boss_clear = 600

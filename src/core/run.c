@@ -1,9 +1,20 @@
 #include "run.h"
 #include "balance.h"
 #include "offers.h"
+#include "score.h"
 #include "../upgrades/upgrade_registry.h"
 #include "../encounters/encounter_registry.h"
 #include <string.h>
+
+static void history(RogueRun* run, unsigned kind, unsigned cost, unsigned a, unsigned b, unsigned c)
+{
+    RogueHistoryEvent* event = &run->history[run->history_count % ROGUE_HISTORY];
+    memset(event,0,sizeof(*event));
+    event->kind=kind; event->floor=run->floor; event->cost=cost;
+    event->generation=run->history_count;
+    event->after[0]=a; event->after[1]=b; event->after[2]=c;
+    run->history_count++;
+}
 
 static void offers(RogueRun* run, RogueOfferState* state, RogueRng* rng, int reroll)
 {
@@ -65,9 +76,18 @@ void RogueEncounter_Generate(RogueRun* run, unsigned tier, RogueEncounter* out)
     out->stage = pool[RogueRng_Bounded(&run->encounter_rng, count)];
     for (i = 0; i < out->enemy_count; ++i) {
         out->fighters[i] = RogueRng_Bounded(&run->encounter_rng, 26);
+        if (recipe->roster[(run->act - 1 + i) % 3] != 255)
+            out->fighters[i] = recipe->roster[(run->act - 1 + i) % 3];
         out->stocks[i] = recipe->stocks;
     }
     if (out->tags & 128U) out->fighters[0] = run->character;
+    if (out->tags & 128U) {
+        unsigned offense = run->stacks[0] + run->stacks[14] + run->stacks[23];
+        unsigned mobility = run->stacks[2] + run->stacks[3] + run->stacks[4];
+        /* Bounded counter-build policy uses purchased traits, never live inputs. */
+        if (offense > mobility) out->defense += offense > 5 ? 15 : offense * 3;
+        else out->speed += mobility > 5 ? 15 : mobility * 3;
+    }
     if (out->tags & 1024U) out->stocks[0]++;
     for (i = 3; i > 0; --i) run->recent_recipes[i] = run->recent_recipes[i - 1];
     run->recent_recipes[0] = out->recipe;
@@ -98,11 +118,11 @@ void RogueRun_Shop(RogueRun* run)
     offers(run, &run->shop, &run->shop_rng, 0);
     run->phase = ROGUE_SHOP;
 }
-void RogueRun_Init(RogueRun* run, unsigned seed, unsigned character)
+void RogueRun_Init(RogueRun* run, RogueSeed seed, unsigned character)
 {
     unsigned i, j;
     memset(run, 0, sizeof(*run));
-    run->version = 1; run->seed = seed; run->character = character % 26;
+    run->version = 3; run->seed = seed; run->character = character % 26;
     run->act = 1; run->gold = ROGUE_STARTING_GOLD;
     RogueRng_Init(&run->route_rng, seed, 0);
     RogueRng_Init(&run->encounter_rng, seed, 1);
@@ -122,6 +142,7 @@ int RogueRun_ChooseUpgrade(RogueRun* run, unsigned slot)
     if (run->phase != ROGUE_REWARD || slot >= 3 || run->reward.claimed) return 0;
     id = run->reward.ids[slot];
     if (!RogueOffer_Apply(run, id)) return 0;
+    history(run,3,0,id,slot,0);
     run->reward.claimed = 1; run->phase = ROGUE_ROUTE;
     return 1;
 }
@@ -131,6 +152,7 @@ int RogueRun_ChooseRoute(RogueRun* run, unsigned slot)
     if (run->phase != ROGUE_ROUTE || slot >= 2 || run->floor >= ROGUE_FLOORS) return 0;
     run->selected_route[run->floor] = slot;
     run->current = run->preview[slot];
+    history(run,4,0,run->current.recipe,run->current.tags,run->current.stage);
     type = run->route[run->floor][slot];
     if (type == ROGUE_NODE_SHOP) RogueRun_Shop(run);
     else run->phase = type == ROGUE_NODE_REST ? ROGUE_REST : ROGUE_FIGHT;
@@ -147,9 +169,12 @@ int RogueRun_MatchEnd(RogueRun* run, int won, unsigned native_score)
 {
     unsigned tier;
     if (run->phase != ROGUE_FIGHT) return 0;
-    if (!won) { run->phase = ROGUE_DEAD; return 1; }
     tier = run->route[run->floor][run->selected_route[run->floor]];
-    run->score += native_score + (native_score / 10) * run->stacks[12];
+    run->native_score = native_score;
+    run->score += RogueScore_Combat(native_score,tier,run->stacks[12],won);
+    history(run,5,0,won != 0,native_score,run->carried_percent);
+    if (!won) { run->death_reason = 1; run->phase = ROGUE_DEAD; return 1; }
+    run->fights_won++;
     {
         unsigned gold = tier == ROGUE_BOSS ? ROGUE_BOSS_REWARD : tier == ROGUE_ELITE ? ROGUE_ELITE_REWARD : ROGUE_NORMAL_REWARD;
         run->gold += gold + (gold / 10) * run->stacks[11];
@@ -159,6 +184,11 @@ int RogueRun_MatchEnd(RogueRun* run, int won, unsigned native_score)
 int RogueRun_LeaveService(RogueRun* run)
 {
     if (run->phase != ROGUE_SHOP && run->phase != ROGUE_REST) return 0;
+    if (run->phase == ROGUE_REST) {
+        unsigned recovery = 20 + 10 * run->stacks[13];
+        run->carried_percent = run->carried_percent > recovery ? run->carried_percent - recovery : 0;
+        history(run,7,0,recovery,run->carried_percent,0);
+    }
     advance(run); return 1;
 }
 unsigned RogueRun_RerollCost(const RogueRun* run, int shop)
@@ -183,6 +213,7 @@ int RogueRun_Reroll(RogueRun* run, int shop)
     memcpy(event->before, state->ids, sizeof(event->before));
     offers(run, state, shop ? &run->shop_rng : &run->reward_rng, 1);
     run->gold -= cost; run->gold_spent += cost; run->rerolls_used++;
+    run->reroll_gold_spent += cost;
     state->rerolls++; state->generation++;
     event->generation = state->generation;
     memcpy(event->after, state->ids, sizeof(event->after));
@@ -199,5 +230,6 @@ int RogueRun_Buy(RogueRun* run, unsigned slot)
     if (run->gold < price) return 0;
     run->gold -= price; run->gold_spent += price;
     RogueOffer_Apply(run, id); run->shop.sold[slot] = 1;
+    history(run,6,price,id,slot,0);
     return 1;
 }

@@ -1,5 +1,6 @@
 #include "rogue_mode.h"
 #include "ui_scene.h"
+#include "melee_fighter.h"
 #include "qa/special_matrix.h"
 #include "../../director/rogue_director.h"
 #include "../../upgrades/upgrade_registry.h"
@@ -8,9 +9,12 @@
 #include "specials/special_engine.h"
 #include <melee/ft/types.h>
 #include <melee/ft/ftcommon.h>
+#include <melee/ft/ftdata.h>
+#include <melee/ft/kinds/ftCommon/forward.h>
 #include <melee/ft/kinds/ftCommon/ftCo_Fall.h>
 #include <melee/gm/gm_1601.h>
 #include <melee/gm/gm_1A3F.h>
+#include <melee/gm/gm_1A36.h>
 #include <melee/gm/gmscene.h>
 #include <melee/gm/gmvsmelee.h>
 #include <melee/gm/gmvs.h>
@@ -30,6 +34,8 @@ static RogueUiContext ui;
 static unsigned cursor, build_view;
 static const char* feedback;
 static unsigned qa_cycles, qa_frames, qa_matches, qa_failures;
+static unsigned encounter_frames;
+static unsigned menu_requested;
 static const unsigned stages[6] = { 31, 32, 28, 8, 2, 3 };
 
 static void change_state(unsigned id)
@@ -70,7 +76,7 @@ static void exit_css(GameModeState* state)
 {
     gmVsMelee_ExitCss(state, &selection);
     if (css.pending_scene_change == CSSPendingSceneChange_2) return;
-    RogueDirector_Start((unsigned) OSGetTick(), selection.start.players[0].ckind);
+    RogueDirector_Start((RogueSeed) OSGetTime(), selection.start.players[0].ckind);
     gm_SetNextGameModeStateId(1);
 }
 
@@ -81,6 +87,8 @@ static void enter_match(GameModeState* state)
     u64 audio = 0;
     (void) state;
     memset(&result, 0, sizeof(result));
+    RogueFighter_ResetMatch();
+    encounter_frames = 0;
     gm_SetupRulesDefaults(&match.rules);
     match.rules.match_kind = MatchKind_Stock;
     match.rules.is_stock = true;
@@ -95,7 +103,7 @@ static void enter_match(GameModeState* state)
         if (i > run->current.enemy_count) continue;
         player->ckind = i ? run->current.fighters[i - 1] : run->character;
         player->slot_type = i ? Gm_PKind_Cpu : Gm_PKind_Human;
-        player->stocks = i ? run->current.stocks[i - 1] : 3;
+        player->stocks = i ? run->current.stocks[i - 1] : 3 + run->stacks[10];
 #if ROGUE_DEBUG && ROGUE_QA_MODE == 4
         player->stocks = 99;
 #endif
@@ -107,12 +115,19 @@ static void enter_match(GameModeState* state)
             player->model_scale = run->current.scale / 100.0f;
             player->damage = run->current.starting_percent;
             player->vs_metal = (run->current.tags & 8) != 0;
+            if ((run->current.tags & 1024) && i == 1) {
+                player->attack_ratio *= 1.20f;
+                player->defense_ratio *= 0.85f;
+                player->model_scale *= 1.15f;
+            }
         } else {
+            player->damage = run->carried_percent;
             player->attack_ratio = 1.0f + run->stacks[14] * 0.05f;
             player->defense_ratio = 1.0f - run->stacks[15] * 0.05f;
         }
         audio |= lbAudioAx_80026E84(player->ckind);
     }
+    run->stacks[10] = 0;
     lbAudioAx_80026F2C(24);
     lbAudioAx_8002702C(4, audio);
     lbAudioAx_8002702C(8, lbAudioAx_80026EBC(match.rules.stkind));
@@ -127,7 +142,9 @@ static void exit_match(GameModeState* state)
     int won = result.match_end.outcome == OUTCOME_TEAM_ELIMINATION &&
         result.match_end.player_standings[0].stocks > 0;
     (void) state;
-    RogueRun_MatchEnd(RogueDirector_Run(), won, 0);
+    RogueDirector_Run()->carried_percent = result.match_end.player_standings[0].percent;
+    RogueRun_MatchEnd(RogueDirector_Run(), won,
+        result.match_end.player_standings[0].score > 0 ? result.match_end.player_standings[0].score : 0);
     RogueSpecialQa_Result(won);
 #if ROGUE_DEBUG && ROGUE_QA_MODE == 2
     qa_matches++;
@@ -169,10 +186,18 @@ static void draw(void)
     RogueUi_Update(&ui, run, cursor, build_view);
     RogueText_Begin(&screen);
     for (i = 0; i < 15; ++i) {
+        if (i == run->floor) {
+            RogueText_Line(&screen, 33+i*39, 5, "NEXT");
+            RogueText_Style(&screen, 0.50f, 0xF6CD36);
+        }
         RogueText_Line(&screen, 43+i*39, 23, "%u", i+1);
         RogueText_Style(&screen, 0.60f, i == run->floor ? 0x171B30 : 0xE5E9F6);
         if (i % 5 == 4) {
-            RogueText_Line(&screen, 33+i*39, 54, "BOSS");
+            RogueText_Line(&screen, 33+i*39, 39, "BOSS");
+            RogueText_Style(&screen, 0.50f, 0xAAB4CF);
+        } else {
+            static const char* symbols[5] = { "M", "E", "B", "S", "R" };
+            RogueText_Line(&screen, 33+i*39, 39, "%s/%s", symbols[run->route[i][0]], symbols[run->route[i][1]]);
             RogueText_Style(&screen, 0.50f, 0xAAB4CF);
         }
     }
@@ -212,7 +237,7 @@ static void draw(void)
                 if (run->phase == ROGUE_SHOP) {
                     if (offers->sold[i]) RogueText_Line(&screen, x+12, 228, "SOLD");
                     else RogueText_Line(&screen, x+12, 228, "%u GOLD", RogueOffer_Price(run,id));
-                    RogueText_Style(&screen, 0.65f, offers->sold[i] ? 0x9299AA : 0xF6CD36);
+                    RogueText_Style(&screen, 0.65f, offers->sold[i] ? 0x9299AA : run->gold < RogueOffer_Price(run,id) ? 0xD36B72 : 0xF6CD36);
                 }
             }
         } else if (run->phase == ROGUE_ROUTE) {
@@ -224,12 +249,14 @@ static void draw(void)
             }
         } else {
             RogueText_Line(&screen, 42, 150, "%s", phases[run->phase]);
-            RogueText_Line(&screen, 42, 187, "SCORE %u   FIGHTS %u", run->score, run->encounters);
+            if (run->phase == ROGUE_REST)
+                RogueText_Line(&screen, 42, 187, "DAMAGE %u%%   RECOVER %u%%   START: REST", run->carried_percent, 20 + 10 * run->stacks[13]);
+            else RogueText_Line(&screen, 42, 187, "SCORE %u   FIGHTS %u", run->score, run->fights_won);
             RogueText_Style(&screen, 0.8f, 0xBAC3E0);
         }
         {
             unsigned choice = run->phase == ROGUE_ROUTE ? cursor % 2 : 0;
-            const RogueEncounter* encounter = &run->preview[choice];
+            const RogueEncounter* encounter = (run->phase == ROGUE_DEAD || run->phase == ROGUE_COMPLETE) ? &run->current : &run->preview[choice];
             RogueText_Line(&screen, 36, 372, "%s", fighter_names[run->character]);
             RogueText_Style(&screen, 1.0f, 0xFFFFFF);
             RogueText_Line(&screen, 36, 268, "YOUR FIGHTER");
@@ -245,6 +272,10 @@ static void draw(void)
             if (encounter->stage) {
                 RogueText_Line(&screen, 354, 377, "%s", stage_names[encounter->stage-1]);
                 RogueText_Style(&screen, 0.65f, 0xBBA0E4);
+                RogueText_Line(&screen, 354, 393, "DMG %u%%  GUARD %u%%  SPEED %u%%", encounter->damage, encounter->defense, encounter->speed);
+                RogueText_Style(&screen, 0.52f, 0xCBD3EC);
+                RogueText_Line(&screen, 354, 408, "%s", rogue_recipes[encounter->recipe-1].rule);
+                RogueText_Style(&screen, 0.58f, 0xF6CD36);
             }
         }
     }
@@ -252,12 +283,12 @@ static void draw(void)
     RogueText_Style(&screen, 0.8f, 0xDEE5FB);
     if (run->phase == ROGUE_REWARD || run->phase == ROGUE_SHOP) {
         RogueText_Line(&screen, 389, 433, "X: REROLL  %u GOLD", RogueRun_RerollCost(run, run->phase == ROGUE_SHOP));
-        RogueText_Style(&screen, 0.75f, 0xF6CD36);
+        RogueText_Style(&screen, 0.75f, run->gold < RogueRun_RerollCost(run, run->phase == ROGUE_SHOP) ? 0xD36B72 : 0xF6CD36);
     }
     if (feedback) RogueText_Line(&screen, 24, 447, "%s", feedback);
     else if (run->phase == ROGUE_DEAD || run->phase == ROGUE_COMPLETE)
-        RogueText_Line(&screen, 24, 447, "A: RETRY    START: MAIN MENU    SEED %08X", run->seed);
-    else RogueText_Line(&screen, 24, 447, "LEFT / RIGHT: CHOOSE    START: CONTINUE    SEED %08X", run->seed);
+        RogueText_Line(&screen, 24, 447, "A: RETRY    START: MAIN MENU    SEED %08X%08X", (unsigned) (run->seed >> 32), (unsigned) run->seed);
+    else RogueText_Line(&screen, 24, 447, "LEFT / RIGHT: CHOOSE    START: CONTINUE    SEED %08X%08X", (unsigned) (run->seed >> 32), (unsigned) run->seed);
     RogueText_Style(&screen, 0.6f, 0x8A99BA);
     RogueText_End(&screen);
 }
@@ -339,7 +370,7 @@ void RogueMode_Frame(void)
             else if (run->phase == ROGUE_SHOP)
                 feedback = RogueRun_Buy(run, cursor) ? "Added to your build" : "Offer unavailable: check gold or sold status";
             else if (run->phase == ROGUE_DEAD || run->phase == ROGUE_COMPLETE) {
-                RogueDirector_Start((unsigned) OSGetTick(), run->character);
+                RogueDirector_Start((RogueSeed) OSGetTime(), run->character);
                 cursor = 0;
             }
         }
@@ -358,15 +389,55 @@ void RogueMode_Frame(void)
 
 void RogueMode_MenuFrame(void)
 {
-    if (gm_GetCurrentGameMode() == GM_MENU && (mn_80229624(0) & MenuInput_XButton)) {
-        gm_ChangeGameModeAfterCurrentScene(GM_ROGUE);
+    if (gm_GetCurrentGameMode() == GM_MENU && (gm_GetButtonsTriggered(0) & PAD_BUTTON_X)) {
+        menu_requested = 1;
         gm_801A4B60();
     }
+}
+
+unsigned RogueMode_MenuDestination(unsigned native_mode)
+{
+    if (menu_requested) { menu_requested = 0; return GM_ROGUE; }
+    return native_mode;
+}
+
+void RogueMode_MenuHint(int canvas)
+{
+    RogueText hint;
+    RogueText_Create(&hint, 0, canvas);
+    hint.native->pos_x = -9.5f;
+    hint.native->pos_y = 11.5f;
+    hint.native->pos_z = 17.0f;
+    hint.native->font_size.x = hint.native->font_size.y = 0.040f;
+    RogueText_Begin(&hint);
+    RogueText_Line(&hint, 0, 0, "X: ROGUE RUN");
+    RogueText_Style(&hint, 1.0f, 0xF6CD36);
+    RogueText_End(&hint);
+    /* Ownership is transferred to the retail menu SIS canvas. Its normal
+     * HSD_SisLib_803A5E70 teardown destroys this text with the native entries. */
+}
+
+bool RogueMode_CharacterUnlocked(u8 kind)
+{
+    if (gm_GetCurrentGameMode() == GM_ROGUE) return kind < CKind_Playable_Count;
+    return gm_IsCKindUnlocked(kind);
 }
 
 void RogueMode_MatchFrame(void)
 {
     RogueSpecialQa_Frame();
+    if (RogueRuntime_IsActive() && RogueRuntime_Get()->scene == GS_VS) {
+        RogueRun* run = RogueDirector_Run();
+        ++encounter_frames;
+        if ((run->current.tags & 64) && encounter_frames % 180 == 0) {
+            Fighter_GObj* entity = Player_GetEntity(1);
+            Fighter* fighter = entity ? entity->user_data : NULL;
+            if (fighter && fighter->ground_or_air == GA_Ground &&
+                fighter->motion_id >= ftCo_MS_Wait && fighter->motion_id <= ftCo_MS_WalkFast &&
+                ftData_SpecialN[fighter->kind])
+                ftData_SpecialN[fighter->kind](entity);
+        }
+    }
 #if ROGUE_DEBUG && ROGUE_QA_MODE == 2
     unsigned i;
     if (!RogueRuntime_IsActive() || RogueRuntime_Get()->scene != GS_VS) return;

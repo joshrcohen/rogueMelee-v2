@@ -5,7 +5,8 @@
     "gc_fst": "a49401e8ac75c9e1684c8e35ab9882183b9fbe6e",
     "hgecko": "95f3c95a7b067f1d377fb334ae476a9e780b6b1c",
     "cdat": "e1f4642cceca47264c438ece0245b02517d60e81",
-    "legacy-specials": "82377924344f3d38f6ed89aef9a32dda66820b7f"
+    "legacy-specials": "82377924344f3d38f6ed89aef9a32dda66820b7f",
+    "xdelta": "4b4aed71a959fe11852e45242bb6524be85d3709"
   },
   "upstream_tools": {
     "binutils": "2.42-2",

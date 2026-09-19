@@ -19,6 +19,10 @@ bool Rogue_DebugGrantAbility(const char* key)
 
 bool Rogue_IsAbilityState(const Fighter* fp)
 {
+#if ROGUE_DEBUG
+    if (fp && fighter_state.fighter == fp && fighter_state.match_generation != RogueRuntime_Get()->match_generation)
+        OSPanic(__FILE__, __LINE__, "stale borrowed-special match generation");
+#endif
     return fp && fighter_state.fighter == fp &&
            fighter_state.active != NULL;
 }
@@ -32,6 +36,10 @@ void Rogue_AbilityCleanup(Fighter* fp)
 
     source = fighter_state.active->internal_kind;
     slot = fighter_state.active->native_slot;
+    RogueRuntime_Trace(6, fighter_state.active->id);
+#if ROGUE_DEBUG
+    OSReport("[rogue] special_restore id=%u match=%u\n", fighter_state.active->id, fighter_state.match_generation);
+#endif
 
     /*
      * Tear down source-owned attached state while source attrs/vars are still
@@ -158,7 +166,19 @@ void Rogue_AbilityFighterDestroyed(Fighter* fp)
 {
     if (fighter_state.fighter != fp) return;
     Rogue_AbilityCleanup(fp);
+    RogueRuntime_MatchRelease(fighter_state.match_generation);
+    RogueRuntime_Trace(8, fp->kind);
+#if ROGUE_DEBUG
+    OSReport("[rogue] fighter_context_destroy kind=%u match=%u\n", fp->kind, fighter_state.match_generation);
+#endif
     memset(&fighter_state, 0, sizeof(fighter_state));
+}
+
+void Rogue_AbilityMatchEnd(void)
+{
+    /* Retail defers fighter destruction until the next heap reset. Release our
+     * donor context while its fighter and articles are still valid. */
+    if (fighter_state.fighter) Rogue_AbilityFighterDestroyed(fighter_state.fighter);
 }
 
 void Rogue_AbilityTransformed(Fighter* src, Fighter* dst)
@@ -168,6 +188,7 @@ void Rogue_AbilityTransformed(Fighter* src, Fighter* dst)
     /* Both native forms already exist; all borrowed assets and persistent
      * charge data belong to the run player and survive the entity swap. */
     fighter_state.fighter = dst;
+    RogueRuntime_Trace(9, dst->kind);
 }
 
 Fighter_GObj* Rogue_AbilityClimberPartner(Fighter* fp)
@@ -189,6 +210,10 @@ MotionState* Rogue_AbilityMotionState(Fighter* fp, int motion)
         Rogue_AbilityCleanup(fp);
         return NULL;
     }
+    RogueRuntime_Trace(10, motion);
+#if ROGUE_DEBUG
+    OSReport("[rogue] donor_motion id=%u motion=%d anim=%p\n", def->id, motion, def->states[motion-ftCo_MS_Count].anim_cb);
+#endif
     return &def->states[motion - ftCo_MS_Count];
 }
 

@@ -45,6 +45,8 @@ def main():
     p = sub.add_parser("test", help="Execute automated tests")
     p.add_argument("--suite", choices=['all','tooling','core','specials','integration','golden'], default='all')
     sub.add_parser("status", help="Show implementation evidence")
+    p = sub.add_parser('package', help='Validate a clean release and verify xdelta reconstruction')
+    p.add_argument('--profile', choices=['release'], default='release')
     sub.add_parser('run', help='Launch the verified output image in an isolated Dolphin profile')
     p = sub.add_parser('soak', help='Run native lifecycle fixtures and save pass/failure evidence')
     p.add_argument('--scenario', choices=['scenes','matches','specials'], default='scenes')
@@ -78,6 +80,9 @@ def main():
         elif args.command == 'run':
             from lib.emulator import launch
             launch(cfg)
+        elif args.command == 'package':
+            from lib.packaging import package
+            package(cfg)
         elif args.command == 'soak':
             from lib.emulator import soak
             scenario = 'matches' if args.matches is not None else args.scenario

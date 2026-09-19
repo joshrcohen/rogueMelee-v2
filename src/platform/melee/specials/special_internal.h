@@ -27,10 +27,12 @@
 #include <melee/it/it_26B1.h>
 #include <stdio.h>
 #include <string.h>
+#include <dolphin/os.h>
 
 /* Host-owned lifetime, never appended to a disc-layout Fighter or shared data. */
 typedef struct RogueFighterState {
     Fighter* fighter;
+    unsigned match_generation;
     const RogueAbilityDefinition* active;
     bool loaded[ROGUE_ABILITY_COUNT];
     bool loaded_sources[Ft_Kind_Max];

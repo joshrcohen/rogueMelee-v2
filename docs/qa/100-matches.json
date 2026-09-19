@@ -1,0 +1,17 @@
+{
+  "scenario": "matches",
+  "status": "pass",
+  "start": 0,
+  "iterations": 100,
+  "seconds": 182.33064460009336,
+  "log_sha256": "431f950a812adb19125c2cc688739ba45ddea0819c07357f7475a2330623a6e8",
+  "dol_sha1": "de08b300a6d14d73b05603a3f2509ece50a89f0f",
+  "image_sha256": "bcf711b25c9dd2350a00c63e39e1c78fcab8012a6a8ebcfe5c71156523a8c1d5",
+  "checks": [
+    "99 native wins and final loss",
+    "expected 1..3 enemy composition",
+    "200 Falco neutral ground/air entries",
+    "100 donor contexts released before match generation advances",
+    "stock main menu return"
+  ]
+}

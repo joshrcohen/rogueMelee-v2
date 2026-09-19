@@ -20,18 +20,20 @@ typedef struct RogueHistoryEvent {
     unsigned kind, floor, cost, generation, before[3], after[3];
 } RogueHistoryEvent;
 typedef struct RogueRun {
-    unsigned version, seed, character, act, floor, phase, gold, score;
+    RogueSeed seed;
+    unsigned version, character, act, floor, phase, gold, score;
     unsigned route[ROGUE_FLOORS][2], selected_route[ROGUE_FLOORS];
     unsigned stacks[ROGUE_UPGRADES], specials[4];
     unsigned recent_recipes[4], recent_stages[3], encounters;
-    unsigned gold_spent, rerolls_used, history_count;
+    unsigned gold_spent, rerolls_used, history_count, carried_percent;
+    unsigned fights_won, death_reason, native_score, reroll_gold_spent;
     RogueRng route_rng, encounter_rng, reward_rng, shop_rng;
     RogueOfferState reward, shop;
     RogueEncounter preview[2], current;
     RogueHistoryEvent history[ROGUE_HISTORY];
 } RogueRun;
 
-void RogueRun_Init(RogueRun* run, unsigned seed, unsigned character);
+void RogueRun_Init(RogueRun* run, RogueSeed seed, unsigned character);
 int RogueRun_ChooseUpgrade(RogueRun* run, unsigned slot);
 int RogueRun_ChooseRoute(RogueRun* run, unsigned slot);
 int RogueRun_MatchEnd(RogueRun* run, int won, unsigned native_score);

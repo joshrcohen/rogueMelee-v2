@@ -1,35 +1,33 @@
 # Implementation status
 
-## Execution baseline
+Read all 35 sections, all tables and the embedded progression reference from the supplied v6 DOCX on 2026-09-19. The workspace initially contained only `.iso/`. Work remains active; this is not a release certification.
 
-Read all 35 sections, all tables and the embedded progression reference from the supplied v6 DOCX on 2026-09-19. Workspace originally contained only `.iso/`.
+| Work package | Status and evidence |
+| --- | --- |
+| WP0 repository, dependencies, image validation | PASS: pinned dependency locks, tooling checks, original ISO MD5 and DOL SHA1 verified |
+| WP1 upstream baseline | PASS: all 1126 upstream objects and exact retail DOL; separately assembled image boots in Dolphin 2606a |
+| WP2 platform/runtime spine | Partial: additive mode, named hooks, scene/match generations and ownership guards; cached capabilities contract remains open |
+| WP3 deterministic run core | Host tests PASS: 64-bit seeds, four isolated streams, 100 complete runs twice, serialization v3, golden snapshot `4a55e066` |
+| WP4 borrowed specials | Partial: 104 entries compile; all Captain Falcon cases pass. Full 26 x 104 matrix is running; extended interruption/respawn scenarios remain open |
+| WP5 playable run lifecycle | Native 100-match soak PASS (99 wins, final loss). Normal menu/CSS/reward/route/combat/natural-loss controller flow PASS. Targeted passive behavior checks remain open |
+| WP6 native progression UI | 100 mixed scene lifetimes PASS; controller build/reroll/selection flow PASS. Header spacing correction and final visual checks remain open |
+| WP7 economy/rerolls | Deterministic core tests PASS: separate reward/shop streams, escalating prices, sold-slot preservation, purchase/rest/history behavior |
+| WP8 encounters | 8 elite and 6 boss families implemented with curated rosters, visible rules, modifier composition and build-sensitive rivals; host distribution tests pass; final native recipe review pending |
+| WP9 diagnostics/soak | 100 scene and 100 match gates PASS; crash context and lifecycle traces implemented. Full matrix and extended lifecycle gates remain open |
+| WP10 release reconstruction | Pinned xdelta tool built and synthetic roundtrip tested. Real release build, patch reconstruction and package validation remain open |
 
-| Work package | Status | Evidence |
-| --- | --- | --- |
-| WP0 repository, dependencies and image validation | PASS | `py -3 tools/rogue.py doctor`; `py -3 tools/rogue.py test --suite tooling` (4 tests); `py -3 tools/rogue.py verify-image` (both fixed hashes match) |
-| WP1 upstream baseline and no-op ISO | PASS | `py -3 tools/rogue.py bootstrap` exit 0; upstream 1126/1126 objects and DOL hash check pass; Dolphin 2606a renders native memory-card startup prompt |
-| WP2 hook/platform/runtime spine | Partial, gate pending | Debug source-overlay ISO builds; 5 named hooks; 100 real progression scene lifetimes completed in Dolphin with zero tracked resources and return to stock main menu. Complete facade and broader shop/results lifetime coverage remain pending |
-| WP3 deterministic run core | Host tests PASS, integration pending | `py -3 tools/rogue.py test --suite core`: 100 full runs twice, 50 reroll-isolation seeds, 1000 encounters, serialization roundtrip, fixed snapshot `faec0b7f` |
-| WP4 borrowed-special migration | Compiles; runtime gate pending | 104 compiled registry entries verified; named compatibility adapters in 96 source files; all 104 native ground/air/cleanup fixtures pass on Captain Falcon, including 104 match teardowns. Remaining 25 recipient rows and extended lifecycle cases pending |
-| WP5 playable run lifecycle | In progress | 20 native match transitions PASS: 19 wins and final loss, expected team sizes, 40 borrowed Falco neutral ground/air entries and return to stock menu; normal CSS/input flow remains to validate |
-| WP6 native progression UI | Layout/lifetimes PASS; input flow pending | Authored native JOBJ cards/route/VS panels, retail animated portrait assets, shared SIS wrapper; 100 mixed reward/shop/results/build scene cycles pass with zero owned resources |
-| WP7 economy and rerolls | Pending | |
-| WP8 elite and boss recipes | Pending | |
-| WP9 diagnostics and soak | Pending | |
-| WP10 release reconstruction | Pending | |
+All 18 automated tests pass. Native evidence is recorded with exact executable/image/log hashes in `docs/qa/`; these are historical tested builds, not certification of every later source change.
+
+The 100-match evidence is `docs/qa/100-matches.json`; all borrowed contexts were released before match generation advanced. The normal controller fixture and its limitations are recorded in `docs/qa/normal-controller-flow.json`.
+
+The special matrix first passed 1,252 recipient/move pairs, then exposed Peach's native float flag overwriting a borrowed Fox Blaster item pointer. Native grounded-state updates now target Peach's saved native state. The isolated failing pair passes. The next segment reached 1,504 successful pairs, then found Charge Shot storing a donor hand-bone index on Ice Climbers. Remapping the persistent attachment at creation fixes the isolated case; the remaining 1,200 pairs are being tested. Earlier fixes cover Hand Slap's absent airborne attack and returning Link-family boomerang context/bone handling. Extended hitstun, death/respawn, ledge, grab, pause and transform coverage is still required.
+
+All 24 passive definitions have initial native implementations. General match stability does not substitute for targeted behavior validation. No aerial swapping is enabled.
+
+The UI uses authored JOBJ geometry and the user's retail font/portrait assets. No retail art or game image is committed. SIS storage is bounded and reused; scene exits report zero owned resources in the completed lifecycle gates.
 
 Baseline DOL SHA1: `08e0bf20134dfcb260699671004527b2d6bb1a45`.
-Baseline output ISO SHA256: `0de05981a34156b9cedcef73c73d4244ac05cf6149ab3c9cfed917698819e464`.
-Input MD5 was rechecked after assembly and remains `0e63d4223b01d9aba596259dc155a174`.
+Baseline ISO SHA256: `0de05981a34156b9cedcef73c73d4244ac05cf6149ab3c9cfed917698819e464`.
+Immutable input MD5: `0e63d4223b01d9aba596259dc155a174`.
 
-`gc_fst` and `hgecko` build with committed Cargo locks; `cdat` builds with MSVC and explicit little-endian defines. No standalone devkitPPC compiler is on PATH; the decomp supplies its pinned MWCC and GNU binutils. Emulator and release gates are not yet passed.
-
-Migration oracle preparation succeeded after supplying the pinned script's missing aerial supplement from the local legacy archive; see docs/migration/specials-baseline.md. Special registry, preload, state restoration, transforms and compatibility adapters are now ported; runtime certification remains pending.
-
-The run core currently has 24 upgrade definitions, 8 elite recipes, 6 boss recipes, 15 floors and four isolated RNG streams. Borrowed-special offers and prices are connected; damage, movement, weight, landing, knockback and economy modifiers have native adapters. Remaining passive effects and the final native UI are still in progress. A separate native scene lifetime test now exists (`soak`); combat, broader scene coverage and long-run stability gates remain open.
-
-Latest milestone: all 13 automated tests pass; native 20-match evidence is recorded in `docs/qa/match-transitions.json`. The renderer now updates SIS entries in place and handles native punctuation encoding. Serialization rejects malformed offer/special/encounter values atomically.
-
-Native UI milestone: the expanded soak exposed SIS pool fragmentation on build-panel toggles. Reserving and reusing one bounded text stream fixed the failure; all 100 mixed-view scene lifetimes then passed (`docs/qa/native-ui-lifetimes.json`). The build emits inspectable original `build/assets/RogueUi.dat`; no retail art is committed.
-
-Special matrix milestone: 104/104 Captain Falcon cases pass (`docs/qa/specials-captain-falcon.json`). The matrix found and fixed inherited Hand Slap null-air gating and a returning-boomerang donor-context/missing-thumb-bone fault. All 16 host/tooling tests pass.
+Migration oracle preparation and its locally supplied missing supplement are documented in `docs/migration/specials-baseline.md`. Generated decomp worktrees and retail data remain ignored build inputs.

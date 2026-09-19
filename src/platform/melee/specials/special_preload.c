@@ -3,8 +3,15 @@ void Rogue_AbilityFighterCreated(Fighter* fp)
 {
     int i;
     if (!Rogue_IsRunPlayer(fp)) return;
+    if (fighter_state.fighter) Rogue_AbilityFighterDestroyed(fighter_state.fighter);
     memset(&fighter_state, 0, sizeof(fighter_state));
     fighter_state.fighter = fp;
+    fighter_state.match_generation = RogueRuntime_Get()->match_generation;
+    RogueRuntime_MatchAcquire(fighter_state.match_generation);
+    RogueRuntime_Trace(7, fp->kind);
+#if ROGUE_DEBUG
+    OSReport("[rogue] fighter_create kind=%u match=%u\n", fp->kind, fighter_state.match_generation);
+#endif
 
     for (i = 1; i < ROGUE_ABILITY_COUNT; ++i) {
         const RogueAbilityDefinition* def = Rogue_GetAbility(i);
@@ -144,6 +151,10 @@ void Rogue_AbilityFighterCreated(Fighter* fp)
         }
         fighter_state.loaded[def->id] = true;
         fighter_state.loaded_sources[source] = true;
+        RogueRuntime_Trace(5, source);
+#if ROGUE_DEBUG
+        OSReport("[rogue] donor_preload kind=%u match=%u\n", source, fighter_state.match_generation);
+#endif
         if (source == Ft_Kind_Kirby) fighter_state.source_vars[source].kb.hat.kind = Ft_Kind_Kirby;
         if (source == Ft_Kind_GameWatch) {
             fighter_state.source_vars[source].gw.x222C_judgeVar1 = 1;

@@ -9,15 +9,16 @@ from .config import ROOT
 from .hash import file_hash
 
 
-def launch(cfg, fast=False, movie=None):
+def launch(cfg, fast=False, movie=None, manifest=None, user=None):
     executable = Path(cfg['paths'].get('dolphin', ''))
     if not executable.is_file():
         raise ValueError('Set DOLPHIN_PATH to Dolphin.exe')
-    manifest = json.loads((ROOT/'build/build-manifest.json').read_text())
+    if manifest is None:
+        manifest = json.loads((ROOT/'build/build-manifest.json').read_text())
     image = Path(manifest['output'])
     if file_hash(image) != manifest['output_sha256']:
         raise ValueError('Image differs from build manifest; rebuild before running')
-    user = ROOT/'build/dolphin-user'
+    user = Path(user) if user is not None else ROOT/'build/dolphin-user'
     config = user/'Config'
     config.mkdir(parents=True, exist_ok=True)
     # This profile is owned by this workspace; global emulator settings are untouched.
@@ -116,13 +117,14 @@ def soak(cfg, scenario='scenes', iterations=100, timeout=600, start=0):
     return run_soak(cfg, manifest, scenario, iterations, timeout, start, verify)
 
 
-def run_soak(cfg, manifest, scenario, iterations, timeout, start=0, verifier=None):
+def run_soak(cfg, manifest, scenario, iterations, timeout, start=0, verifier=None, user=None):
     """Also usable to execute an already-built fixture without recompiling."""
     if verifier is None:
         verifier = (lambda log: verify_scene_log(log, iterations)) if scenario == 'scenes' else (lambda log: verify_match_log(log, iterations)) if scenario == 'matches' else (lambda log: verify_special_log(log, start, iterations))
-    log_path = ROOT/'build/dolphin-user/Logs/dolphin.log'
+    user = Path(user) if user is not None else ROOT/'build/dolphin-user'
+    log_path = user/'Logs/dolphin.log'
     if log_path.exists(): log_path.write_text('')
-    process, launched = launch(cfg, fast=True)
+    process, launched = launch(cfg, fast=True, manifest=manifest, user=user)
     if launched != manifest:
         process.terminate()
         raise ValueError('Build manifest changed before soak launch')
