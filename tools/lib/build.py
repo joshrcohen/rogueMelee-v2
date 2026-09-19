@@ -56,12 +56,22 @@ def bootstrap(cfg, image=None):
     return result
 
 
-def build(cfg, profile='debug', target='all', qa_cycles=0, qa_match=False, qa_ui=False, qa_matches=20, qa_specials=False, qa_special_start=0, qa_special_count=104):
-    from .integration import prepare
+def build(cfg, profile='debug', target='all', qa_cycles=0, qa_match=False, qa_ui=False, qa_matches=20, qa_specials=False, qa_special_start=0, qa_special_count=104, qa_lifecycle=False, debug_launch=None):
+    from .integration import prepare, hooks, validate
+    if target not in ('all', 'dol', 'hooks', 'progression', 'specials', 'assets'):
+        raise ValueError('Unknown build target: ' + target)
+    if target == 'hooks':
+        validate(hooks(), ensure('melee'))
+        print('PASS: hook ownership, unique sites and pinned source anchors')
+        return dict(profile=profile, target=target, status='pass')
     from generate_data import generate
     generate()
     from generate_ui import generate as generate_ui
     generate_ui()
+    if target == 'assets':
+        result = dict(profile=profile, target=target, asset=str(ROOT/'build/assets/RogueUi.dat'), asset_sha256=file_hash(ROOT/'build/assets/RogueUi.dat'))
+        (ROOT/'build/assets/build-manifest.json').write_text(json.dumps(result,indent=2)+'\n')
+        return result
     image = cfg['paths'].get('melee_iso')
     if not image:
         raise ValueError('Set MELEE_ISO_PATH')
@@ -79,7 +89,11 @@ def build(cfg, profile='debug', target='all', qa_cycles=0, qa_match=False, qa_ui
         raise ValueError('Match QA count must be 1..10000')
     if qa_special_start < 0 or qa_special_count < 1 or qa_special_start + qa_special_count > 2704:
         raise ValueError('Special matrix range must fit 26 recipients x 104 specials')
-    work = prepare(profile, qa_cycles, qa_match, qa_ui, qa_matches, qa_specials, qa_special_start, qa_special_count)
+    if debug_launch is not None and profile != 'debug':
+        raise ValueError('Developer launch overrides require a debug build')
+    if qa_lifecycle and not qa_specials:
+        raise ValueError('Extended lifecycle QA requires --qa-specials')
+    work = prepare(profile, qa_cycles, qa_match, qa_ui, qa_matches, qa_specials, qa_special_start, qa_special_count, qa_lifecycle, debug_launch)
     run([sys.executable, 'configure.py', '--non-matching', '--map',
          '--compilers', clean / 'build/compilers',
          '--binutils', clean / 'build/binutils',
@@ -88,6 +102,16 @@ def build(cfg, profile='debug', target='all', qa_cycles=0, qa_match=False, qa_ui
          '--sjiswrap', clean / 'build/tools/sjiswrap.exe',
          '--ninja', ninja()], work)
     run([ninja(), '-j', cfg['build']['jobs']], work)
+    if target == 'dol':
+        result = dict(profile=profile, target=target, work=str(work),
+                      dol=str(work/'build/GALE01/main.dol'),
+                      dol_sha1=file_hash(work/'build/GALE01/main.dol','sha1'),
+                      map=str(work/'build/GALE01/main.elf.MAP'))
+        (ROOT/'build/dol-manifest.json').write_text(json.dumps(result,indent=2)+'\n')
+        print('Built DOL: '+result['dol'])
+        return result
+    # Progression and specials are linked scene/subsystem targets. Each produces
+    # a complete playable image because the native executable shares its ABI.
     output = ROOT / 'build/output/rogueMelee.iso'
     if Path(image).resolve() == output.resolve():
         raise ValueError('Input and output images must differ')
@@ -96,7 +120,7 @@ def build(cfg, profile='debug', target='all', qa_cycles=0, qa_match=False, qa_ui
     shutil.copyfile(work / 'build/GALE01/main.elf.MAP', output.parent / 'GALE01.map')
     if file_hash(Path(image), 'md5') != source['md5']:
         raise ValueError('Source image changed')
-    result = dict(profile=profile, target=target, qa_scene_cycles=qa_cycles, qa_match=qa_match, qa_ui=qa_ui, qa_matches=qa_matches, qa_specials=qa_specials, qa_special_start=qa_special_start, qa_special_count=qa_special_count, source=source, work=str(work),
+    result = dict(profile=profile, target=target, qa_scene_cycles=qa_cycles, qa_match=qa_match, qa_ui=qa_ui, qa_matches=qa_matches, qa_specials=qa_specials, qa_special_start=qa_special_start, qa_special_count=qa_special_count, qa_lifecycle=qa_lifecycle, debug_launch=debug_launch, source=source, work=str(work),
                   dependency_lock_sha256=file_hash(ROOT / 'deps/lock.json'),
                   hook_manifest_sha256=file_hash(ROOT / 'integration/hook_manifest.toml'),
                   dol_sha1=file_hash(work / 'build/GALE01/main.dol','sha1'),

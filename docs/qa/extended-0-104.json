@@ -1,0 +1,22 @@
+{
+  "scenario": "extended",
+  "status": "pass",
+  "start": 0,
+  "iterations": 104,
+  "seconds": 242.6791121000424,
+  "log_sha256": "890d0be19dd60422cbbc2978da654a32365e06f390626bd800f993cdd5a53a58",
+  "dol_sha1": "107d3a0487d7f6c4bcee9c5a3bb7a1551e92fd4e",
+  "image_sha256": "a561268d308d2d89dd28d88d7cba957b6eb6ef1e9c0e06514e1d8768d04d2991",
+  "checks": [
+    "ground and air entry",
+    "native attributes and animation restoration",
+    "match teardown and stock menu return",
+    "native damage-state interruption",
+    "blast-zone death reduces stocks 99 to 98",
+    "native respawn with restored state"
+  ],
+  "limitations": [
+    "Captain Falcon recipient only",
+    "Ledge, grab and pause scenarios are separate pending gates"
+  ]
+}

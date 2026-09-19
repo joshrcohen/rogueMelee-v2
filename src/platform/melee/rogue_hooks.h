@@ -5,5 +5,6 @@ unsigned RogueHooks_BootMode(unsigned native_mode);
 void RogueHooks_OnSceneEnter(int scene);
 void RogueHooks_OnSceneExit(void);
 void RogueHooks_OnFrame(void);
+void RogueHooks_OnPause(int paused);
 void RogueHooks_DumpContext(void);
 #endif

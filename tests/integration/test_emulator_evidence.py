@@ -1,5 +1,5 @@
 import unittest
-from tools.lib.emulator import verify_special_log, verify_match_log
+from tools.lib.emulator import verify_special_log, verify_match_log, verify_extended_log
 
 class EmulatorEvidenceTests(unittest.TestCase):
     def special_log(self):
@@ -23,3 +23,12 @@ class EmulatorEvidenceTests(unittest.TestCase):
     def test_match_completion_line_is_insufficient(self):
         with self.assertRaises(ValueError):
             verify_match_log('[rogue] match_qa_complete transitions=20 failures=0 phase=6\n[rogue] native_scene=1 active=0')
+
+    def test_extended_gate_requires_actual_interrupt_and_stock_loss(self):
+        log = self.special_log()
+        with self.assertRaises(ValueError): verify_extended_log(log,7,1)
+        log += '\n[rogue] special_interrupt index=7 restored=1'
+        log += '\n[rogue] special_respawn index=7 stocks=98 restored=1 motion=42'
+        self.assertTrue(verify_extended_log(log,7,1))
+        with self.assertRaises(ValueError): verify_extended_log(log.replace('stocks=98','stocks=99'),7,1)
+        with self.assertRaises(ValueError): verify_extended_log(log+'\nUNHANDLED EXCEPTION',7,1)

@@ -51,3 +51,24 @@ The authored panel/route asset is emitted as `build/assets/RogueUi.dat` and embe
 ## Release packaging
 
 Install Visual Studio C++ Build Tools to compile the pinned xdelta3 utility. `py -3 tools/rogue.py package --profile release` requires a clean committed worktree, runs automated checks, builds the release image and verifies xdelta reconstruction. The final native release gates remain pending; this command is not yet a certified distribution workflow.
+
+`build --target assets` emits the authored DAT and asset manifest without assembling an image. `--target hooks` validates hook ownership and pinned anchors. `--target dol` compiles the executable/map only and records `build/dol-manifest.json`. `--target progression` and `--target specials` link the complete native image, including the selected subsystem and its shared dependencies.
+
+Extended special fixtures add native damage interruption and an actual blast-zone death/respawn:
+
+```powershell
+py -3 tools/rogue.py soak --scenario specials --iterations 104 --lifecycle --timeout 900
+```
+
+All 104 Captain Falcon cases passed this extended gate. Ledge, grab and pause scenarios remain separate pending checks.
+
+Reproducible developer launches build an isolated debug configuration into the executable, then launch the resulting image:
+
+```powershell
+py -3 tools/rogue.py run --scene progression --seed 12345
+py -3 tools/rogue.py run --scene encounter --encounter elite_juggernaut --seed 77
+py -3 tools/rogue.py run --special fox_down --recipient mario --seed 12345
+py -3 tools/rogue.py soak --matches 100 --seed 77
+```
+
+Seeds accept unsigned 64-bit decimal values. Character names use lowercase underscores; move keys are listed in `data/specials.json`. Developer launch overrides require debug builds. A plain `run` launches the last verified image without recompiling.

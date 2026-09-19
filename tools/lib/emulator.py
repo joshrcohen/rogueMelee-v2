@@ -43,7 +43,7 @@ def launch(cfg, fast=False, movie=None, manifest=None, user=None):
 
 
 def verify_scene_log(log, expected):
-    if re.search(r'assertion|OSPanic|ERROR scene|Invalid (read|write)|Memory Empty|on line [0-9]+\.', log, re.I):
+    if re.search(r'assertion|OSPanic|UNHANDLED EXCEPTION|ERROR scene|Invalid (read|write)|Memory Empty|on line [0-9]+\.', log, re.I):
         raise ValueError('Emulator assertion or resource failure; inspect saved log')
     generations = [int(x) for x in re.findall(r'\[rogue\] scene_enter=45 generation=(\d+)', log)]
     result = re.search(r'\[rogue\] scene_qa cycles=(\d+) resources=(\d+) active=(\d+)', log)
@@ -57,7 +57,7 @@ def verify_scene_log(log, expected):
 
 def verify_match_log(log, expected=20):
     """Require actual ordered native results, entity counts and successful entries."""
-    if re.search(r'assertion|OSPanic|ERROR scene|Invalid (read|write)|Memory Empty|on line [0-9]+\.', log, re.I):
+    if re.search(r'assertion|OSPanic|UNHANDLED EXCEPTION|ERROR scene|Invalid (read|write)|Memory Empty|on line [0-9]+\.', log, re.I):
         raise ValueError('Emulator assertion or resource failure; inspect saved log')
     result = re.search(r'\[rogue\] match_qa_complete transitions=(\d+) failures=(\d+) phase=(\d+)', log)
     if not result: return False
@@ -78,7 +78,7 @@ def verify_match_log(log, expected=20):
 
 
 def verify_special_log(log, start, count):
-    if re.search(r'assertion|OSPanic|ERROR scene|Invalid (read|write)|Memory Empty|on line [0-9]+\.', log, re.I):
+    if re.search(r'assertion|OSPanic|UNHANDLED EXCEPTION|ERROR scene|Invalid (read|write)|Memory Empty|on line [0-9]+\.', log, re.I):
         raise ValueError('Emulator assertion or resource failure; inspect saved log')
     results = [tuple(map(int, row)) for row in re.findall(
         r'\[rogue\] special_result index=(\d+) won=(\d+) entries=(\d+) cleanups=(\d+) failures=(\d+)', log)]
@@ -98,10 +98,27 @@ def verify_special_log(log, start, count):
     return '[rogue] native_scene=1 active=0' in log
 
 
-def soak(cfg, scenario='scenes', iterations=100, timeout=600, start=0):
+def verify_extended_log(log, start, count):
+    complete = verify_special_log(log, start, count)
+    if not complete:
+        return False
+    interrupted = [tuple(map(int, row)) for row in re.findall(
+        r'\[rogue\] special_interrupt index=(\d+) restored=(\d+)', log)]
+    respawned = [tuple(map(int, row)) for row in re.findall(
+        r'\[rogue\] special_respawn index=(\d+) stocks=(\d+) restored=(\d+) motion=(\d+)', log)]
+    if interrupted != [(i,1) for i in range(start,start+count)]:
+        raise ValueError('Missing successful native damage interruption evidence')
+    if [(i,stocks,restored) for i,stocks,restored,motion in respawned] != [(i,98,1) for i in range(start,start+count)]:
+        raise ValueError('Missing successful blast-zone death and respawn evidence')
+    return True
+
+
+def soak(cfg, scenario='scenes', iterations=100, timeout=600, start=0, lifecycle=False, seed=None):
     from .build import build
     if iterations < 1 or timeout < 1:
         raise ValueError('Iterations and timeout must be positive')
+    if lifecycle and scenario != 'specials':
+        raise ValueError('--lifecycle requires --scenario specials')
     if scenario == 'scenes':
         options = dict(qa_cycles=iterations)
         verify = lambda log: verify_scene_log(log, iterations)
@@ -109,12 +126,15 @@ def soak(cfg, scenario='scenes', iterations=100, timeout=600, start=0):
         options = dict(qa_match=True, qa_matches=iterations)
         verify = lambda log: verify_match_log(log, iterations)
     elif scenario == 'specials':
-        options = dict(qa_specials=True, qa_special_start=start, qa_special_count=iterations)
-        verify = lambda log: verify_special_log(log, start, iterations)
+        options = dict(qa_specials=True, qa_special_start=start, qa_special_count=iterations, qa_lifecycle=lifecycle)
+        verify = lambda log: (verify_extended_log if lifecycle else verify_special_log)(log, start, iterations)
     else:
         raise ValueError('Unknown soak scenario: ' + scenario)
+    if seed is not None:
+        from .debug_launch import options as launch_options
+        options['debug_launch'] = launch_options(seed=seed)
     manifest = build(cfg, 'debug', 'all', **options)
-    return run_soak(cfg, manifest, scenario, iterations, timeout, start, verify)
+    return run_soak(cfg, manifest, 'extended' if lifecycle else scenario, iterations, timeout, start, verify)
 
 
 def run_soak(cfg, manifest, scenario, iterations, timeout, start=0, verifier=None, user=None):

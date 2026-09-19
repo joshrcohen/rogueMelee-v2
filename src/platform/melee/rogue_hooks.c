@@ -1,10 +1,13 @@
 #include "rogue_hooks.h"
+#include "capabilities.h"
 #include "rogue_mode.h"
 #include "specials/special_engine.h"
 #include "../../director/rogue_runtime.h"
 #include "../../director/rogue_director.h"
 #include "../../build_id.h"
 #include <dolphin/os.h>
+#include <melee/pl/player.h>
+#include <melee/ft/types.h>
 
 unsigned RogueHooks_BootMode(unsigned native_mode)
 {
@@ -25,6 +28,8 @@ void RogueHooks_OnBoot(void)
 
 void RogueHooks_OnSceneEnter(int scene)
 {
+    RogueCapabilities_Detect();
+    if (!RogueCapabilities_Get()->supported) RogueRuntime_SetActive(0);
 #if ROGUE_DEBUG
     OSReport("[rogue] native_scene=%d active=%d\n", scene, RogueRuntime_IsActive());
 #endif
@@ -82,5 +87,19 @@ void RogueHooks_DumpContext(void)
         const RogueTrace* trace = &runtime->trace[(runtime->trace_count-count+i)%32];
         OSReport("[rogue] trace event=%u scene=%u generation=%u value=%u\n", trace->event, trace->scene, trace->generation, trace->value);
     }
+#endif
+}
+
+void RogueHooks_OnPause(int paused)
+{
+#if ROGUE_DEBUG
+    Fighter_GObj* entity;
+    if (!RogueRuntime_IsActive()) return;
+    entity = Player_GetEntity(0);
+    RogueRuntime_Trace(paused ? 11 : 12, RogueRuntime_Get()->match_generation);
+    OSReport("[rogue] pause=%u match=%u special_active=%u\n", paused,
+        RogueRuntime_Get()->match_generation, entity && Rogue_IsAbilityState(entity->user_data));
+#else
+    (void) paused;
 #endif
 }

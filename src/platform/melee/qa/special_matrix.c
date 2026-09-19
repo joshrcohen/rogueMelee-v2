@@ -1,6 +1,7 @@
 #include "special_matrix.h"
 #if ROGUE_DEBUG && ROGUE_QA_MODE == 4
 #include "../../../director/rogue_director.h"
+#include "../debug_launch.h"
 #include "../../../combat/specials/special_catalog.h"
 #include "../specials/special_engine.h"
 #include <melee/ft/types.h>
@@ -8,6 +9,8 @@
 #include <melee/ft/ftcoll.h>
 #include <melee/ft/ft_0892.h>
 #include <melee/ft/kinds/ftCommon/ftCo_Fall.h>
+#include <melee/ft/kinds/ftCommon/ftCo_Damage.h>
+#include <melee/ft/kinds/ftCommon/forward.h>
 #include <melee/gm/gm_1A3F.h>
 #include <melee/gm/gmscene.h>
 #include <melee/pl/player.h>
@@ -29,7 +32,7 @@ int RogueSpecialQa_Progression(void)
         gm_801A4B60();
         return 1;
     }
-    RogueDirector_Start(0x524f4755 + index, index / ROGUE_SPECIALS);
+    RogueDirector_Start(ROGUE_FIXTURE_SEED + index, index / ROGUE_SPECIALS);
     RogueRun_ChooseUpgrade(run, 0);
     RogueRun_ChooseRoute(run, 0);
     memset(run->specials, 0, sizeof(run->specials));
@@ -79,7 +82,42 @@ void RogueSpecialQa_Frame(void)
         ftCo_Fall_Enter(entity);
         OSReport("[rogue] special_cleanup index=%u air=%u restored=%u\n", index, frames == 420, restored);
     }
+#if ROGUE_QA_LIFECYCLE
+    if (frames == 450) {
+        int restored;
+        fighter->cur_pos.x = 0; fighter->cur_pos.y = 45;
+        ftCommon_8007D5D4(fighter);
+        ftCo_Fall_Enter(entity);
+        if (!Rogue_TrySpecial(entity, special->slot, true)) failures++;
+        fighter->dmg.kb_applied = 30.0f;
+        fighter->dmg.x1838_percentTemp = 5.0f;
+        fighter->dmg.x184c_damaged_hurtbox = 0;
+        fighter->dmg.x1860_element = HitElement_Normal;
+        fighter->dmg.facing_dir_1 = 1.0f;
+        ftCo_8008DCE0(entity, ftCo_MS_DamageAir1, 1.0f);
+        restored = Rogue_AbilityDebugRestored(fighter);
+        if (!restored) failures++;
+        OSReport("[rogue] special_interrupt index=%u restored=%u\n", index, restored);
+    }
+    if (frames == 600) {
+        ftCommon_8007D5D4(fighter);
+        ftCo_Fall_Enter(entity);
+        if (!Rogue_TrySpecial(entity, special->slot, true)) failures++;
+    }
+    if (frames >= 600 && frames < 610 && Player_GetStocks(0) == 99) {
+        fighter->cur_pos.x = 0; fighter->cur_pos.y = -500;
+        fighter->self_vel.y = -100;
+    }
+    if (frames == 1000) {
+        int restored = Rogue_AbilityDebugRestored(fighter);
+        int stocks = Player_GetStocks(0);
+        if (stocks != 98 || !restored) failures++;
+        OSReport("[rogue] special_respawn index=%u stocks=%d restored=%u motion=%u\n", index, stocks, restored, fighter->motion_id);
+    }
+    if (frames == 1050) Player_SetStocks(1, 0);
+#else
     if (frames == 450) Player_SetStocks(1, 0);
+#endif
 }
 void RogueSpecialQa_Result(int won)
 {

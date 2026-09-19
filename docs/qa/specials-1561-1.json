@@ -1,0 +1,15 @@
+{
+  "scenario": "specials",
+  "status": "pass",
+  "start": 1561,
+  "iterations": 1,
+  "seconds": 4.300350500037894,
+  "log_sha256": "d5af384fd602d561aa599b346b44cf1faea3bef2169997db2a41d4f81fab3844",
+  "dol_sha1": "181db8e6cafb89d4251e85dfe7f57b2a03390928",
+  "image_sha256": "cc8bf64768a850bffccdb8b38199c7ee9cf56b79dfd721043a896f9aedcd26c5",
+  "checks": [
+    "ground and air entry",
+    "native attributes and animation restoration",
+    "match teardown and stock menu return"
+  ]
+}

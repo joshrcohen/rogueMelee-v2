@@ -1,0 +1,15 @@
+{
+  "scenario": "native-controller-pause",
+  "status": "pass",
+  "dol_sha1": "f71c9421089217c82649d8eabc7cafacadc75c4d",
+  "image_sha256": "7098b18aed106e2480b14b29262177770f78b71744b46248ddaada55f54787b0",
+  "log_sha256": "b2ac562a46e3959b729f2a662044e4497308a1cdddaa5c09b940384964f0103a",
+  "checks": [
+    "Controller-triggered native pause and unpause",
+    "Equipped Fox Reflector on Captain Falcon",
+    "Subsequent interruption, death/respawn and match teardown pass"
+  ],
+  "limitations": [
+    "Pause occurred while donor animation was inactive"
+  ]
+}

@@ -1,4 +1,6 @@
 #include "rogue_mode.h"
+#include "capabilities.h"
+#include "debug_launch.h"
 #include "ui_scene.h"
 #include "melee_fighter.h"
 #include "qa/special_matrix.h"
@@ -54,7 +56,29 @@ void RogueMode_Load(void)
 #if ROGUE_DEBUG && ROGUE_QA_MODE
     qa_cycles = qa_frames = 0;
     qa_matches = qa_failures = 0;
-    RogueDirector_Start(0x524f4755, CKind_Fox);
+    RogueDirector_Start(ROGUE_FIXTURE_SEED, ROGUE_LAUNCH_RECIPIENT);
+#if ROGUE_QA_MODE == 3
+    {
+        RogueRun* run = RogueDirector_Run();
+        const RogueSpecialDef* special = RogueSpecial_Find(ROGUE_LAUNCH_SPECIAL);
+        unsigned tries;
+        if (special) run->specials[special->slot] = special->id;
+        if (ROGUE_LAUNCH_COMBAT) {
+            if (ROGUE_LAUNCH_ENCOUNTER) {
+                unsigned tier = rogue_recipes[ROGUE_LAUNCH_ENCOUNTER-1].tier;
+                run->route[0][0] = tier;
+                for (tries = 0; tries < 128; ++tries) {
+                    RogueEncounter_Generate(run, tier, &run->preview[0]);
+                    if (run->preview[0].recipe == ROGUE_LAUNCH_ENCOUNTER) break;
+                }
+                if (run->preview[0].recipe != ROGUE_LAUNCH_ENCOUNTER)
+                    OSPanic(__FILE__, __LINE__, "developer recipe unavailable");
+            }
+            run->phase = ROGUE_ROUTE;
+            RogueRun_ChooseRoute(run, 0);
+        }
+    }
+#endif
 #endif
 }
 
@@ -299,7 +323,7 @@ void RogueMode_Enter(void* data)
     cursor = build_view = 0;
     feedback = NULL;
 #if ROGUE_DEBUG && ROGUE_QA_CYCLES
-    RogueDirector_Start(0x524f4755 + qa_cycles, CKind_Fox);
+    RogueDirector_Start(ROGUE_FIXTURE_SEED + qa_cycles, CKind_Fox);
     if (qa_cycles % 4 == 1) RogueRun_Shop(RogueDirector_Run());
     else if (qa_cycles % 4 == 2) RogueDirector_Run()->phase = ROGUE_COMPLETE;
     else if (qa_cycles % 4 == 3) RogueDirector_Run()->phase = ROGUE_DEAD;
@@ -342,7 +366,7 @@ void RogueMode_Frame(void)
         gm_801A4B60();
         return;
     }
-    if (run->phase == ROGUE_COMPLETE) RogueDirector_Start(0x524f4755 + qa_matches, CKind_Fox);
+    if (run->phase == ROGUE_COMPLETE) RogueDirector_Start(ROGUE_FIXTURE_SEED + qa_matches, CKind_Fox);
     if (run->phase == ROGUE_SHOP || run->phase == ROGUE_REST) RogueRun_LeaveService(run);
     if (run->phase == ROGUE_REWARD) RogueRun_ChooseUpgrade(run, 0);
     if (run->phase == ROGUE_ROUTE) RogueRun_ChooseRoute(run, 0);
@@ -353,6 +377,7 @@ void RogueMode_Frame(void)
     } else draw();
     return;
 #endif
+    if (run->phase == ROGUE_FIGHT) { change_state(2); return; }
     if (!input) return;
     feedback = NULL;
 #if ROGUE_DEBUG
@@ -389,7 +414,7 @@ void RogueMode_Frame(void)
 
 void RogueMode_MenuFrame(void)
 {
-    if (gm_GetCurrentGameMode() == GM_MENU && (gm_GetButtonsTriggered(0) & PAD_BUTTON_X)) {
+    if (RogueCapabilities_Get()->supported && gm_GetCurrentGameMode() == GM_MENU && (gm_GetButtonsTriggered(0) & PAD_BUTTON_X)) {
         menu_requested = 1;
         gm_801A4B60();
     }
@@ -419,12 +444,13 @@ void RogueMode_MenuHint(int canvas)
 
 bool RogueMode_CharacterUnlocked(u8 kind)
 {
-    if (gm_GetCurrentGameMode() == GM_ROGUE) return kind < CKind_Playable_Count;
+    if (gm_GetCurrentGameMode() == GM_ROGUE) return kind < RogueCapabilities_Get()->roster_count;
     return gm_IsCKindUnlocked(kind);
 }
 
 void RogueMode_MatchFrame(void)
 {
+    if (gm_GetDbPauseFlag(1) || gm_GetDbPauseFlag(2)) return;
     RogueSpecialQa_Frame();
     if (RogueRuntime_IsActive() && RogueRuntime_Get()->scene == GS_VS) {
         RogueRun* run = RogueDirector_Run();

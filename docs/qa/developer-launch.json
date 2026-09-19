@@ -1,0 +1,17 @@
+{
+  "scenario": "developer-launch",
+  "status": "pass",
+  "seed": 18446744073709551615,
+  "recipient": "mario",
+  "special": "fox_down",
+  "encounter": "juggernaut",
+  "dol_sha1": "8db952c7b6e64ea8f58f9e93935c3e9af368b160",
+  "image_sha256": "123fe8395b8a9d02c878880b9974b9ff6f9ec7e3298964fdb784e4a2a62bd246",
+  "log_sha256": "4bf46b0e5647179849ba75931c0788d3b0db7c82f2fb432f9276eda709e7c6c7",
+  "checks": [
+    "Requested native encounter and recipient",
+    "Equipped donor preload",
+    "Natural loss returns to run-end scene",
+    "Zero match resources"
+  ]
+}

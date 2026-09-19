@@ -192,3 +192,55 @@ file = "src/melee/ft/kinds/ftSamus/ftsamusspecialn.c"
 anchor = "result = it_802B55C8(gobj, &vec1, FtPart_RHandNb, It_Kind_Samus_Charge,"
 replacement = "result = it_802B55C8(gobj, &vec1, Rogue_AbilityMapBone(fp, FtPart_RHandNb), It_Kind_Samus_Charge,"
 reason = "The charging item's persistent attachment stores a raw recipient bone index. Remap it at creation just like its spawn position; the donor hand index is not a valid joint on Ice Climbers."
+
+[[fix]]
+id = "mario-cape-missing-thumb"
+owner = "platform/specials/mario"
+file = "src/melee/ft/kinds/ftMario/ftmariospecials.c"
+anchor = "ftParts_GetBoneIndex(fp, FtPart_RThumbNb)"
+replacement = "Rogue_AbilityPartIndex(fp, FtPart_RThumbNb)"
+occurrences = 2
+reason = "Jigglypuff has no thumb joint. Use the checked recipient part lookup for both cape position and its persistent attachment, with the native translation joint as fallback."
+
+[[fix]]
+id = "purin-native-accessory-bank-header"
+owner = "platform/specials/purin-recipient"
+file = "src/melee/ft/kinds/ftPurin/ftpurin.c"
+anchor = '#include "ftpurin.h"'
+replacement = '''#include "ftpurin.h"
+#include <melee/rogue/platform/melee/specials/special_engine.h>'''
+reason = "Declare the borrowed-special variable-bank facade for native accessory callbacks."
+
+[[fix]]
+id = "purin-native-accessory-bank"
+owner = "platform/specials/purin-recipient"
+file = "src/melee/ft/kinds/ftPurin/ftpurin.c"
+anchor = "fp->u.pr"
+replacement = "Rogue_AbilityVars(fp, Ft_Kind_Purin)->pr"
+occurrences = 24
+reason = "Native Jigglypuff accessory callbacks remain active during borrowed moves. Its hat pointer overlaps Mario's cape GObj; native callbacks must read the saved recipient bank instead of treating a donor item as a joint."
+
+[[fix]]
+id = "pause-lifecycle-header"
+owner = "platform/diagnostics"
+file = "src/melee/gm/gmvs.c"
+anchor = '#include "gmvs.h"'
+replacement = '''#include "gmvs.h"
+#include <melee/rogue/platform/melee/rogue_hooks.h>'''
+reason = "Declare the lifecycle trace entry for native pause transitions."
+
+[[fix]]
+id = "pause-lifecycle-enter"
+owner = "platform/diagnostics"
+file = "src/melee/gm/gmvs.c"
+anchor = "            gm_SetDbPauseFlag((s64) arg1);"
+replacement = "            gm_SetDbPauseFlag((s64) arg1);\n            RogueHooks_OnPause(1);"
+reason = "Trace an actual native pause after controller input is accepted."
+
+[[fix]]
+id = "pause-lifecycle-exit"
+owner = "platform/diagnostics"
+file = "src/melee/gm/gmvs.c"
+anchor = "        gm_ClearDbPauseFlag(arg1);"
+replacement = "        gm_ClearDbPauseFlag(arg1);\n        RogueHooks_OnPause(0);"
+reason = "Trace an actual native unpause after controller input is accepted."
