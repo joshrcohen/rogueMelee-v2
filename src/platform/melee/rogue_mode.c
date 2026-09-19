@@ -68,6 +68,8 @@ void RogueMode_Load(void)
         for (tries = 0; tries < ROGUE_UPGRADES; ++tries) run->stacks[tries] = 1;
 #endif
         if (special) run->specials[special->slot] = special->id;
+        if (ROGUE_LAUNCH_SERVICE == 1) RogueRun_Shop(run);
+        if (ROGUE_LAUNCH_SERVICE == 2) { run->phase=ROGUE_REST; run->carried_percent=60; }
         if (ROGUE_LAUNCH_COMBAT) {
             if (ROGUE_LAUNCH_ENCOUNTER) {
                 unsigned tier = rogue_recipes[ROGUE_LAUNCH_ENCOUNTER-1].tier;
@@ -270,10 +272,10 @@ static void draw(void)
                 RogueText_Style(&screen, 0.53f, cursor == i ? 0xF6CD36 : 0xFFFFFF);
                 RogueText_Line(&screen, x+49, 154, "%s", id > ROGUE_UPGRADES ? "SPECIAL / COMMON" : "PASSIVE / COMMON");
                 RogueText_Style(&screen, 0.50f, 0xAEB9D5);
-                RogueText_Wrap(&screen, x+12, 190, 25, RogueOffer_Description(id));
+                RogueText_Wrap(&screen, x+12, 183, 25, RogueOffer_Description(id));
                 if (run->phase == ROGUE_SHOP) {
-                    if (offers->sold[i]) RogueText_Line(&screen, x+12, 228, "SOLD");
-                    else RogueText_Line(&screen, x+12, 228, "%u GOLD", RogueOffer_Price(run,id));
+                    if (offers->sold[i]) RogueText_Line(&screen, x+12, 217, "SOLD");
+                    else RogueText_Line(&screen, x+12, 217, "%u GOLD", RogueOffer_Price(run,id));
                     RogueText_Style(&screen, 0.65f, offers->sold[i] ? 0x9299AA : run->gold < RogueOffer_Price(run,id) ? 0xD36B72 : 0xF6CD36);
                 }
             }
@@ -307,7 +309,7 @@ static void draw(void)
                 RogueText_Style(&screen, 0.55f, 0xCBD3EC);
             }
             if (encounter->stage) {
-                RogueText_Line(&screen, 354, 377, "%s", stage_names[encounter->stage-1]);
+                RogueText_Line(&screen, 354, 377, "%s / THREAT %u", stage_names[encounter->stage-1], RogueEncounter_Threat(encounter));
                 RogueText_Style(&screen, 0.65f, 0xBBA0E4);
                 RogueText_Line(&screen, 354, 393, "DMG %u%%  GUARD %u%%  SPEED %u%%", encounter->damage, encounter->defense, encounter->speed);
                 RogueText_Style(&screen, 0.52f, 0xCBD3EC);
@@ -337,9 +339,11 @@ void RogueMode_Enter(void* data)
     feedback = NULL;
 #if ROGUE_DEBUG && ROGUE_QA_CYCLES
     RogueDirector_Start(ROGUE_FIXTURE_SEED + qa_cycles, CKind_Fox);
-    if (qa_cycles % 4 == 1) RogueRun_Shop(RogueDirector_Run());
-    else if (qa_cycles % 4 == 2) RogueDirector_Run()->phase = ROGUE_COMPLETE;
-    else if (qa_cycles % 4 == 3) RogueDirector_Run()->phase = ROGUE_DEAD;
+    if (qa_cycles % 6 == 1) RogueRun_Shop(RogueDirector_Run());
+    else if (qa_cycles % 6 == 2) RogueRun_ChooseUpgrade(RogueDirector_Run(),0);
+    else if (qa_cycles % 6 == 3) { RogueDirector_Run()->phase=ROGUE_REST; RogueDirector_Run()->carried_percent=60; }
+    else if (qa_cycles % 6 == 4) RogueDirector_Run()->phase = ROGUE_COMPLETE;
+    else if (qa_cycles % 6 == 5) RogueDirector_Run()->phase = ROGUE_DEAD;
 #endif
     RogueUi_Create(&ui);
     draw();

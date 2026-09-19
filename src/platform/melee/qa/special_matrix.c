@@ -7,16 +7,25 @@
 #include <melee/ft/types.h>
 #include <melee/ft/ftcommon.h>
 #include <melee/ft/ftcoll.h>
+#include <melee/ft/ftcliffcommon.h>
 #include <melee/ft/ft_0892.h>
 #include <melee/ft/kinds/ftCommon/ftCo_Fall.h>
 #include <melee/ft/kinds/ftCommon/ftCo_Damage.h>
+#include <melee/ft/kinds/ftCommon/ftCo_Attack100.h>
+#include <melee/ft/kinds/ftCommon/ftCo_CatchPull.h>
+#include <melee/ft/kinds/ftCommon/ftCo_CapturePulled.h>
+#include <melee/ft/kinds/ftCommon/ftCo_CaptureCut.h>
+#include <melee/ft/kinds/ftCommon/ftCo_Throw.h>
 #include <melee/ft/kinds/ftCommon/forward.h>
 #include <melee/gm/gm_1A3F.h>
 #include <melee/gm/gmscene.h>
 #include <melee/pl/player.h>
+#include <melee/mp/forward.h>
 #include <dolphin/os.h>
 #include <string.h>
 static unsigned completed, frames, failures, entries, cleanups;
+static int floor_line;
+static unsigned transform_before;
 
 void RogueSpecialQa_Reset(void) { completed = frames = failures = entries = cleanups = 0; }
 int RogueSpecialQa_Progression(void)
@@ -59,6 +68,7 @@ void RogueSpecialQa_Frame(void)
     if (!fighter) { failures++; return; }
     if (frames == 180 || frames == 360) {
         int entered;
+        if (frames == 180) floor_line = fighter->coll_data.floor.index;
         Rogue_AbilityCleanup(fighter);
         ftColl_8007B760(entity, 600);
         if (frames == 360) {
@@ -83,6 +93,37 @@ void RogueSpecialQa_Frame(void)
         OSReport("[rogue] special_cleanup index=%u air=%u restored=%u\n", index, frames == 420, restored);
     }
 #if ROGUE_QA_LIFECYCLE
+    if (frames == 480) {
+        int restored;
+        ftCommon_8007D5D4(fighter); ftCo_Fall_Enter(entity);
+        if (!Rogue_TrySpecial(entity,special->slot,true)) failures++;
+        fighter->coll_data.env_flags = Collide_LeftLedgeGrab;
+        fighter->coll_data.ledge_id_left = floor_line;
+        ftCliffCommon_80081370(entity);
+        restored = Rogue_AbilityDebugRestored(fighter);
+        if (!restored || fighter->motion_id != ftCo_MS_CliffCatch) failures++;
+        OSReport("[rogue] special_ledge index=%u restored=%u motion=%u\n",index,restored,fighter->motion_id);
+    }
+    if (frames == 500) {
+        fighter->cur_pos.x=0; fighter->cur_pos.y=20;
+        ftCommon_8007D5D4(fighter); ftCo_Fall_Enter(entity);
+    }
+    if (frames == 530) {
+        Fighter_GObj* attacker_entity = Player_GetEntity(1);
+        Fighter* attacker = attacker_entity->user_data;
+        int restored;
+        ftCommon_8007D5D4(fighter); ftCo_Fall_Enter(entity);
+        if (!Rogue_TrySpecial(entity,special->slot,true)) failures++;
+        ftCo_800D8C54(attacker_entity,ftCo_MS_Catch);
+        attacker->victim_gobj=entity;
+        fn_800D9CE8(attacker_entity);
+        fn_800DAADC(entity,attacker_entity);
+        fn_800DA1D8(attacker_entity);
+        restored=Rogue_AbilityDebugRestored(fighter);
+        if (!restored || fighter->victim_gobj != attacker_entity) failures++;
+        OSReport("[rogue] special_grab index=%u restored=%u linked=%u\n",index,restored,fighter->victim_gobj==attacker_entity);
+    }
+    if (frames == 550 && fighter->victim_gobj) ftCo_800DA698(fighter->victim_gobj,true);
     if (frames == 450) {
         int restored;
         fighter->cur_pos.x = 0; fighter->cur_pos.y = 45;
@@ -114,7 +155,22 @@ void RogueSpecialQa_Frame(void)
         if (stocks != 98 || !restored) failures++;
         OSReport("[rogue] special_respawn index=%u stocks=%d restored=%u motion=%u\n", index, stocks, restored, fighter->motion_id);
     }
-    if (frames == 1050) Player_SetStocks(1, 0);
+    if (special->slot == ROGUE_ABILITY_DOWN && (special->donor == Ft_Kind_Zelda || special->donor == Ft_Kind_Seak)) {
+        if (frames == 1050 || frames == 1300) {
+            if (frames == 1050) transform_before=RogueDirector_Run()->specials[3];
+            fighter->cur_pos.x=0; fighter->cur_pos.y=70;
+            ftCommon_8007D5D4(fighter); ftCo_Fall_Enter(entity);
+            ftColl_8007B760(entity,1000);
+            if (!Rogue_TrySpecial(entity,ROGUE_ABILITY_DOWN,true)) failures++;
+        }
+        if (frames == 1290 || frames == 1540) {
+            unsigned after=RogueDirector_Run()->specials[3];
+            int valid=(after==transform_before)==(frames==1540);
+            if (!valid) failures++;
+            OSReport("[rogue] transform_cycle index=%u step=%u before=%u after=%u valid=%u\n",index,frames==1540?2:1,transform_before,after,valid);
+        }
+        if (frames == 1550) Player_SetStocks(1,0);
+    } else if (frames == 1050) Player_SetStocks(1, 0);
 #else
     if (frames == 450) Player_SetStocks(1, 0);
 #endif

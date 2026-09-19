@@ -8,7 +8,7 @@ const RogueUpgradeDef rogue_upgrades[24] = {
     { "shield", "Shield Core", "Increase shield capacity by 10%.", 40, 3, 5, 10 },
     { "regen", "Shield Recovery", "Recover shield 8% faster.", 45, 3, 6, 8 },
     { "weight", "Anchor", "Increase weight by 5%.", 50, 3, 7, 5 },
-    { "grip", "Strong Grip", "Deal 10% more throw damage.", 35, 3, 8, 10 },
+    { "grip", "Strong Grip", "Deal 10% more standard throw damage.", 35, 3, 8, 10 },
     { "reach", "Recovery Window", "Gain 5 frames of ledge invulnerability.", 40, 3, 9, 5 },
     { "stock", "Second Wind", "Gain one stock for the next fight.", 45, 3, 10, 1 },
     { "gold", "Bounty", "Earn 10% more combat gold.", 50, 3, 11, 10 },

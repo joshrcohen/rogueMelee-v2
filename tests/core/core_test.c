@@ -68,12 +68,27 @@ int main(void)
         seen |= 1U << (a.current.recipe-1);
     }
     assert((seen & 0x7ffeU)==0x7ffeU);
+    /* Exercise every act, floor and tier budget, not only the initial act. */
+    for (seed=0;seed<100;++seed) for (i=0;i<15;++i) for (j=0;j<3;++j) {
+        const RogueRecipe* recipe;
+        RogueRun_Init(&a,seed,seed%26); a.act=i/5+1; a.floor=i;
+        RogueEncounter_Generate(&a,j,&a.current);
+        assert(a.current.recipe);
+        recipe=&rogue_recipes[a.current.recipe-1];
+        assert(a.act>=recipe->min_act && a.act<=recipe->max_act);
+        assert(a.floor>=recipe->min_floor && a.floor<=recipe->max_floor);
+        assert(RogueEncounter_Threat(&a.current)<=RogueEncounter_Budget(a.act,a.floor,j));
+        assert(!((a.current.tags>>16) & ~recipe->mutation_mask));
+        assert(!(a.current.tags & recipe->incompatible_tags));
+        if (recipe->tags & (2|4)) assert(a.current.defense==recipe->defense);
+        if (recipe->tags & (1|8)) assert(a.current.speed==recipe->speed);
+    }
     RogueRun_Init(&a,0,0); a.gold=0; b=a;
     assert(!RogueRun_Reroll(&a,0)); assert(memcmp(&a,&b,sizeof(a))==0);
     assert(RogueRun_ChooseUpgrade(&a,0)); assert(RogueRun_ChooseRoute(&a,0));
     assert(RogueRun_MatchEnd(&a,0,0)); assert(a.phase==ROGUE_DEAD);
     fprintf(stderr,"Catalog snapshot=%08x\n",checksum);
-    assert(checksum==0x4a55e066U);
+    assert(checksum==0x866924dfU);
     /* Version 3 serializes all 64 master-seed bits, independent of host layout. */
     RogueRun_Init(&a,((RogueSeed) 0x12345678U << 32) | 42,0);
     RogueRun_Init(&b,42,0);

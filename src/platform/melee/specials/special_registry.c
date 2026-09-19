@@ -32,7 +32,7 @@
     { 1 + kind * 4 + slot, key, label, character, kind, slot, NULL, NULL, \
       ROGUE_COMPAT_ADAPTED, ROGUE_ABILITY_NEEDS_ATTRS | ROGUE_ABILITY_NEEDS_ANIMATION | \
       ROGUE_ABILITY_NEEDS_BONE_MAP | ROGUE_ABILITY_NEEDS_STATE_TABLE, \
-      ftCo_MS_Count, ftCo_MS_Count + count - 1, table, (1U << Ft_Kind_Captain), sizeof(attrs) }
+      ftCo_MS_Count, ftCo_MS_Count + count - 1, table, (((1U << 27) - 1) & ~(1U << Ft_Kind_Nana)), sizeof(attrs) }
 #define FOUR(kind, character, prefix, table, count, attrs, n, s, u, d) \
     ABILITY(kind, character, ROGUE_ABILITY_NEUTRAL, prefix "_neutral", n, table, count, attrs), \
     ABILITY(kind, character, ROGUE_ABILITY_SIDE, prefix "_side", s, table, count, attrs), \

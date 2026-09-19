@@ -134,7 +134,8 @@ void RogueUi_Update(RogueUiContext* ui, const RogueRun* run, unsigned cursor, in
     }
     visible(ui->joints[ROGUE_UI_BUILD_PANEL], build);
     for (i = 0; i < 4; ++i) {
-        const RogueEncounter* encounter = &run->preview[run->phase == ROGUE_ROUTE ? cursor % 2 : 0];
+        const RogueEncounter* encounter = (run->phase == ROGUE_DEAD || run->phase == ROGUE_COMPLETE)
+            ? &run->current : &run->preview[run->phase == ROGUE_ROUTE ? cursor % 2 : 0];
         unsigned kind = i ? encounter->fighters[i-1] : run->character;
         unsigned frame = kind == 19 ? 18 : kind > 19 ? kind - 1 : kind;
         HSD_JObj* joint = GET_JOBJ(ui->portraits[i]);

@@ -29,6 +29,9 @@ class EmulatorEvidenceTests(unittest.TestCase):
         with self.assertRaises(ValueError): verify_extended_log(log,7,1)
         log += '\n[rogue] special_interrupt index=7 restored=1'
         log += '\n[rogue] special_respawn index=7 stocks=98 restored=1 motion=42'
+        with self.assertRaises(ValueError): verify_extended_log(log,7,1)
+        log += '\n[rogue] special_ledge index=7 restored=1 motion=252'
+        log += '\n[rogue] special_grab index=7 restored=1 linked=1'
         self.assertTrue(verify_extended_log(log,7,1))
         with self.assertRaises(ValueError): verify_extended_log(log.replace('stocks=98','stocks=99'),7,1)
         with self.assertRaises(ValueError): verify_extended_log(log+'\nUNHANDLED EXCEPTION',7,1)

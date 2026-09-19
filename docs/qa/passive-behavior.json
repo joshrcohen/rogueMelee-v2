@@ -4,8 +4,13 @@
   "checks": 20,
   "failures": 0,
   "seed": 77,
-  "dol_sha1": "10d4bec3cb8bf97f1ed0236c7943d4353d95331d",
-  "image_sha256": "6f466719fd9637d848564988d596b42521484e9f8cfa098692fddb0f1b5bfae0",
-  "log_sha256": "d89cae786b059c8b6679c06ffe6278a4e97625fbdfae48acca9626d487023339",
-  "scope": "Controlled native attributes and damage/KO/collision hooks; 4 economy/rest passives separately checked in host tests. Gameplay remained active after assertions. This is not natural-input coverage of every passive."
+  "dol_sha1": "a51375d605353a3122045410edbef9ac47e5a805",
+  "image_sha256": "e051e937cb697d6db4aceffb6743a7e20fee971f031e8bf7d0122246051e8c95",
+  "log_sha256": "aadb2d31e51150c48b2f7887e74d2e9deb0df506f6baf2efdc1330b9ab1275ee",
+  "scope": "Controlled native attributes and damage/KO/collision hooks; 4 economy/rest passives separately checked in host tests. Gameplay remained active after assertions. This is not natural-input coverage of every passive.",
+  "visual_checks": [
+    "All active passive badges fit without overlap",
+    "Dark shadows preserve contrast over bright stage art",
+    "Developer reproduction line is readable"
+  ]
 }

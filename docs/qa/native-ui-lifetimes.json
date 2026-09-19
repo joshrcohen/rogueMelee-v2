@@ -1,25 +1,43 @@
 {
-  "scenario": "native-scene-lifetimes",
+  "scenario": "scenes",
   "status": "pass",
-  "cycles": 100,
-  "seconds": 137.7473471998237,
-  "log_sha256": "48b444fb2fdb3d0d46a2104b0d9aad434003e5cd6e1cc0eb38162835d4c41c52",
-  "dol_sha1": "7401dc07f259b322a1195b8d645104d19483daf8",
-  "image_sha256": "b64d81f9b1dbdb23cc5b934e0f28f5824ffb7018068c335ef2cd2628408a7420",
-  "views": [
-    "reward",
-    "shop",
-    "complete",
-    "dead",
-    "build panel"
-  ],
-  "native_assets": [
-    "original authored RogueUi.dat JOBJ tree",
-    "retail CSS portrait texture animation",
-    "retail SIS text"
-  ],
-  "resources_at_every_exit": 0,
-  "limitations": [
-    "Scripted scene transitions; normal controller flow still to validate"
+  "start": 0,
+  "iterations": 100,
+  "build": {
+    "profile": "debug",
+    "target": "all",
+    "qa_scene_cycles": 100,
+    "qa_match": false,
+    "qa_ui": false,
+    "qa_matches": 20,
+    "qa_specials": false,
+    "qa_special_start": 0,
+    "qa_special_count": 104,
+    "qa_lifecycle": false,
+    "debug_launch": null,
+    "source": {
+      "image": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\.iso\\Super Smash Bros. Melee (USA) (En,Ja) (v1.02).iso",
+      "game_id": "GALE01",
+      "revision": 2,
+      "bytes": 1459978240,
+      "md5": "0e63d4223b01d9aba596259dc155a174",
+      "dol_sha1": "08e0bf20134dfcb260699671004527b2d6bb1a45",
+      "dol_bytes": 4425184
+    },
+    "work": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\work\\7bfe84ad98c67405",
+    "dependency_lock_sha256": "e8b497891457b5abb7332bea863410dafce442c70fd690847ed024c6afc29246",
+    "hook_manifest_sha256": "960991cf9ae7c444d27c6a3b1e4c5a30f17c005670efef310b577995c4e90841",
+    "dol_sha1": "23659c3633b335ad6416cd1b1575d8329cff4f66",
+    "output_sha256": "a74ffbb5f1cf628ec946ecfb3f3e13d483cb6bf3152a7181bf2e2aae08cab084",
+    "output": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\output\\rogueMelee.iso"
+  },
+  "seconds": 14.292740599950776,
+  "log_sha256": "fa0241dc1ef2ee2e0cead88270930673804659fb3064aa59fdc99cb3aa3b0590",
+  "checks": [
+    "100 scene entries/exits",
+    "Reward, shop, route, rest, win and loss screens",
+    "Build panel toggles",
+    "Zero owned resources at each exit",
+    "Return to stock main menu"
   ]
 }

@@ -26,6 +26,7 @@ class RegistryTests(unittest.TestCase):
             self.assertEqual({row[5] for row in rows if row[4]==donor},{0,1,2,3})
         for row in rows:
             self.assertGreater(row[12],0)
+            self.assertEqual(row[13],0x07fff7ff)  # All primaries; Nana is partner-owned.
             self.assertGreaterEqual(row[11],row[10])
             self.assertGreater(row[14],0)
             self.assertLessEqual(row[14],0x424)

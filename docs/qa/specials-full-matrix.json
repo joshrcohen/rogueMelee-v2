@@ -1,0 +1,61 @@
+{
+  "scenario": "specials-full-matrix",
+  "status": "pass",
+  "recipients": 26,
+  "specials": 104,
+  "pairs": 2704,
+  "ground_air_entries": 5408,
+  "ground_air_cleanups": 5408,
+  "segments": [
+    {
+      "first": 0,
+      "last": 103,
+      "log": "build\\qa\\specials-0-104.log",
+      "log_sha256": "10b685f370fba974a25e956aa6f4c03577ee00b9122d4e5e4e3257189dc559fe",
+      "dol_sha1": "0fdf28c18aba2d3a52f364d1e2365aee08fefa60",
+      "image_sha256": "d954e3da63ee9aa4d3bc561801b78940e9fc78b11358e12f8ff2fb1b2171c3fc",
+      "source_run_status": "pass"
+    },
+    {
+      "first": 104,
+      "last": 1251,
+      "log": "build\\qa\\specials-104-2600.log",
+      "log_sha256": "30a065a0ead913ec868d6d2d91de754a2f20195b9abc38e9a1799d3809a86830",
+      "dol_sha1": "0b7ca9973e98798f7e6b6790c486d3cef9170ed6",
+      "image_sha256": "feb590d8d698965b4735fd71cb210d16a5478c3b9c8e4ccbc79444059c71b7d9",
+      "source_run_status": "failed"
+    },
+    {
+      "first": 1252,
+      "last": 1503,
+      "log": "build\\qa\\specials-1252-1452.log",
+      "log_sha256": "aab4e7bf8ae7995c935d557c59d9de0bbcb74ab0dbd6744f1591431424dfd69d",
+      "dol_sha1": "e1e0f1c5834b5ea9f419105eef387dd76e1dca14",
+      "image_sha256": "7398ef43f78460f7d3d36c46e8e6cfb62bfb2cdc690e75a89d1c425e1857b303",
+      "source_run_status": "failed"
+    },
+    {
+      "first": 1504,
+      "last": 1560,
+      "log": "build\\qa\\specials-1504-1200.log",
+      "log_sha256": "9c78d704551c4295c28c0e8d952e6da5f5713d2d96467272e22a61cf0382a62c",
+      "dol_sha1": "879be28e003300e8498accdb9741d917cf249286",
+      "image_sha256": "1a3b8ea64135cbe0ac3d0a410e486c8d5fccf3930cb1c1dad6eaf4471cb9bb1f",
+      "source_run_status": "failed"
+    },
+    {
+      "first": 1561,
+      "last": 2703,
+      "log": "build\\qa\\specials-1561-1143.log",
+      "log_sha256": "9ed4bd89fae219be44e08eee80f86eb69aed8d5c7d2a114cb7b34eea5c56687a",
+      "dol_sha1": "eb8d25038cacfb90dc4d46ce453f1338350fc202",
+      "image_sha256": "481e625b113663b4c00ce21b36151ec35a67465a6b56b246fb4aa0d3f1dd37a7",
+      "source_run_status": "pass"
+    }
+  ],
+  "limitations": [
+    "Aggregated completed intervals from multiple historical builds; failed cases were repaired before resuming.",
+    "Ground/air lifecycle coverage does not certify all collision or visual behavior.",
+    "Extended interruptions are tracked separately."
+  ]
+}

@@ -189,6 +189,9 @@ void Rogue_AbilityTransformed(Fighter* src, Fighter* dst)
      * charge data belong to the run player and survive the entity swap. */
     fighter_state.fighter = dst;
     RogueRuntime_Trace(9, dst->kind);
+#if ROGUE_DEBUG
+    OSReport("[rogue] fighter_transform from=%u to=%u match=%u\n",src->kind,dst->kind,RogueRuntime_Get()->match_generation);
+#endif
 }
 
 Fighter_GObj* Rogue_AbilityClimberPartner(Fighter* fp)

@@ -48,6 +48,24 @@ static void offers(RogueRun* run, RogueOfferState* state, RogueRng* rng, int rer
     for (i = 0; i < 3; ++i) if (!state->sold[i]) state->ids[i] = j < count ? candidates[j++] : 0;
 }
 
+unsigned RogueEncounter_Budget(unsigned act, unsigned floor, unsigned tier)
+{
+    return 2 + tier * 4 + (act - 1) * 2 + (floor % 5) / 2;
+}
+unsigned RogueEncounter_Threat(const RogueEncounter* e)
+{
+    unsigned bits = e->tags >> 16, cost = 0;
+    if (!e->recipe || e->recipe > ROGUE_RECIPES) return 0;
+    while (bits) { cost += (bits & 1) * 2; bits >>= 1; }
+    return rogue_recipes[e->recipe - 1].threat_cost + cost;
+}
+static int recipe_allowed(const RogueRun* run, unsigned tier, const RogueRecipe* r)
+{
+    return r->tier == tier && run->act >= r->min_act && run->act <= r->max_act &&
+        run->floor >= r->min_floor && run->floor <= r->max_floor &&
+        r->threat_cost <= RogueEncounter_Budget(run->act,run->floor,tier) &&
+        !(r->tags & r->incompatible_tags);
+}
 void RogueEncounter_Generate(RogueRun* run, unsigned tier, RogueEncounter* out)
 {
     unsigned pool[ROGUE_RECIPES], count = 0, i, j, pick, total = 0;
@@ -55,13 +73,14 @@ void RogueEncounter_Generate(RogueRun* run, unsigned tier, RogueEncounter* out)
     memset(out, 0, sizeof(*out));
     for (i = 0; i < ROGUE_RECIPES; ++i) {
         int recent = 0;
-        if (rogue_recipes[i].tier != tier) continue;
+        if (!recipe_allowed(run,tier,&rogue_recipes[i])) continue;
         for (j = 0; j < rogue_recipes[i].cooldown && j < 4; ++j)
             if (run->recent_recipes[j] == i + 1) recent = 1;
         if (!recent) pool[count++] = i;
     }
     if (!count) for (i = 0; i < ROGUE_RECIPES; ++i)
-        if (rogue_recipes[i].tier == tier) pool[count++] = i;
+        if (recipe_allowed(run,tier,&rogue_recipes[i])) pool[count++] = i;
+    if (!count) return; /* Invalid external request never reads an empty pool. */
     for (i = 0; i < count; ++i) total += rogue_recipes[pool[i]].weight;
     pick = RogueRng_Bounded(&run->encounter_rng, total);
     for (i = 0; i + 1 < count && pick >= rogue_recipes[pool[i]].weight; ++i)
@@ -69,7 +88,7 @@ void RogueEncounter_Generate(RogueRun* run, unsigned tier, RogueEncounter* out)
     out->recipe = pool[i] + 1; recipe = &rogue_recipes[pool[i]];
     out->enemy_count = recipe->enemies;
     out->tags = recipe->tags;
-    out->damage = recipe->damage + (run->act - 1) * 5;
+    out->damage = recipe->damage;
     out->defense = recipe->defense; out->speed = recipe->speed;
     out->scale = recipe->scale; out->starting_percent = recipe->percent;
     count = 0;
@@ -92,6 +111,18 @@ void RogueEncounter_Generate(RogueRun* run, unsigned tier, RogueEncounter* out)
         else out->speed += mobility > 5 ? 15 : mobility * 3;
     }
     if (out->tags & 1024U) out->stocks[0]++;
+    /* Curated, single-use mutations cost two threat points each. The mask
+       preserves weaknesses (no armor on fragile builds, no haste on tanks). */
+    count = 0;
+    for (i = 0; i < 3; ++i) if (recipe->mutation_mask & (1U << i)) pool[count++] = i;
+    while (count && RogueEncounter_Threat(out) + 2 <= RogueEncounter_Budget(run->act,run->floor,tier)) {
+        pick = RogueRng_Bounded(&run->encounter_rng,count);
+        i = pool[pick]; pool[pick] = pool[--count];
+        out->tags |= 1U << (16 + i);
+        if (i == 0) out->damage += 5;
+        if (i == 1) out->defense += 5;
+        if (i == 2) out->speed += 5;
+    }
     for (i = 3; i > 0; --i) run->recent_recipes[i] = run->recent_recipes[i - 1];
     run->recent_recipes[0] = out->recipe;
     for (i = 2; i > 0; --i) run->recent_stages[i] = run->recent_stages[i - 1];

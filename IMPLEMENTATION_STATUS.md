@@ -1,43 +1,31 @@
 # Implementation status
 
-Read all 35 sections, all tables and the embedded progression reference from the supplied v6 DOCX on 2026-09-19. The workspace initially contained only `.iso/`. Work remains active; this is not a release certification.
+The entire supplied v6 DOCX was read, including all 35 sections, tables and the embedded progression reference. This is a fresh repository; the legacy project was used only as a pinned read-only special-move migration oracle. The source ISO remains unchanged and ignored.
 
-| Work package | Status and evidence |
+| Work package | Result | Evidence |
+| --- | --- | --- |
+| WP0 fresh repository and image validation | PASS | Fresh Git history; private GitHub remote; pinned dependencies; read-only ISO/DOL validation |
+| WP1 reproducible upstream baseline | PASS | Exact retail DOL, 1126 upstream objects, separately assembled bootable image |
+| WP2 platform/runtime | PASS | Named exact-anchor hooks, ownership/conflict tests, cached clean-1.02 capabilities, native VS/Classic smoke tests |
+| WP3 deterministic core | PASS | 100 complete runs twice, isolated RNG streams, big-endian pointer-free serialization; golden 866924df |
+| WP4 borrowed specials | PASS | 104 compiled entries; 1225 inventoried legacy hunks with zero unclassified fixes; all 2704 recipient/move pairs pass ground/air lifecycle checks |
+| WP5 playable loop | PASS | Normal controller menu/CSS/reward/route/combat/loss; 100-match soak with native Stage Clear and score integration; 20 native passive assertions plus economy/rest host checks |
+| WP6 native progression UI | PASS | Authored JOBJ panels and retail portraits/fonts; 100 reward/shop/route/rest/win/loss lifetimes; reviewed score, shop, rest and combat status layouts |
+| WP7 economy/rerolls | PASS | Escalating costs, isolated reward/shop RNG, sold-slot preservation, purchases, healing and run history tested |
+| WP8 encounters | PASS | 8 elite and 6 boss families; curated rosters/stages, weights, cooldowns, act/floor eligibility and compatible threat budgets; 4500 budget cases and 1000 family samples |
+| WP9 diagnostics/lifecycle | PASS | 104 hitstun/ledge/grab/death/respawn cases; two-way borrowed transform; controller pause/unpause; debug traces, build/seed context and compact combat indicators |
+| WP10 release reconstruction | PENDING | Final release build, real xdelta encode/decode and fresh release controller smoke are next |
+
+All 21 automated tests pass. Native evidence and exact executable/image/log hashes are in `docs/qa`. These are historical tested builds, not a claim that every later source change was rerun through every test. The full matrix combines successfully completed intervals around three repaired recipient-specific defects; see `specials-full-matrix.json`. Extended interruptions use Captain Falcon; pause was tested with an equipped special outside its active animation. Natural borrowed transformation completion is recorded separately.
+
+Native Stage Clear and combat HUD ownership passed 100 consecutive matches with zero tracked resources at scene/match teardown. The latest UI lifetime fixture covers six screen phases. Controlled passive assertions call native damage, shield, collision and KO paths; they do not replace natural-controller coverage of every passive. Known intentional limitations are listed in `KNOWN_ISSUES.md`.
+
+Original input MD5: `0e63d4223b01d9aba596259dc155a174`. Original DOL SHA1: `08e0bf20134dfcb260699671004527b2d6bb1a45`. Input SHA256: `0de05981a34156b9cedcef73c73d4244ac05cf6149ab3c9cfed917698819e464`.
+
+Repository: https://github.com/joshrcohen/rogueMelee-v2 (private). No legacy history, retail game image, extracted retail asset or compiler binary is tracked. Aerial swapping remains disabled.
+
+| Final delivery gate | Result |
 | --- | --- |
-| WP0 repository, dependencies, image validation | PASS: pinned dependency locks, tooling checks, original ISO MD5 and DOL SHA1 verified |
-| WP1 upstream baseline | PASS: all 1126 upstream objects and exact retail DOL; separately assembled image boots in Dolphin 2606a |
-| WP2 platform/runtime spine | Partial: additive mode, named hooks, scene/match generations and ownership guards; clean-1.02 capabilities are detected once at scene entry and cached; unsupported profiles leave the entry shortcut inactive |
-| WP3 deterministic run core | Host tests PASS: 64-bit seeds, four isolated streams, 100 complete runs twice, serialization v3, golden snapshot `4a55e066` |
-| WP4 borrowed specials | Partial: 104 entries compile; all Captain Falcon cases pass. Full 26 x 104 matrix is running; extended interruption/respawn scenarios remain open |
-| WP5 playable run lifecycle | Native 100-match soak PASS (99 wins, final loss). Normal menu/CSS/reward/route/combat/natural-loss controller flow PASS. 20 native passive assertions and separate economy/rest host checks PASS |
-| WP6 native progression UI | 100 mixed scene lifetimes PASS; controller build/reroll/selection flow PASS. Header spacing corrected and visually verified; final reward/shop visual review remains open |
-| WP7 economy/rerolls | Deterministic core tests PASS: separate reward/shop streams, escalating prices, sold-slot preservation, purchase/rest/history behavior |
-| WP8 encounters | 8 elite and 6 boss families implemented with curated rosters, visible rules, modifier composition and build-sensitive rivals; host distribution tests pass; final native recipe review pending |
-| WP9 diagnostics/soak | 100 scene and 100 match gates PASS; crash context and lifecycle traces implemented. 104 native damage-interruption and blast-zone death/respawn cases PASS on Captain Falcon; full matrix, ledge/grab/pause coverage remain open |
-| WP10 release reconstruction | Pinned xdelta tool built and synthetic roundtrip tested. Real release build, patch reconstruction and package validation remain open |
-
-All 21 automated tests pass. Native evidence is recorded with exact executable/image/log hashes in `docs/qa/`; these are historical tested builds, not certification of every later source change.
-
-Native retail Stage Clear, bonus scoring and progression integration now pass 100 consecutive matches (`docs/qa/100-matches-stage-clear.json`). The earlier 100-match evidence is `docs/qa/100-matches.json`; all borrowed contexts were released before match generation advanced. The normal controller fixture and its limitations are recorded in `docs/qa/normal-controller-flow.json`.
-
-The special matrix first passed 1,252 recipient/move pairs, then exposed Peach's native float flag overwriting a borrowed Fox Blaster item pointer. Native grounded-state updates now target Peach's saved native state. The isolated failing pair passes. The next segment reached 1,504 successful pairs, then found Charge Shot storing a donor hand-bone index on Ice Climbers. Remapping the persistent attachment at creation fixes the isolated case; the remaining 1,200 pairs are being tested. Earlier fixes cover Hand Slap's absent airborne attack and returning Link-family boomerang context/bone handling. Extended hitstun, death/respawn, ledge, grab, pause and transform coverage is still required.
-
-All 24 passive definitions have initial native implementations. General match stability does not substitute for targeted behavior validation. No aerial swapping is enabled.
-
-The UI uses authored JOBJ geometry and the user's retail font/portrait assets. No retail art or game image is committed. SIS storage is bounded and reused; scene exits report zero owned resources in the completed lifecycle gates.
-
-Baseline DOL SHA1: `08e0bf20134dfcb260699671004527b2d6bb1a45`.
-Baseline ISO SHA256: `0de05981a34156b9cedcef73c73d4244ac05cf6149ab3c9cfed917698819e464`.
-Immutable input MD5: `0e63d4223b01d9aba596259dc155a174`.
-
-Migration oracle preparation and its locally supplied missing supplement are documented in `docs/migration/specials-baseline.md`. Generated decomp worktrees and retail data remain ignored build inputs.
-
-Additional matrix fix: Jigglypuff's native accessory callbacks accessed the donor variable union, interpreting Mario's cape pointer as her hat. Saved native bank access fixes isolated case 1561. The full matrix has resumed from there. Thumb-joint lookups for cape attachments now use the validated recipient fallback.
-
-Developer seed/scene/encounter/special/recipient options and targeted asset/hook/DOL build modes are implemented. The native developer fixture passed with a full-width seed, Mario recipient, Fox Reflector and Juggernaut encounter (`docs/qa/developer-launch.json`). The extended fixture's precise evidence is `docs/qa/extended-0-104.json`.
-
-Controller-driven native pause/unpause passed with an equipped borrowed special, followed by interruption, respawn and teardown (`docs/qa/pause-controller.json`). The donor animation was inactive at the pause point; this is not evidence of pausing every move mid-animation. Frame-driven fixture and specialist-pressure timers now stop while native pause flags are set.
-
-Native passive fixture evidence: `docs/qa/passive-behavior.json`; reproduce with `py -3 tools/rogue.py run --check-passives --seed 77`. Native damage, shield, movement, dodge, stock, knockback and KO hooks are checked directly; this controlled fixture does not claim natural controller coverage of every effect.
-
-Remaining encounter gap found during the spec audit: explicit act/floor eligibility, threat costs and compatible mutation budgets. Current curated recipes, roster/stage constraints and cooldowns already pass host coverage.
+| Source, debug build, host tests and native acceptance fixtures | PASS |
+| Release build, reconstructed patch and release controller smoke | PENDING |
+| Clean committed and pushed delivery | PENDING |

@@ -46,6 +46,8 @@ unsigned RogueRun_RerollCost(const RogueRun* run, int shop);
 int RogueRun_Reroll(RogueRun* run, int shop);
 int RogueRun_Buy(RogueRun* run, unsigned slot);
 void RogueEncounter_Generate(RogueRun* run, unsigned tier, RogueEncounter* out);
+unsigned RogueEncounter_Budget(unsigned act, unsigned floor, unsigned tier);
+unsigned RogueEncounter_Threat(const RogueEncounter* encounter);
 unsigned RogueRun_Serialize(const RogueRun* run, unsigned char* out, unsigned capacity);
 int RogueRun_Deserialize(RogueRun* run, const unsigned char* data, unsigned size);
 #endif

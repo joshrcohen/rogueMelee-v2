@@ -17,3 +17,7 @@ Added named source hooks with exact anchor validation and duplicate-site rejecti
 Ported 104 special definitions, preload, restoration, transforms and named source compatibility adapters without aerial runtime. Added compiled-ELF registry checks and migration coverage checks. Added a native mode/scene registration and provisional SIS progression, plus a debug-only real scene lifetime fixture. Dolphin completed 100 scene entries/exits and returned to its native menu with zero tracked scene resources.
 
 Fixed DOL-growth/FST overlap with a checked disc-extent assembler and regression test. Fixed an implicit movie DMA alignment assumption exposed by executable relocation. Native match fixture and normal CSS entry remain under validation.
+
+## Native gameplay and validation
+
+Completed normal controller entry, native Stage Clear and bonus scoring, 24 passive effects, authored progression assets, deterministic economy, explicit encounter budgets and compatibility constraints. The full 2,704-pair special matrix passed after fixing Peach native-variable aliasing, Charge Shot attachment bone mapping, and Jigglypuff accessory/native-variable aliasing. All 104 Captain Falcon entries passed hitstun, ledge, grab/release, death/respawn and teardown tests. Added compact owned combat badges, native controller pause/unpause evidence, stock Classic/VS smoke tests, and two-way borrowed transformation evidence. Release tooling validates native gates, clean source, pinned dependencies and exact reconstruction.

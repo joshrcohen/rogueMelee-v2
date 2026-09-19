@@ -1,0 +1,13 @@
+{
+  "status": "pass",
+  "scenario": "stock-vs",
+  "dol_sha1": "e5dfda87a1e8fbc80a1cdef250a1f5957508925e",
+  "image_sha256": "22c6619a70ee52efd42091953f13115e59f804735fe647fa37a2cdc034b45500",
+  "log_sha256": "d8718a27fa2d3d5bad1ff82eebd10767dfeafab46bf9cb13646fff8bd2d1257d",
+  "movie_sha256": "70a798f62547b192faa23b28bcd094475a24584588edae60e4b64e0562515a78",
+  "checks": [
+    "Native VS CSS, CPU selection and stage selection",
+    "Native match and results with Rogue inactive"
+  ],
+  "scope": "One match smoke test"
+}

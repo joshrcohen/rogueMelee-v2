@@ -3,15 +3,49 @@
   "status": "pass",
   "start": 0,
   "iterations": 100,
-  "seconds": 199.26584889995866,
-  "log_sha256": "f1dd4f8b81680a182aac8b69f2446faa66b840f1ffdd5f98282e36315a89f739",
-  "dol_sha1": "97a12a5d6e1b5b1689e6bfe73df739f0c8686ae2",
-  "image_sha256": "c59e94eb73eb9c914faed88533d084ccc6c12cdf84002004ef0a853e96cd0288",
+  "build": {
+    "profile": "debug",
+    "target": "all",
+    "qa_scene_cycles": 0,
+    "qa_match": true,
+    "qa_ui": true,
+    "qa_matches": 100,
+    "qa_specials": false,
+    "qa_special_start": 0,
+    "qa_special_count": 104,
+    "qa_lifecycle": false,
+    "debug_launch": {
+      "seed": 77,
+      "scene": "encounter",
+      "recipient": 2,
+      "special": 0,
+      "encounter": 0,
+      "passives": 1
+    },
+    "source": {
+      "image": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\.iso\\Super Smash Bros. Melee (USA) (En,Ja) (v1.02).iso",
+      "game_id": "GALE01",
+      "revision": 2,
+      "bytes": 1459978240,
+      "md5": "0e63d4223b01d9aba596259dc155a174",
+      "dol_sha1": "08e0bf20134dfcb260699671004527b2d6bb1a45",
+      "dol_bytes": 4425184
+    },
+    "work": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\work\\6d0a8eb5f940bf92",
+    "dependency_lock_sha256": "e8b497891457b5abb7332bea863410dafce442c70fd690847ed024c6afc29246",
+    "hook_manifest_sha256": "960991cf9ae7c444d27c6a3b1e4c5a30f17c005670efef310b577995c4e90841",
+    "dol_sha1": "26563f7130adce49d4566533d6beb6a252daf16f",
+    "output_sha256": "2882b003207665ef3cb0c7efdca0d5e73dca3e7abd4112721cd23260ee065a55",
+    "output": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\qa\\stage-clear.iso"
+  },
+  "seconds": 243.3549434999004,
+  "log_sha256": "ef308b46cf5803f5966a86da142a236d40a0e9a62e1ccc6ec216f87e94019ac6",
   "checks": [
-    "99 retail Stage Clear screens with native bonus-score totals",
+    "100 matches with final native HUD resource ownership",
+    "99 native Stage Clear presentations",
     "99 wins and final loss",
-    "200 borrowed Falco neutral ground/air entries",
-    "100 donor contexts released before match generation advances",
-    "Stock main menu return"
+    "200 Falco special ground/air entries",
+    "Owned scene and match resources zero on each exit",
+    "Return to stock menu"
   ]
 }

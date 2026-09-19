@@ -73,7 +73,7 @@ amount = 5
 [[entry]]
 key = "grip"
 name = "Strong Grip"
-description = "Deal 10% more throw damage."
+description = "Deal 10% more standard throw damage."
 price = 35
 max_stacks = 3
 stat = 8

@@ -1,0 +1,48 @@
+{
+  "scenario": "transform-31",
+  "status": "pass",
+  "start": 0,
+  "iterations": 1,
+  "build": {
+    "profile": "debug",
+    "target": "all",
+    "qa_scene_cycles": 0,
+    "qa_match": false,
+    "qa_ui": true,
+    "qa_matches": 20,
+    "qa_specials": true,
+    "qa_special_start": 31,
+    "qa_special_count": 1,
+    "qa_lifecycle": true,
+    "debug_launch": {
+      "seed": 77,
+      "scene": "encounter",
+      "recipient": 2,
+      "special": 0,
+      "encounter": 0,
+      "passives": 1
+    },
+    "source": {
+      "image": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\.iso\\Super Smash Bros. Melee (USA) (En,Ja) (v1.02).iso",
+      "game_id": "GALE01",
+      "revision": 2,
+      "bytes": 1459978240,
+      "md5": "0e63d4223b01d9aba596259dc155a174",
+      "dol_sha1": "08e0bf20134dfcb260699671004527b2d6bb1a45",
+      "dol_bytes": 4425184
+    },
+    "work": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\work\\9adf91571f4a79ac",
+    "dependency_lock_sha256": "e8b497891457b5abb7332bea863410dafce442c70fd690847ed024c6afc29246",
+    "hook_manifest_sha256": "960991cf9ae7c444d27c6a3b1e4c5a30f17c005670efef310b577995c4e90841",
+    "dol_sha1": "b72ecc2959f82cd52d42e24460c105d15f646a9c",
+    "output_sha256": "a3795249fe7db7abc599865d3240d2bbd4e57267767d7679444e9c5dc1ae9cfd",
+    "output": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\qa\\transform-31.iso"
+  },
+  "seconds": 7.6139725998509675,
+  "log_sha256": "b2cef6d68e98f353d98b6009425b79ec38c6743a1dc1c0c3d55dea271842e7b6",
+  "checks": [
+    "Borrowed Sheik kit transforms to Zelda and back after natural animation completion",
+    "Base recipient remains Captain Falcon",
+    "Ledge/grab/damage/respawn lifecycle assertions pass"
+  ]
+}

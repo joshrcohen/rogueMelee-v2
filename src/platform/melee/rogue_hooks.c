@@ -1,6 +1,7 @@
 #include "rogue_hooks.h"
 #include "capabilities.h"
 #include "rogue_mode.h"
+#include "rogue_hud.h"
 #include "specials/special_engine.h"
 #include "../../director/rogue_runtime.h"
 #include "../../director/rogue_director.h"
@@ -69,6 +70,7 @@ void RogueHooks_OnSceneExit(void)
 {
     if (!RogueRuntime_IsActive()) return;
     if (RogueRuntime_Get()->scene == GS_VS) {
+        RogueHud_Destroy();
         Rogue_AbilityMatchEnd();
 #if ROGUE_DEBUG
         OSReport("[rogue] match_generation=%u resources=%u\n", RogueRuntime_Get()->match_generation, RogueRuntime_Get()->match_resources);
@@ -92,6 +94,7 @@ void RogueHooks_OnFrame(void)
 {
     RogueMode_MenuFrame();
     RogueMode_MatchFrame();
+    RogueHud_Frame();
     if (!RogueRuntime_IsActive()) return;
 }
 

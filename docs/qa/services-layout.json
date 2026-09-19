@@ -1,0 +1,24 @@
+{
+  "status": "pass",
+  "checks": [
+    "Three shop cards, prices inside card bounds, red unaffordable prices",
+    "Rest damage and recovery preview, Start instruction",
+    "Score/gold/route header and encounter preview legible"
+  ],
+  "builds": [
+    {
+      "scene": "shop",
+      "dol_sha1": "446ff00eced2931cd7e317ea87d3dc647316678b",
+      "image_sha256": "9f78ab3805cb0ddc2101af37a4988461cad204c3f05da0b65b59c4c73b39a48d",
+      "log_sha256": "32f999538401b670cefaf3895f183a44829e5eba79833940981813caece305f1",
+      "screenshot_sha256": "90f38771061e757b7479ad344d720e78b311088a16bf055d56738e7d58647b87"
+    },
+    {
+      "scene": "rest",
+      "dol_sha1": "4c0981c3a389d7863138796482e7506e3e017378",
+      "image_sha256": "61976f94783c684b2ddfcfcb0a3d0abd8f69a2c58816f098cd6d23a0206a3a80",
+      "log_sha256": "c3901a87e358aabbaa7b369162dd9a6c6b5781a77d6355dbefa5f10b0a54ec5a",
+      "screenshot_sha256": "9e4529775fdad23a3e265cedebbef824151387fe3d79dd2ab192e05206cd17c2"
+    }
+  ]
+}

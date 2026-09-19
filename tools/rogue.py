@@ -50,7 +50,7 @@ def main():
     p.add_argument('--profile', choices=['release'], default='release')
     p = sub.add_parser('run', help='Launch the verified image or build a reproducible debug fixture')
     p.add_argument('--seed', type=int)
-    p.add_argument('--scene', choices=['progression','encounter'])
+    p.add_argument('--scene', choices=['progression','encounter','shop','rest'])
     p.add_argument('--encounter')
     p.add_argument('--special')
     p.add_argument('--recipient')

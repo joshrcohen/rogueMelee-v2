@@ -1,4 +1,5 @@
 #include "special_internal.h"
+#include <dolphin/os.h>
 bool Rogue_BorrowedTransform(Fighter_GObj* gobj, HSD_GObjEvent finish)
 {
     Fighter* fp = GET_FIGHTER(gobj);
@@ -25,6 +26,9 @@ bool Rogue_BorrowedTransform(Fighter_GObj* gobj, HSD_GObjEvent finish)
     fp->x28 = gFtDataList[next_kind]->x10;
     fp->x58C = ftData_Table_Unk0[next_kind].count;
     finish(gobj);
+#if ROGUE_DEBUG
+    OSReport("[rogue] borrowed_transform from=%u to=%u recipient=%u match=%u\n",old_kind,next_kind,fp->kind,fighter_state.match_generation);
+#endif
     return true;
 }
 

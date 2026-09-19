@@ -23,7 +23,7 @@ def options(seed=None, scene=None, encounter=None, special=None, recipient=None)
         matching = [i+1 for i,r in enumerate(rows) if r['key'] == key]
         if not matching: raise ValueError('Unknown encounter key; inspect data/encounters.toml')
         result['encounter'] = matching[0]
-    if result['scene'] not in ('progression','encounter'): raise ValueError('Scene must be progression or encounter')
+    if result['scene'] not in ('progression','encounter','shop','rest'): raise ValueError('Scene must be progression, encounter, shop or rest')
     return result
 
 def header(config=None):
@@ -34,4 +34,5 @@ def header(config=None):
         '#define ROGUE_LAUNCH_SPECIAL %u' % config['special'],
         '#define ROGUE_LAUNCH_ENCOUNTER %u' % config['encounter'],
         '#define ROGUE_QA_PASSIVES %u' % config.get('passives',0),
+        '#define ROGUE_LAUNCH_SERVICE %u' % {'shop':1,'rest':2}.get(config['scene'],0),
         '#define ROGUE_LAUNCH_COMBAT %u' % (config['scene'] == 'encounter'), ''])

@@ -110,6 +110,16 @@ def verify_extended_log(log, start, count):
         raise ValueError('Missing successful native damage interruption evidence')
     if [(i,stocks,restored) for i,stocks,restored,motion in respawned] != [(i,98,1) for i in range(start,start+count)]:
         raise ValueError('Missing successful blast-zone death and respawn evidence')
+    ledges = [tuple(map(int,row)) for row in re.findall(r'special_ledge index=(\d+) restored=(\d+) motion=(\d+)',log)]
+    grabs = [tuple(map(int,row)) for row in re.findall(r'special_grab index=(\d+) restored=(\d+) linked=(\d+)',log)]
+    if ledges != [(i,1,252) for i in range(start,start+count)]:
+        raise ValueError('Missing native ledge interruption evidence')
+    if grabs != [(i,1,1) for i in range(start,start+count)]:
+        raise ValueError('Missing native linked grab interruption evidence')
+    expected_transforms = [(i,step,1) for i in range(start,start+count) if i%104 in (31,75) for step in (1,2)]
+    transforms = [tuple(map(int,row)) for row in re.findall(r'transform_cycle index=(\d+) step=(\d+) before=\d+ after=\d+ valid=(\d+)',log)]
+    if transforms != expected_transforms:
+        raise ValueError('Missing completed two-way borrowed transformation evidence')
     return True
 
 

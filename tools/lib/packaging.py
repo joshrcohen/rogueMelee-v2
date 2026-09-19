@@ -37,8 +37,20 @@ def package(cfg):
     if subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip():
         raise ValueError('Commit or resolve worktree changes before release validation')
     from .build import build
+    from .deps import manifest as dependencies
+    from .iso import verify
+    for dependency in dependencies():
+        ensure(dependency['name'])
+    gates = {}
+    for name in ['100-matches-stage-clear', 'specials-full-matrix', 'extended-ledge-grab', 'normal-controller-flow', 'passive-behavior', 'borrowed-transform', 'stock-classic', 'stock-vs']:
+        path = ROOT/'docs/qa'/f'{name}.json'
+        if not path.is_file() or json.loads(path.read_text()).get('status') != 'pass':
+            raise ValueError('Required native release gate is missing or failed: '+name)
+        gates[name] = file_hash(path)
     run([sys.executable, ROOT/'tools/rogue.py', 'test', '--suite', 'all'], ROOT)
     manifest = build(cfg, 'release')
+    if subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True).strip():
+        raise ValueError('Build changed tracked source or generated registries; review and commit before packaging')
     tool = xdelta()
     output = Path(manifest['output'])
     original = Path(cfg['paths']['melee_iso'])
@@ -50,10 +62,15 @@ def package(cfg):
     run([tool, '-f', '-d', '-s', original, patch, reconstructed])
     if file_hash(reconstructed) != manifest['output_sha256']:
         raise ValueError('Release reconstruction hash does not match the built image')
-    manifest.update(git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(), patch_sha256=file_hash(patch), reconstructed_sha256=file_hash(reconstructed), xdelta_sha256=file_hash(tool))
+    verify(original, ROOT)  # Revalidate the immutable source after encoding/decoding.
+    manifest.update(native_gate_sha256=gates, git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(), patch_sha256=file_hash(patch), reconstructed_sha256=file_hash(reconstructed), xdelta_sha256=file_hash(tool))
     # Explicit allowlist: never copy the staging tree or any retail data into dist.
     dist = ROOT/'dist'
     dist.mkdir(exist_ok=True)
+    allowed = {patch.name,'build-manifest.json','THIRD_PARTY_NOTICES.md','README.txt'}
+    unexpected = [p.name for p in dist.iterdir() if p.name not in allowed or not p.is_file()]
+    if unexpected:
+        raise ValueError('Unexpected release-directory contents; move them aside: '+', '.join(unexpected))
     shutil.copyfile(patch, dist/patch.name)
     (dist/'build-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     shutil.copyfile(ROOT/'THIRD_PARTY_NOTICES.md', dist/'THIRD_PARTY_NOTICES.md')

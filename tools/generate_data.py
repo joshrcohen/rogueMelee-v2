@@ -37,7 +37,14 @@ def generate():
             if name == 'encounters':
                 if len(row['roster']) != 3 or any(v not in range(26) and v != 255 for v in row['roster']):
                     raise ValueError('Encounter roster requires three character IDs or random sentinel 255')
+                if not (1 <= row['min_act'] <= row['max_act'] <= 3 and 0 <= row['min_floor'] <= row['max_floor'] < 15):
+                    raise ValueError('Invalid encounter act/floor range')
+                if not 1 <= row['enemies'] <= 3 or not 0 < row['stage_mask'] < 64 or row['weight'] < 1:
+                    raise ValueError('Invalid encounter composition, stage pool or weight')
+                if row['tags'] & row['incompatible_tags'] or row['mutation_mask'] & ~7 or row['threat_cost'] < 1:
+                    raise ValueError('Invalid encounter threat or incompatible modifiers')
                 values.append('{ '+', '.join(map(str,row['roster']))+' }')
+                values.extend(str(row[f]) for f in ['min_act','max_act','min_floor','max_floor','threat_cost','mutation_mask','incompatible_tags'])
             lines.append('    { ' + ', '.join(values) + ' },')
         lines += ['};','']
         (ROOT / f'src/{folder}/{stem}.c').write_text('\n'.join(lines))

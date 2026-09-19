@@ -1,0 +1,44 @@
+{
+  "scenario": "extended",
+  "status": "pass",
+  "start": 0,
+  "iterations": 104,
+  "build": {
+    "profile": "debug",
+    "target": "all",
+    "qa_scene_cycles": 0,
+    "qa_match": false,
+    "qa_ui": false,
+    "qa_matches": 20,
+    "qa_specials": true,
+    "qa_special_start": 0,
+    "qa_special_count": 104,
+    "qa_lifecycle": true,
+    "source": {
+      "image": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\.iso\\Super Smash Bros. Melee (USA) (En,Ja) (v1.02).iso",
+      "game_id": "GALE01",
+      "revision": 2,
+      "bytes": 1459978240,
+      "md5": "0e63d4223b01d9aba596259dc155a174",
+      "dol_sha1": "08e0bf20134dfcb260699671004527b2d6bb1a45",
+      "dol_bytes": 4425184
+    },
+    "work": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\work\\0fbe141e80d568bd",
+    "dependency_lock_sha256": "e8b497891457b5abb7332bea863410dafce442c70fd690847ed024c6afc29246",
+    "hook_manifest_sha256": "960991cf9ae7c444d27c6a3b1e4c5a30f17c005670efef310b577995c4e90841",
+    "dol_sha1": "88884038493243b9580385ea79bef67974d60337",
+    "output_sha256": "cda2cd880eeb4726f2cbd5723eddac0796129bdf2ef7c04d7bafb52052bb9a60",
+    "output": "C:\\Users\\joshu\\Desktop\\rogueMelee-v2\\build\\qa\\extended-specials.iso"
+  },
+  "seconds": 533.2071557999589,
+  "log_sha256": "517e1fad73a958ac52e47222b52b4d1107f71e989120d66756383adabbe491b3",
+  "checks": [
+    "104 ground/air pairs",
+    "104 native damage interruptions",
+    "104 native ledge holds",
+    "104 linked native grabs and paired releases",
+    "104 blast-zone stock loss and respawn checks",
+    "104 match teardowns and stock menu return"
+  ],
+  "scope": "Captain Falcon recipient; controlled engine entries, not natural controller timing."
+}
