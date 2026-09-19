@@ -56,7 +56,7 @@ def bootstrap(cfg, image=None):
     return result
 
 
-def build(cfg, profile='debug', target='all'):
+def build(cfg, profile='debug', target='all', qa_cycles=0, qa_match=False):
     from .integration import prepare
     from generate_data import generate
     generate()
@@ -65,7 +65,11 @@ def build(cfg, profile='debug', target='all'):
         raise ValueError('Set MELEE_ISO_PATH')
     source = verify(image, ROOT)
     clean = ensure('melee')
-    work = prepare(profile)
+    if qa_cycles and (profile != 'debug' or not 1 <= qa_cycles <= 10000):
+        raise ValueError('Scene QA requires debug profile and 1..10000 cycles')
+    if qa_match and (profile != 'debug' or qa_cycles):
+        raise ValueError('Match QA requires debug profile and cannot combine with scene QA')
+    work = prepare(profile, qa_cycles, qa_match)
     run([sys.executable, 'configure.py', '--non-matching', '--map',
          '--compilers', clean / 'build/compilers',
          '--binutils', clean / 'build/binutils',
@@ -77,13 +81,12 @@ def build(cfg, profile='debug', target='all'):
     output = ROOT / 'build/output/rogueMelee.iso'
     if Path(image).resolve() == output.resolve():
         raise ValueError('Input and output images must differ')
-    shutil.copyfile(image, output)
-    fst = ROOT / '.cache/deps/gc_fst/target/release/gc_fst.exe'
-    run([fst, 'fs', output, 'insert', 'Start.dol', work / 'build/GALE01/main.dol'])
+    from .image_build import assemble
+    assemble(image, work / 'build/GALE01/main.dol', output)
     shutil.copyfile(work / 'build/GALE01/main.elf.MAP', output.parent / 'GALE01.map')
     if file_hash(Path(image), 'md5') != source['md5']:
         raise ValueError('Source image changed')
-    result = dict(profile=profile, target=target, source=source, work=str(work),
+    result = dict(profile=profile, target=target, qa_scene_cycles=qa_cycles, qa_match=qa_match, source=source, work=str(work),
                   dependency_lock_sha256=file_hash(ROOT / 'deps/lock.json'),
                   hook_manifest_sha256=file_hash(ROOT / 'integration/hook_manifest.toml'),
                   dol_sha1=file_hash(work / 'build/GALE01/main.dol','sha1'),

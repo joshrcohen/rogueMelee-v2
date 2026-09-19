@@ -1,0 +1,13 @@
+{
+  "scenario": "native progression enter/exit",
+  "cycles": 100,
+  "status": "pass",
+  "dol_sha1": "7be6aba46da635324a92d0b2fd30bfdbcf984520",
+  "source_md5": "0e63d4223b01d9aba596259dc155a174",
+  "log_sha256": "dc25d5692cb7d1d0ffe485e9eb28c70164f986a5b96943275891ff5b7310b7e3",
+  "limitations": [
+    "provisional SIS scene",
+    "shop/results separate resource fixtures pending",
+    "combat stability not tested by this scenario"
+  ]
+}

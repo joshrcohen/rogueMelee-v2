@@ -1,0 +1,9 @@
+version = 1
+
+[[fix]]
+id = "movie-dma-alignment"
+owner = "platform/disc"
+file = "src/melee/lb/lbmthp.c"
+anchor = "static THPDecComp MoviePlayer;"
+replacement = "static THPDecComp MoviePlayer ATTRIBUTE_ALIGN(32);"
+reason = "DVD DMA reads the THP header directly into MoviePlayer; relocated BSS must declare its 32-byte alignment."

@@ -31,10 +31,10 @@ owner = "runtime"
 kind = "source"
 file = "src/melee/gm/gm_1A3F.c"
 symbol = "gm_801A4014"
-anchor = "    gm_801A4D34(scene->on_frame, info);"
-replacement = "    gm_801A4D34(scene->on_frame, info);\n    RogueHooks_OnSceneExit();"
+anchor = "    if (!gmMainLib_8046B0F0.resetting) {\n        if (state->on_exit != NULL) {"
+replacement = "    RogueHooks_OnSceneExit();\n    if (!gmMainLib_8046B0F0.resetting) {\n        if (state->on_exit != NULL) {"
 callback = "RogueHooks_OnSceneExit"
-abi = "Ordinary C call before retail scene teardown; inactive path returns immediately"
+abi = "Ordinary C call after scene-owned cleanup and before state transition; inactive path returns immediately"
 clobbers = []
 
 [[hook]]
@@ -47,4 +47,16 @@ anchor = "                    on_frame();"
 replacement = "                    on_frame();\n                    RogueHooks_OnFrame();"
 callback = "RogueHooks_OnFrame"
 abi = "Ordinary C call after native scene update; inactive path returns immediately"
+clobbers = []
+
+[[hook]]
+id = "debug_boot_mode"
+owner = "diagnostics"
+kind = "source"
+file = "src/melee/gm/gm_1A3F.c"
+symbol = "gm_801A4510"
+anchor = "    state_machine.routing.prev_mode = GM_COUNT;"
+replacement = "    state_machine.routing.prev_mode = GM_COUNT;\n    state_machine.routing.curr_mode = RogueHooks_BootMode(state_machine.routing.curr_mode);"
+callback = "RogueHooks_BootMode"
+abi = "Unsigned mode id in/out; ordinary C ABI; release returns original mode unmodified"
 clobbers = []

@@ -1,6 +1,16 @@
 #include "rogue_hooks.h"
+#include "rogue_mode.h"
 #include "../../director/rogue_runtime.h"
 #include <dolphin/os.h>
+
+unsigned RogueHooks_BootMode(unsigned native_mode)
+{
+#if ROGUE_DEBUG && ROGUE_QA_MODE
+    return GM_ROGUE;
+#else
+    return native_mode;
+#endif
+}
 
 void RogueHooks_OnBoot(void)
 {
@@ -12,6 +22,9 @@ void RogueHooks_OnBoot(void)
 
 void RogueHooks_OnSceneEnter(int scene)
 {
+#if ROGUE_DEBUG
+    OSReport("[rogue] native_scene=%d active=%d\n", scene, RogueRuntime_IsActive());
+#endif
     if (!RogueRuntime_IsActive()) return;
     RogueRuntime_SceneEnter((unsigned) scene);
 #if ROGUE_DEBUG
@@ -34,5 +47,7 @@ void RogueHooks_OnSceneExit(void)
 
 void RogueHooks_OnFrame(void)
 {
+    RogueMode_MenuFrame();
+    RogueMode_MatchFrame();
     if (!RogueRuntime_IsActive()) return;
 }

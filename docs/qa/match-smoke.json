@@ -1,0 +1,10 @@
+{
+  "scenario": "controlled native match lifecycle",
+  "status": "pass",
+  "frames": 300,
+  "fighters": 2,
+  "outcome": 3,
+  "next_floor": 1,
+  "dol_sha1": "1cea221a711b31fddffb4c7047ac8717d04f98bc",
+  "limitation": "Fixture sets opponent stocks to zero; not a gameplay or special compatibility certification."
+}

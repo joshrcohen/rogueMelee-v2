@@ -32,12 +32,19 @@ def main():
     p.add_argument("--image", type=Path)
     p = sub.add_parser("build", help="Compile the source overlay and assemble a separate ISO")
     p.add_argument("--profile", choices=['debug','release'], default='debug')
+    p.add_argument('--qa-scene-cycles', type=int, default=0, help='Debug-only real scene lifecycle test')
+    p.add_argument('--qa-match', action='store_true', help='Debug-only controlled native match lifecycle fixture')
     p.add_argument("--target", choices=['all','dol','hooks','progression','specials','assets'], default='all')
     p = sub.add_parser("verify-image", help="Verify immutable NTSC-U 1.02 input")
     p.add_argument("--image", type=Path)
     p = sub.add_parser("test", help="Execute automated tests")
     p.add_argument("--suite", choices=['all','tooling','core','specials','integration','golden'], default='all')
     sub.add_parser("status", help="Show implementation evidence")
+    sub.add_parser('run', help='Launch the verified output image in an isolated Dolphin profile')
+    p = sub.add_parser('soak', help='Run real native scene resource lifetimes in Dolphin')
+    p.add_argument('--iterations', type=int, default=100)
+    p.add_argument('--timeout', type=int, default=180)
+    sub.add_parser("migrate-specials", help="Inventory the prepared pinned special migration oracle")
     args = parser.parse_args()
     try:
         cfg = load()
@@ -48,7 +55,7 @@ def main():
             bootstrap(cfg, args.image)
         elif args.command == 'build':
             from lib.build import build
-            build(cfg, args.profile, args.target)
+            build(cfg, args.profile, args.target, args.qa_scene_cycles, args.qa_match)
         elif args.command == 'verify-image':
             image = args.image or cfg['paths'].get('melee_iso')
             if not image:
@@ -57,6 +64,15 @@ def main():
         elif args.command == 'test':
             folder = ROOT / 'tests' / (args.suite if args.suite != 'all' else '')
             return subprocess.call([sys.executable, '-m', 'unittest', 'discover', '-s', str(folder), '-v'], cwd=ROOT)
+        elif args.command == 'migrate-specials':
+            from lib.migration import inventory
+            inventory()
+        elif args.command == 'run':
+            from lib.emulator import launch
+            launch(cfg)
+        elif args.command == 'soak':
+            from lib.emulator import scene_soak
+            scene_soak(cfg, args.iterations, args.timeout)
         else:
             print((ROOT / 'IMPLEMENTATION_STATUS.md').read_text(encoding='utf-8'))
         return 0

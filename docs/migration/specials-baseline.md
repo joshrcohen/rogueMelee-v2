@@ -11,4 +11,4 @@ The pinned legacy commit's `tools/build.py --prepare-only` fails because it refe
 
 With that supplement the exact legacy prepare command succeeds. It creates `.cache/melee-071b84ed2d2f` inside the oracle. Its two aerial modifications will be classified as excluded. Neither the supplement nor any numbered patch script is a new-build dependency. The local legacy repository was only read, never modified.
 
-Compatibility inventory and runtime parity validation remain pending.
+Compatibility inventory is complete: 1,225 classified hunks, zero unclassified; named special adapters cover the included edits. Runtime parity validation remains pending.

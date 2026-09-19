@@ -1,5 +1,6 @@
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 import tomllib
@@ -25,18 +26,29 @@ def validate(entries, upstream):
             raise ValueError('Missing hook ownership/ABI')
 
 
-def prepare(profile):
+def prepare(profile, qa_cycles=0, qa_match=False):
     clean = ensure('melee')
     entries = hooks()
     validate(entries, clean)
-    digest = hashlib.sha256(profile.encode())
-    for path in [ROOT / 'integration/hook_manifest.toml'] + sorted((ROOT / 'src').rglob('*')):
+    digest = hashlib.sha256((profile + str(qa_cycles) + str(qa_match)).encode())
+    for path in sorted((ROOT/'integration').rglob('*')) + sorted((ROOT / 'src').rglob('*')) + sorted((ROOT/'tools/lib').glob('*.py')):
         if path.is_file():
             digest.update(path.relative_to(ROOT).as_posix().encode())
             digest.update(path.read_bytes())
     work = ROOT / 'build/work' / digest.hexdigest()[:16]
     if not work.exists():
         run(['git', 'worktree', 'add', '--detach', work, 'HEAD'], clean)
+    from .special_adapters import apply
+    apply(clean, work)
+    from .native_mode import apply as register_mode
+    register_mode(clean, work)
+    fixes = tomllib.loads((ROOT/'integration/platform_fixes.toml').read_text())['fix']
+    for fix in fixes:
+        path = work/fix['file']
+        source = path.read_text()
+        if source.count(fix['anchor']) != 1:
+            raise ValueError('Platform anchor drift: ' + fix['id'])
+        path.write_text(source.replace(fix['anchor'], fix['replacement']))
     for h in entries:
         p = work / h['file']
         # Rebuild each retail file from the exact clean source, never cumulative edits.
@@ -47,10 +59,38 @@ def prepare(profile):
         source = '#include <melee/rogue/platform/melee/rogue_hooks.h>\n' + source
         p.write_text(source, encoding='utf-8')
     shutil.copytree(ROOT / 'src', work / 'src/melee/rogue', dirs_exist_ok=True)
+    # MWCC's -cwd source resolves nested relative includes from the translation
+    # unit. Normalize our owned headers for the generated target tree only.
+    for owned in (ROOT / 'src').rglob('*'):
+        if owned.suffix not in ('.c', '.h'):
+            continue
+        def normalize(match):
+            target = (owned.parent / match.group(1)).resolve()
+            if target.is_file() and target.is_relative_to(ROOT / 'src'):
+                return '#include <melee/rogue/' + target.relative_to(ROOT / 'src').as_posix() + '>'
+            return match.group(0)
+        text = re.sub(r'#include "([^"]+)"', normalize, owned.read_text())
+        (work / 'src/melee/rogue' / owned.relative_to(ROOT / 'src')).write_text(text)
     source = (clean / 'configure.py').read_text(encoding='utf-8')
     objects = ',\n'.join('            Object(Equivalent, "melee/rogue/' + p.relative_to(ROOT / 'src').as_posix() + '")' for p in sorted((ROOT / 'src').rglob('*.c')))
     source = source.replace('config.libs = [', 'config.libs = [\n    MeleeLib("rogueMelee", [\n' + objects + '\n    ]),', 1)
     source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_DEBUG=' + ('1' if profile == 'debug' else '0') + '")\nconfig.libs = [', 1)
+    source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_QA_CYCLES=' + str(qa_cycles) + '")\nconfig.libs = [', 1)
+    source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_QA_MODE=' + str(2 if qa_match else 1 if qa_cycles else 0) + '")\nconfig.libs = [', 1)
+    source = source.replace('Object(Debug, "Runtime/eabi_save_restore.s")',
+                            'Object(Equivalent, "Runtime/eabi_save_restore.s")')
+    adapted = json.loads((ROOT/'integration/special_adapters.json').read_text())['files']
+    units = [p.removeprefix('src/') for p in adapted]
+    setup = '\nrogue_adapted_units = ' + repr(units) + '\n'
+    setup += '''for library in config.libs:
+    for obj in library["objects"]:
+        if obj.name.startswith("melee/rogue/") or obj.name in rogue_adapted_units:
+            obj.completed = True
+            obj.options["mw_version"] = "Wii/1.7"
+            obj.options["extra_cflags"].append("-lang c99")
+
+'''
+    source = source.replace('if args.mode == "configure":', setup + 'if args.mode == "configure":', 1)
     (work / 'configure.py').write_text(source,encoding='utf-8')
     target = work / 'orig/GALE01/sys/main.dol'
     target.parent.mkdir(parents=True,exist_ok=True)
