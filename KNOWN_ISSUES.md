@@ -12,5 +12,6 @@
 - The legacy eventual aerial freeze remains unreproduced; no claim is made that its cause was found or fixed. Separate new-feature cleanup and allocation failures were reproduced, repaired and retained as regression scenarios in `docs/aerials-investigation.md`.
 - Deterministic snapshots use version 4 with five aerial IDs. Version 3 snapshots are rejected; this does not add a memory-card run-save feature. Expanding the offer pool intentionally changes seeded rewards and the golden snapshot hash.
 - Supported image: clean NTSC-U 1.02 only. Modified images are rejected rather than combined with unknown patches. Slippi compatibility is not claimed.
+- Parallel MWCC compilation intermittently produced an upstream `STATIC_ASSERT` parse error on this host. The serialized build (`[build] jobs = 1`) passed unchanged source and reproduced the controller-tested executable. This is recorded separately from gameplay failures.
 
 Release reconstruction and native delivery gates passed; exact tested scope is recorded in IMPLEMENTATION_STATUS.md and docs/qa.

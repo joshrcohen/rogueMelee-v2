@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "scenario": "aerials-release-reconstruction",
+  "source_commit": "5ec52a365c75a7846470993c2c37ba6202f877c7",
+  "baseline_commit": "490f3f6314879ebb5dddd82032daead2e5b962d5",
+  "dol_sha1": "36601dc8eeee7c24623fdf6303b53e077b85a7ec",
+  "image_sha256": "ec5c3270e3e3ec272dfcc495014483550f19cfb327a1734c528e8d18ca23521d",
+  "patch_sha256": "a1ee9e7b5ea4aa6794ef4f5f215eb5a1ec9cb8f0422c23e96113b1acc2455af7",
+  "patch_bytes": 949185,
+  "checks": [
+    "24 automated tests pass in packaging",
+    "Serialized release compile matches the independent shipping release controller executable",
+    "xdelta reconstruction matches release image byte for byte",
+    "Reconstructed image boots through ordinary menu/CSS/reward/route/native combat/natural loss in fresh Dolphin profile",
+    "Original input MD5 and baseline v0.1.0 patch SHA256 unchanged"
+  ],
+  "tooling_attempts": "Parallel MWCC build emitted upstream STATIC_ASSERT illegal-storage-class error; serialized jobs=1 retry passed unchanged source. Failure log retained. No claim of a diagnosed compiler root cause.",
+  "review_hash_format": "SHA256, CRLF normalized to LF for text; raw bytes for binary artifacts",
+  "artifact_sha256": {
+    "docs/evidence/aerials/release/aerial-package-parallel-failure.log.gz": "54b58eaab9f65d66ebcc0693ff4ee00cd8088e721e729d26435a47974e3ab303",
+    "docs/evidence/aerials/release/aerial-package.log.gz": "ebe31c1477e6fea2f7d5701a0518a5a73d2190c2062f84d2dc3a7a063ff4d7ed",
+    "docs/evidence/aerials/release/build-manifest.json": "e653d2060a1f4aa5c6c310389b6e8c22d8f9c3140309ac1fbf919093f0c87408",
+    "docs/evidence/aerials/release/reconstructed-controller.log.gz": "604066bd3a39284a4c8137872a6f5558015ec873d7c66b09777b90284626778c",
+    "docs/evidence/aerials/release/reconstructed-run-end.jpg": "8a50d60629e15649ce4338345fd277ce0721d6f060f025be3a4686448b95a757"
+  }
+}

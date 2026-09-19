@@ -22,6 +22,8 @@ Replace the two paths with your own files. The input must be clean NTSC-U 1.02: 
 
 Alternatively, copy `config/local.example.toml` to `config/local.toml` and edit paths. Environment values override local configuration. Caches, local configuration, input and generated images stay outside Git.
 
+On this Windows host, two parallel compiler attempts intermittently reported an upstream `STATIC_ASSERT` / “illegal storage class” error. The final package compiled successfully with `[build] jobs = 1` in `config/local.toml`, without a source workaround, and matched the independently controller-tested release executable. Use that setting for the recorded release recipe; the current local configuration already uses it.
+
 Press GameCube **X** at the main menu, select a fighter, then play a 15-floor run across three acts. On progression: left/right selects, **A** commits, **B** toggles the build panel, **X** rerolls rewards/shop offers for the displayed escalating cost, and **Start** leaves a shop/rest or returns from a finished run. Native Stage Clear shows bonus scoring after wins. Stocks reset each encounter; damage carries until healed. Native Classic and VS remain available. See `KNOWN_ISSUES.md` for tested scope and intentional limitations.
 
 Rewards and shops can equip neutral, forward, back, up and down air independently. Aerial cards name the donor and slot, show the replaced donor (or Native), and apply next encounter. Shops show the discounted gold price; reward choices cost no gold. An unselected slot stays native. The build panel lists all five slots. Purchases and rerolls only change run data; donor resources are prepared on the next match heap before control.
@@ -84,3 +86,5 @@ Get-FileHash .\patched.iso -Algorithm SHA256
 ```
 
 Compare with `output_sha256` in `dist/v0.2.0/build-manifest.json`, then open the reconstructed image in Dolphin. The v0.1.0 baseline remains separately identifiable by its commit and hashes in `docs/AERIAL_DEVELOPMENT.md`.
+
+Recorded v0.2.0 source commit: `5ec52a365c75a7846470993c2c37ba6202f877c7`. Reconstructed image SHA256: `ec5c3270e3e3ec272dfcc495014483550f19cfb327a1734c528e8d18ca23521d`. The 949185-byte patch SHA256 is `a1ee9e7b5ea4aa6794ef4f5f215eb5a1ec9cb8f0422c23e96113b1acc2455af7`.
