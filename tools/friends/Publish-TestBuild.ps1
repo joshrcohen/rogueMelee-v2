@@ -2,12 +2,14 @@
 Creates a uniquely tagged GitHub testing release. It never pushes source, uploads
 an ISO, embeds credentials, publishes a half-uploaded release, or bypasses game QA.
 Uses v2's existing package command unless -UseExistingPackage is explicitly passed.
+Supports both dist/ and dist/<version>/; selects by exact commit, never by timestamps.
 #>
 [CmdletBinding()]
 param(
     [string]$RepoPath = '',
     [string]$Tag = '',
     [string]$NotesFile = '',
+    [string]$PackageDirectory = '',
     [switch]$Stable,
     [switch]$UseExistingPackage
 )
@@ -48,21 +50,41 @@ try {
     if (-not $Tag) { $Tag = 'test-' + [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss') + '-' + $commit.Substring(0,7) }
     if ($Tag -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$') { throw 'Use a simple tag containing only letters, digits, dot, dash, or underscore (up to 120 characters).' }
     Write-Host "Publishing candidate: $Tag  ($commit)" -ForegroundColor Cyan
+    # Python already runs the developer's package command. Use the same runtime
+    # for package selection and its network-free regression tests.
+    if (Get-Command py -ErrorAction SilentlyContinue) {
+        $pythonProgram = 'py'
+        $pythonPrefix = @('-3')
+    } elseif (Get-Command python -ErrorAction SilentlyContinue) {
+        $pythonProgram = 'python'
+        $pythonPrefix = @()
+    } else { throw 'Python 3.11+ is needed on the publisher computer. Friends do not need Python.' }
+    Run $pythonProgram ($pythonPrefix + @((Join-Path $PSScriptRoot 'test_resolve_package.py')))
     # Produces a fully precompiled EXE and executes real Windows launcher self-tests.
     $launcherDir = Join-Path $RepoPath 'build\friends-launcher'
     & (Join-Path $PSScriptRoot 'Build-Launcher.ps1') -OutputDirectory $launcherDir
     if (-not $UseExistingPackage) {
-        if (Get-Command py -ErrorAction SilentlyContinue) { Run 'py' @('-3','tools/rogue.py','package','--profile','release') }
-        elseif (Get-Command python -ErrorAction SilentlyContinue) { Run 'python' @('tools/rogue.py','package','--profile','release') }
-        else { throw 'Python is needed on the publisher computer to run the existing v2 package command. Friends do not need Python.' }
+        Run $pythonProgram ($pythonPrefix + @('tools/rogue.py','package','--profile','release'))
     }
-    $dist = Join-Path $RepoPath 'dist'
-    $manifestFile = Join-Path $dist 'build-manifest.json'
-    if (-not (Test-Path -LiteralPath $manifestFile)) { throw 'dist/build-manifest.json is missing. Run the v2 package command first.' }
+    # v0.2.0 writes dist/v0.2.0, leaving an older dist/build-manifest.json intact.
+    # Find a unique manifest for this exact commit. Multiple matches require an
+    # explicit -PackageDirectory; we must never pick a stale build by its mtime.
+    $selectionFile = Join-Path $launcherDir 'package-selection.json'
+    $selectionArgs = $pythonPrefix + @(
+        (Join-Path $PSScriptRoot 'resolve_package.py'),
+        '--repo', $RepoPath, '--commit', $commit,
+        '--write-selection', $selectionFile
+    )
+    if ($PackageDirectory) { $selectionArgs += @('--package-dir', $PackageDirectory) }
+    Run $pythonProgram $selectionArgs
+    $selection = Get-Content -LiteralPath $selectionFile -Raw | ConvertFrom-Json
+    $dist = [string](Field $selection 'package_dir')
+    $manifestFile = [string](Field $selection 'manifest_file')
+    if (-not (Test-Path -LiteralPath $manifestFile -PathType Leaf)) { throw "Selected manifest is missing: $manifestFile" }
     $meta = Get-Content -LiteralPath $manifestFile -Raw | ConvertFrom-Json
-    if ([string](Field $meta 'git_commit') -ne $commit) { throw 'The package belongs to a different commit. Re-run package for the current committed source.' }
+    if ([string](Field $meta 'git_commit') -ne $commit) { throw "The selected package belongs to a different commit: $manifestFile. Re-run package for the current committed source." }
     $patches = @(Get-ChildItem -LiteralPath $dist -File -Filter '*.xdelta')
-    if ($patches.Count -ne 1) { throw 'dist must contain exactly one .xdelta patch. Move obsolete patches out of dist and package again.' }
+    if ($patches.Count -ne 1) { throw "Selected package directory must contain exactly one .xdelta patch: $dist. Move obsolete patches out of this directory and package again." }
     $patch = $patches[0]
     if ($patch.Length -le 0 -or $patch.Length -gt 2147483648) { throw 'Patch size is invalid or exceeds the launcher limit.' }
     $patchHash = Hash $patch.FullName
@@ -76,7 +98,9 @@ try {
     if (-not (Test-Path -LiteralPath $output)) { throw 'The verified local output ISO is missing. Package again.' }
     if ((Hash $output) -ne $outputHash) { throw 'The local ISO no longer matches the package. Package again before publishing.' }
     $dirty = (& git status --porcelain | Out-String).Trim()
-    if ($dirty) { throw 'Packaging changed tracked/generated files. Review and commit those changes, then re-run packaging/publishing.' }
+    if ($LASTEXITCODE -ne 0 -or $dirty) { throw 'Packaging changed tracked/generated files or Git status failed. Review and commit those changes, then re-run packaging/publishing.' }
+    $currentCommit = (& git rev-parse HEAD | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0 -or $currentCommit -ne $commit) { throw 'The source commit changed while publishing. Stop concurrent source edits and re-run the publisher.' }
     $stage = Join-Path $RepoPath ('build\friends-publish\' + $Tag)
     if (Test-Path -LiteralPath $stage) { throw "Publishing staging folder already exists: $stage. Use a new tag rather than overwriting a prior candidate." }
     New-Item -ItemType Directory -Path $stage -Force | Out-Null
@@ -97,7 +121,7 @@ try {
     }
     WriteUtf8 (Join-Path $stage 'build-manifest.json') (($sanitized | ConvertTo-Json -Depth 6) + "`n")
     Copy-Item -LiteralPath (Join-Path $launcherDir 'RogueMelee-v2.exe') -Destination (Join-Path $stage 'RogueMelee-v2.exe')
-    foreach ($notice in @('THIRD_PARTY_NOTICES.md')) { if (-not (Test-Path -LiteralPath (Join-Path $dist $notice))) { throw "Missing $notice in dist." }; Copy-Item -LiteralPath (Join-Path $dist $notice) -Destination (Join-Path $stage $notice) }
+    foreach ($notice in @('THIRD_PARTY_NOTICES.md')) { if (-not (Test-Path -LiteralPath (Join-Path $dist $notice))) { throw "Missing $notice in selected package directory: $dist" }; Copy-Item -LiteralPath (Join-Path $dist $notice) -Destination (Join-Path $stage $notice) }
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'FRIENDS-README.txt') -Destination (Join-Path $stage 'README.txt')
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'LICENSE.txt') -Destination (Join-Path $stage 'LAUNCHER-LICENSE.txt')
     $assets = @($patch.Name,'build-manifest.json','RogueMelee-v2.exe','THIRD_PARTY_NOTICES.md','README.txt','LAUNCHER-LICENSE.txt')
