@@ -21,7 +21,7 @@
           "line": 933,
           "before": [],
           "after": [
-            "    Rogue_AbilityFighterCreated(fp);"
+            "    RogueFighter_Created(fp);"
           ],
           "evidence_sha256": "a6a284d30effec44aaa81932ba1e872741de555d6d715bb982aad74c3a4f14bd"
         },

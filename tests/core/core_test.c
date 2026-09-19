@@ -1,4 +1,5 @@
 #include "../../src/core/run.h"
+#include "../../src/core/offers.h"
 #include "../../src/encounters/encounter_registry.h"
 #include <assert.h>
 #include <stdio.h>
@@ -70,7 +71,22 @@ int main(void)
     assert(!RogueRun_Reroll(&a,0)); assert(memcmp(&a,&b,sizeof(a))==0);
     assert(RogueRun_ChooseUpgrade(&a,0)); assert(RogueRun_ChooseRoute(&a,0));
     assert(RogueRun_MatchEnd(&a,0,0)); assert(a.phase==ROGUE_DEAD);
-    assert(checksum==0x0ae8dc69U);
+    fprintf(stderr,"Catalog snapshot=%08x\n",checksum);
+    assert(checksum==0xfaec0b7fU);
+    /* Catalog expansion intentionally changes reward draws; route streams stay isolated. */
+    for(i=0;i<ROGUE_SPECIALS;++i) {
+        RogueRun_Init(&a,42,(rogue_specials[i].character+1)%26);
+        a.reward.ids[0]=ROGUE_UPGRADES+i+1;
+        assert(RogueRun_ChooseUpgrade(&a,0));
+        assert(a.specials[rogue_specials[i].slot]==rogue_specials[i].id);
+        assert(!RogueOffer_Eligible(&a,ROGUE_UPGRADES+i+1));
+        assert(RogueSpecial_Find(rogue_specials[i].id)==&rogue_specials[i]);
+    }
+    RogueRun_Init(&a,1,0); c=a; b=a; b.stacks[0]=4;
+    n=RogueRun_Serialize(&b,first,sizeof(first));
+    assert(!RogueRun_Deserialize(&c,first,n)); assert(memcmp(&a,&c,sizeof(a))==0);
+    b=a; b.preview[0].defense=0; n=RogueRun_Serialize(&b,first,sizeof(first));
+    assert(!RogueRun_Deserialize(&c,first,n)); assert(memcmp(&a,&c,sizeof(a))==0);
     printf("PASS: 100 complete runs twice; 50 reroll-isolation seeds; 1000 encounters; snapshot=%08x\n",checksum);
     return 0;
 }

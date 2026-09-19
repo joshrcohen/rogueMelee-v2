@@ -7,3 +7,27 @@ file = "src/melee/lb/lbmthp.c"
 anchor = "static THPDecComp MoviePlayer;"
 replacement = "static THPDecComp MoviePlayer ATTRIBUTE_ALIGN(32);"
 reason = "DVD DMA reads the THP header directly into MoviePlayer; relocated BSS must declare its 32-byte alignment."
+
+[[fix]]
+id = "run-damage-modifiers"
+owner = "platform/fighter"
+file = "src/melee/ft/fighter.c"
+anchor = "void Fighter_TakeDamage_8006CC7C(Fighter* fp, float damage_amount)\n{"
+replacement = "void Fighter_TakeDamage_8006CC7C(Fighter* fp, float damage_amount)\n{\n    damage_amount = RogueFighter_AdjustDamage(fp, damage_amount);"
+reason = "Apply run damage policy at the native damage accumulation boundary; inactive mode returns the unmodified value."
+
+[[fix]]
+id = "sis-append-encoded-capacity"
+owner = "platform/ui"
+file = "src/sysdolphin/baselib/hsd_3A64.c"
+anchor = "int HSD_SisLib_803A6B98(HSD_Text* text, float x, float y, const char* fmt, ...)\n{\n    u8 buffer[128];\n    u8 encoded[128];"
+replacement = "int HSD_SisLib_803A6B98(HSD_Text* text, float x, float y, const char* fmt, ...)\n{\n    u8 buffer[128];\n    u8 encoded[512];"
+reason = "A 127-byte text line expands to multiple SIS bytes per character; preserve the input contract without overflowing encoded storage."
+
+[[fix]]
+id = "sis-update-encoded-capacity"
+owner = "platform/ui"
+file = "src/sysdolphin/baselib/hsd_3A64.c"
+anchor = "s32 HSD_SisLib_803A70A0(HSD_Text* text, s32 entry_idx, char* fmt, ...)\n{\n    u8 buffer[128];\n    u8 encoded[128];"
+replacement = "s32 HSD_SisLib_803A70A0(HSD_Text* text, s32 entry_idx, char* fmt, ...)\n{\n    u8 buffer[128];\n    u8 encoded[512];"
+reason = "Use the same safe encoded capacity when updating an existing native text entry."

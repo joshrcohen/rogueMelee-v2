@@ -2,6 +2,7 @@
 #define ROGUE_MELEE_SPECIAL_ENGINE_H
 #include <melee/ft/forward.h>
 #include <melee/gm/forward.h>
+#include "../melee_fighter.h"
 
 typedef enum RogueAbilitySlot {
     ROGUE_ABILITY_NEUTRAL, ROGUE_ABILITY_SIDE,

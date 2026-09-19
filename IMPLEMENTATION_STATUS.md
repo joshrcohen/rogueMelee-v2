@@ -9,9 +9,9 @@ Read all 35 sections, all tables and the embedded progression reference from the
 | WP0 repository, dependencies and image validation | PASS | `py -3 tools/rogue.py doctor`; `py -3 tools/rogue.py test --suite tooling` (4 tests); `py -3 tools/rogue.py verify-image` (both fixed hashes match) |
 | WP1 upstream baseline and no-op ISO | PASS | `py -3 tools/rogue.py bootstrap` exit 0; upstream 1126/1126 objects and DOL hash check pass; Dolphin 2606a renders native memory-card startup prompt |
 | WP2 hook/platform/runtime spine | Partial, gate pending | Debug source-overlay ISO builds; 5 named hooks; 100 real progression scene lifetimes completed in Dolphin with zero tracked resources and return to stock main menu. Complete facade and broader shop/results lifetime coverage remain pending |
-| WP3 deterministic run core | Host tests PASS, integration pending | `py -3 tools/rogue.py test --suite core`: 100 full runs twice, 50 reroll-isolation seeds, 1000 encounters, serialization roundtrip, fixed snapshot `0ae8dc69` |
+| WP3 deterministic run core | Host tests PASS, integration pending | `py -3 tools/rogue.py test --suite core`: 100 full runs twice, 50 reroll-isolation seeds, 1000 encounters, serialization roundtrip, fixed snapshot `faec0b7f` |
 | WP4 borrowed-special migration | Compiles; runtime gate pending | 104 compiled registry entries verified; named compatibility adapters in 96 source files; three specials tests pass |
-| WP5 playable run lifecycle | In progress | Additive native mode, CSS, progression and team-match setup compile; emulator match lifecycle fixture under validation |
+| WP5 playable run lifecycle | In progress | 20 native match transitions PASS: 19 wins and final loss, expected team sizes, 40 borrowed Falco neutral ground/air entries and return to stock menu; normal CSS/input flow remains to validate |
 | WP6 native progression UI | Pending | |
 | WP7 economy and rerolls | Pending | |
 | WP8 elite and boss recipes | Pending | |
@@ -26,4 +26,6 @@ Input MD5 was rechecked after assembly and remains `0e63d4223b01d9aba596259dc155
 
 Migration oracle preparation succeeded after supplying the pinned script's missing aerial supplement from the local legacy archive; see docs/migration/specials-baseline.md. Special registry, preload, state restoration, transforms and compatibility adapters are now ported; runtime certification remains pending.
 
-The run core currently has 24 upgrade definitions, 8 elite recipes, 6 boss recipes, 15 floors and four isolated RNG streams. Upgrade combat effects, the native scene loop, borrowed-special offers and the full UI are not connected yet. A separate native scene lifetime test now exists (`soak`); combat, broader scene coverage and long-run stability gates remain open.
+The run core currently has 24 upgrade definitions, 8 elite recipes, 6 boss recipes, 15 floors and four isolated RNG streams. Borrowed-special offers and prices are connected; damage, movement, weight, landing, knockback and economy modifiers have native adapters. Remaining passive effects and the final native UI are still in progress. A separate native scene lifetime test now exists (`soak`); combat, broader scene coverage and long-run stability gates remain open.
+
+Latest milestone: all 13 automated tests pass; native 20-match evidence is recorded in `docs/qa/match-transitions.json`. The renderer now updates SIS entries in place and handles native punctuation encoding. Serialization rejects malformed offer/special/encounter values atomically.

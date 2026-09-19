@@ -1,0 +1,19 @@
+{
+  "scenario": "native-match-transitions",
+  "status": "pass",
+  "transitions": 20,
+  "wins": 19,
+  "losses": 1,
+  "ground_and_air_entries": 40,
+  "special_id": 89,
+  "recipient": "Fox",
+  "returned_to_stock_menu": true,
+  "dol_sha1": "087ba86d80f487828748d087a1dd5342b15fb642",
+  "image_sha256": "ac92a88f3413b3caaf6593449e655ad171f7b6098219dc4bb2139854ca0a29cb",
+  "log_sha256": "d5894e97c73ee50c211a65f36852a6ab9cedf46dedb69048b1cf4933674db3fc",
+  "limitations": [
+    "Controlled stock exhaustion fixture, not player-input gameplay certification",
+    "Only Falco neutral special on Fox is exercised",
+    "Full special and long-session matrices remain pending"
+  ]
+}

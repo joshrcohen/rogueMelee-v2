@@ -1,7 +1,13 @@
 #include "rogue_mode.h"
+#include "ui_text.h"
 #include "../../director/rogue_director.h"
 #include "../../upgrades/upgrade_registry.h"
 #include "../../encounters/encounter_registry.h"
+#include "../../core/offers.h"
+#include "specials/special_engine.h"
+#include <melee/ft/types.h>
+#include <melee/ft/ftcommon.h>
+#include <melee/ft/kinds/ftCommon/ftCo_Fall.h>
 #include <melee/gm/gm_1601.h>
 #include <melee/gm/gm_1A3F.h>
 #include <melee/gm/gmscene.h>
@@ -18,9 +24,9 @@ static VsModeData selection;
 static CSSData css;
 static StartMeleeData match;
 static MatchExitInfo result;
-static HSD_Text* screen;
+static RogueText screen;
 static unsigned generation, cursor, build_view;
-static unsigned qa_cycles, qa_frames;
+static unsigned qa_cycles, qa_frames, qa_matches, qa_failures;
 static const unsigned stages[6] = { 31, 32, 28, 8, 2, 3 };
 
 static void change_state(unsigned id)
@@ -37,6 +43,7 @@ void RogueMode_Load(void)
     css.unk_0x0 = 0;
 #if ROGUE_DEBUG && ROGUE_QA_MODE
     qa_cycles = qa_frames = 0;
+    qa_matches = qa_failures = 0;
     RogueDirector_Start(0x524f4755, CKind_Fox);
 #endif
 }
@@ -89,9 +96,13 @@ static void enter_match(GameModeState* state)
         player->cpu_level = 3 + run->act * 2;
         if (i) {
             player->attack_ratio = run->current.damage / 100.0f;
-            player->defense_ratio = run->current.defense / 100.0f;
+            player->defense_ratio = 100.0f / run->current.defense;
             player->model_scale = run->current.scale / 100.0f;
             player->damage = run->current.starting_percent;
+            player->vs_metal = (run->current.tags & 8) != 0;
+        } else {
+            player->attack_ratio = 1.0f + run->stacks[14] * 0.05f;
+            player->defense_ratio = 1.0f - run->stacks[15] * 0.05f;
         }
         audio |= lbAudioAx_80026E84(player->ckind);
     }
@@ -110,6 +121,12 @@ static void exit_match(GameModeState* state)
         result.match_end.player_standings[0].stocks > 0;
     (void) state;
     RogueRun_MatchEnd(RogueDirector_Run(), won, 0);
+#if ROGUE_DEBUG && ROGUE_QA_MODE == 2
+    qa_matches++;
+    if (won != (qa_matches < 20)) qa_failures++;
+    qa_frames = 0;
+    OSReport("[rogue] transition_qa index=%u won=%d failures=%u\n", qa_matches, won, qa_failures);
+#endif
     OSReport("[rogue] match_exit outcome=%u won=%d phase=%u floor=%u\n",
         result.match_end.outcome, won, RogueDirector_Run()->phase, RogueDirector_Run()->floor);
     gm_SetNextGameModeStateId(1);
@@ -132,16 +149,13 @@ static void draw(void)
     unsigned i;
     const char* phases[] = { "Select", "Choose an upgrade", "Choose your route",
         "Battle", "Shop", "Rest", "Run ended", "Run complete" };
-    if (screen) HSD_SisLib_803A5CC4(screen);
-    screen = HSD_SisLib_803A6754(4, 0);
-    screen->font_size.x = screen->font_size.y = 0.6f;
-    screen->default_kerning = 1;
-    HSD_SisLib_803A6B98(screen, 35, 25, "rogueMelee   Act %u / 3   Floor %u / 15", run->act, run->floor + 1);
-    HSD_SisLib_803A6B98(screen, 35, 65, "%s   Gold %u   Seed %08X", phases[run->phase], run->gold, run->seed);
+    RogueText_Begin(&screen);
+    RogueText_Line(&screen, 35, 25, "rogueMelee   Act %u / 3   Floor %u / 15", run->act, run->floor + 1);
+    RogueText_Line(&screen, 35, 65, "%s   Gold %u   Seed %08X", phases[run->phase], run->gold, run->seed);
     if (build_view) {
         unsigned line = 0;
         for (i = 0; i < ROGUE_UPGRADES; ++i) if (run->stacks[i]) {
-            HSD_SisLib_803A6B98(screen, 35 + (line / 10) * 300, 110 + (line % 10) * 25,
+            RogueText_Line(&screen, 35 + (line / 10) * 300, 110 + (line % 10) * 25,
                               "%s x%u", rogue_upgrades[i].name, run->stacks[i]);
             line++;
         }
@@ -149,30 +163,31 @@ static void draw(void)
         RogueOfferState* offers = run->phase == ROGUE_SHOP ? &run->shop : &run->reward;
         for (i = 0; i < 3; ++i) {
             unsigned id = offers->ids[i];
-            const RogueUpgradeDef* def = id ? &rogue_upgrades[id - 1] : NULL;
-            HSD_SisLib_803A6B98(screen, 35, 130 + i * 75, "%s %s %s", cursor == i ? ">" : " ",
-                def ? def->name : "No offers", offers->sold[i] ? "(Sold)" : "");
-            if (def) HSD_SisLib_803A6B98(screen, 55, 158 + i * 75, "%s", def->description);
+            RogueText_Line(&screen, 35, 130 + i * 75, "%s %s %s", cursor == i ? ">" : " ",
+                RogueOffer_Name(id), offers->sold[i] ? "(Sold)" : "");
+            RogueText_Line(&screen, 55, 158 + i * 75, "%s", RogueOffer_Description(id));
         }
-        HSD_SisLib_803A6B98(screen, 35, 380, "X: Reroll (%u gold)", RogueRun_RerollCost(run, run->phase == ROGUE_SHOP));
+        RogueText_Line(&screen, 35, 380, "X: Reroll (%u gold)", RogueRun_RerollCost(run, run->phase == ROGUE_SHOP));
     } else if (run->phase == ROGUE_ROUTE) {
         for (i = 0; i < 2; ++i) {
             unsigned recipe = run->preview[i].recipe;
-            HSD_SisLib_803A6B98(screen, 35, 150 + i * 80, "%s %s", cursor == i ? ">" : " ",
+            RogueText_Line(&screen, 35, 150 + i * 80, "%s %s", cursor == i ? ">" : " ",
                 recipe ? rogue_recipes[recipe - 1].name : run->route[run->floor][i] == ROGUE_NODE_SHOP ? "Shop" : "Rest");
         }
     }
-    HSD_SisLib_803A6B98(screen, 35, 430, "A: Choose   B: Build   Start: Continue");
+    RogueText_Line(&screen, 35, 430, "A: Choose   B: Build   Start: Continue");
+    RogueText_End(&screen);
 }
 
 void RogueMode_Enter(void* data)
 {
     (void) data;
     cursor = build_view = 0;
-    screen = NULL;
+    screen.native = NULL;
     generation = RogueRuntime_Get()->scene_generation;
     HSD_SisLib_803A62A0(4, "SdMenu.usd", "SIS_MenuData");
     HSD_SisLib_803A611C(4, NULL, 7, 8, 128, 5, 128, 0);
+    RogueText_Create(&screen, 4, 0);
     RogueRuntime_ResourceAcquire(generation);
     draw();
 }
@@ -180,8 +195,8 @@ void RogueMode_Enter(void* data)
 void RogueMode_Exit(void* data)
 {
     (void) data;
+    RogueText_Destroy(&screen);
     HSD_SisLib_803A5F50(4);
-    screen = NULL;
     RogueRuntime_ResourceRelease(generation);
 }
 
@@ -202,12 +217,23 @@ void RogueMode_Frame(void)
 #endif
     /* The controlled fixture exercises native result computation, not player skill. */
 #if ROGUE_DEBUG && ROGUE_QA_MODE == 2
-    if (run->floor == 0 && ++qa_frames == 60) {
-        RogueRun_ChooseUpgrade(run, 0);
-        RogueRun_ChooseRoute(run, 0);
-        qa_frames = 0;
-        change_state(2);
+    if (++qa_frames < 60) return;
+    qa_frames = 0;
+    if (qa_matches >= 20 || qa_failures) {
+        OSReport("[rogue] match_qa_complete transitions=%u failures=%u phase=%u\n", qa_matches, qa_failures, run->phase);
+        gm_ChangeGameModeAfterCurrentScene(GM_MENU);
+        gm_801A4B60();
+        return;
     }
+    if (run->phase == ROGUE_COMPLETE) RogueDirector_Start(0x524f4755 + qa_matches, CKind_Fox);
+    if (run->phase == ROGUE_SHOP || run->phase == ROGUE_REST) RogueRun_LeaveService(run);
+    if (run->phase == ROGUE_REWARD) RogueRun_ChooseUpgrade(run, 0);
+    if (run->phase == ROGUE_ROUTE) RogueRun_ChooseRoute(run, 0);
+    if (run->phase == ROGUE_FIGHT) {
+        memset(run->specials, 0, sizeof(run->specials));
+        run->specials[ROGUE_ABILITY_NEUTRAL] = Rogue_AbilityForOpponent(CKind_Falco, ROGUE_ABILITY_NEUTRAL);
+        change_state(2);
+    } else draw();
     return;
 #endif
     if (!input) return;
@@ -247,14 +273,30 @@ void RogueMode_MatchFrame(void)
 #if ROGUE_DEBUG && ROGUE_QA_MODE == 2
     unsigned i;
     if (!RogueRuntime_IsActive() || RogueRuntime_Get()->scene != GS_VS) return;
-    if (++qa_frames == 300) {
+    ++qa_frames;
+    if (qa_frames == 180 || qa_frames == 360) {
+        Fighter_GObj* entity = Player_GetEntity(0);
+        Fighter* fighter = entity ? entity->user_data : NULL;
+        if (fighter) {
+            if (qa_frames == 360) {
+                fighter->cur_pos.y += 30.0f;
+                ftCommon_8007D5D4(fighter);
+                ftCo_Fall_Enter(entity);
+            }
+            OSReport("[rogue] special_qa id=%u air=%d entered=%d\n",
+                RogueDirector_Run()->specials[0], qa_frames == 360,
+                Rogue_TrySpecial(entity, ROGUE_ABILITY_NEUTRAL, qa_frames == 360));
+        }
+    }
+    if (qa_frames == 450) {
         unsigned present = 0;
         for (i = 0; i <= RogueDirector_Run()->current.enemy_count; ++i)
             if (Player_GetEntity(i)) present++;
-        OSReport("[rogue] match_qa frames=300 fighters=%u expected=%u\n", present,
+        OSReport("[rogue] match_qa frames=450 fighters=%u expected=%u\n", present,
             RogueDirector_Run()->current.enemy_count + 1);
-        for (i = 1; i <= RogueDirector_Run()->current.enemy_count; ++i)
-            Player_SetStocks(i, 0);
+        if (present != RogueDirector_Run()->current.enemy_count + 1) qa_failures++;
+        if (qa_matches == 19) Player_SetStocks(0, 0);
+        else for (i = 1; i <= RogueDirector_Run()->current.enemy_count; ++i) Player_SetStocks(i, 0);
     }
 #endif
 }

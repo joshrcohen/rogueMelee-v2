@@ -1,4 +1,6 @@
 #include "run.h"
+#include "offers.h"
+#include "../upgrades/upgrade_registry.h"
 #include <string.h>
 
 typedef struct Codec { unsigned char* out; const unsigned char* in; unsigned pos, size, ok; } Codec;
@@ -46,6 +48,19 @@ static void codec(Codec* c, RogueRun* r)
     }
 #undef FIELD
 }
+
+static int valid_encounter(const RogueEncounter* e)
+{
+    unsigned i;
+    if (!e->recipe) return e->enemy_count == 0 && e->stage == 0;
+    if (e->recipe > ROGUE_RECIPES || e->stage < 1 || e->stage > 6 ||
+        e->enemy_count < 1 || e->enemy_count > 3 || e->damage < 1 || e->damage > 500 ||
+        e->defense < 1 || e->defense > 500 || e->speed < 1 || e->speed > 200 ||
+        e->scale < 25 || e->scale > 200 || e->starting_percent > 999) return 0;
+    for (i = 0; i < e->enemy_count; ++i)
+        if (e->fighters[i] >= 26 || e->stocks[i] < 1 || e->stocks[i] > 9) return 0;
+    return 1;
+}
 unsigned RogueRun_Serialize(const RogueRun* run, unsigned char* out, unsigned capacity)
 {
     RogueRun copy;
@@ -72,7 +87,18 @@ int RogueRun_Deserialize(RogueRun* run, const unsigned char* data, unsigned size
         if(copy.selected_route[i]>1) return 0;
         for(j=0;j<2;++j) if(copy.route[i][j]>ROGUE_NODE_REST) return 0;
     }
-    for(i=0;i<3;++i) if(copy.reward.ids[i]>ROGUE_UPGRADES || copy.shop.ids[i]>ROGUE_UPGRADES || copy.shop.sold[i]>1) return 0;
+    if (copy.gold > 1000000 || copy.score > 100000000 ||
+        copy.reward.claimed > 1 || copy.shop.claimed > 1) return 0;
+    for (i = 0; i < ROGUE_UPGRADES; ++i)
+        if (copy.stacks[i] > rogue_upgrades[i].max_stacks) return 0;
+    for(i=0;i<3;++i) if(copy.reward.ids[i]>ROGUE_OFFERS || copy.shop.ids[i]>ROGUE_OFFERS ||
+        copy.shop.sold[i]>1 || copy.reward.sold[i]>1) return 0;
+    if (!valid_encounter(&copy.current) || !valid_encounter(&copy.preview[0]) ||
+        !valid_encounter(&copy.preview[1])) return 0;
+    for(i=0;i<4;++i) if(copy.specials[i]) {
+        const RogueSpecialDef* special = RogueSpecial_Find(copy.specials[i]);
+        if (!special || special->slot != i) return 0;
+    }
     if(!copy.route_rng.state || !copy.encounter_rng.state || !copy.reward_rng.state || !copy.shop_rng.state) return 0;
     *run=copy;
     return 1;

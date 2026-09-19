@@ -43,6 +43,9 @@ def prepare(profile, qa_cycles=0, qa_match=False):
     from .native_mode import apply as register_mode
     register_mode(clean, work)
     fixes = tomllib.loads((ROOT/'integration/platform_fixes.toml').read_text())['fix']
+    adapted_paths = json.loads((ROOT/'integration/special_adapters.json').read_text())['files']
+    for name in {fix['file'] for fix in fixes} - adapted_paths.keys():
+        shutil.copyfile(clean/name, work/name)
     for fix in fixes:
         path = work/fix['file']
         source = path.read_text()

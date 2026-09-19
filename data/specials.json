@@ -1,0 +1,938 @@
+[
+  {
+    "id": 1,
+    "key": "mario_neutral",
+    "name": "Fireball",
+    "character": 8,
+    "donor": 0,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 2,
+    "key": "mario_side",
+    "name": "Cape",
+    "character": 8,
+    "donor": 0,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 3,
+    "key": "mario_up",
+    "name": "Super Jump Punch",
+    "character": 8,
+    "donor": 0,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 4,
+    "key": "mario_down",
+    "name": "Mario Tornado",
+    "character": 8,
+    "donor": 0,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 5,
+    "key": "fox_neutral",
+    "name": "Fox Blaster",
+    "character": 2,
+    "donor": 1,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 6,
+    "key": "fox_side",
+    "name": "Fox Illusion",
+    "character": 2,
+    "donor": 1,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 7,
+    "key": "fox_up",
+    "name": "Fire Fox",
+    "character": 2,
+    "donor": 1,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 8,
+    "key": "fox_down",
+    "name": "Fox Reflector",
+    "character": 2,
+    "donor": 1,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 9,
+    "key": "falcon_neutral",
+    "name": "Falcon Punch",
+    "character": 0,
+    "donor": 2,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 10,
+    "key": "falcon_side",
+    "name": "Raptor Boost",
+    "character": 0,
+    "donor": 2,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 11,
+    "key": "falcon_up",
+    "name": "Falcon Dive",
+    "character": 0,
+    "donor": 2,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 12,
+    "key": "falcon_down",
+    "name": "Falcon Kick",
+    "character": 0,
+    "donor": 2,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 13,
+    "key": "donkey_neutral",
+    "name": "Giant Punch",
+    "character": 1,
+    "donor": 3,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 14,
+    "key": "donkey_side",
+    "name": "Headbutt",
+    "character": 1,
+    "donor": 3,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 15,
+    "key": "donkey_up",
+    "name": "Spinning Kong",
+    "character": 1,
+    "donor": 3,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 16,
+    "key": "donkey_down",
+    "name": "Hand Slap",
+    "character": 1,
+    "donor": 3,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 17,
+    "key": "kirby_neutral",
+    "name": "Inhale",
+    "character": 4,
+    "donor": 4,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 18,
+    "key": "kirby_side",
+    "name": "Hammer",
+    "character": 4,
+    "donor": 4,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 19,
+    "key": "kirby_up",
+    "name": "Final Cutter",
+    "character": 4,
+    "donor": 4,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 20,
+    "key": "kirby_down",
+    "name": "Stone",
+    "character": 4,
+    "donor": 4,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 21,
+    "key": "koopa_neutral",
+    "name": "Fire Breath",
+    "character": 5,
+    "donor": 5,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 22,
+    "key": "koopa_side",
+    "name": "Koopa Klaw",
+    "character": 5,
+    "donor": 5,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 23,
+    "key": "koopa_up",
+    "name": "Whirling Fortress",
+    "character": 5,
+    "donor": 5,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 24,
+    "key": "koopa_down",
+    "name": "Bowser Bomb",
+    "character": 5,
+    "donor": 5,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 25,
+    "key": "link_neutral",
+    "name": "Bow",
+    "character": 6,
+    "donor": 6,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 26,
+    "key": "link_side",
+    "name": "Boomerang",
+    "character": 6,
+    "donor": 6,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 27,
+    "key": "link_up",
+    "name": "Spin Attack",
+    "character": 6,
+    "donor": 6,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 28,
+    "key": "link_down",
+    "name": "Bomb",
+    "character": 6,
+    "donor": 6,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 29,
+    "key": "seak_neutral",
+    "name": "Needle Storm",
+    "character": 19,
+    "donor": 7,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 30,
+    "key": "seak_side",
+    "name": "Chain",
+    "character": 19,
+    "donor": 7,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 31,
+    "key": "seak_up",
+    "name": "Vanish",
+    "character": 19,
+    "donor": 7,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 32,
+    "key": "seak_down",
+    "name": "Transform to Zelda",
+    "character": 19,
+    "donor": 7,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 33,
+    "key": "ness_neutral",
+    "name": "PK Flash",
+    "character": 11,
+    "donor": 8,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 34,
+    "key": "ness_side",
+    "name": "PK Fire",
+    "character": 11,
+    "donor": 8,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 35,
+    "key": "ness_up",
+    "name": "PK Thunder",
+    "character": 11,
+    "donor": 8,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 36,
+    "key": "ness_down",
+    "name": "PSI Magnet",
+    "character": 11,
+    "donor": 8,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 37,
+    "key": "peach_neutral",
+    "name": "Toad",
+    "character": 12,
+    "donor": 9,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 38,
+    "key": "peach_side",
+    "name": "Peach Bomber",
+    "character": 12,
+    "donor": 9,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 39,
+    "key": "peach_up",
+    "name": "Peach Parasol",
+    "character": 12,
+    "donor": 9,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 40,
+    "key": "peach_down",
+    "name": "Vegetable",
+    "character": 12,
+    "donor": 9,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 41,
+    "key": "popo_neutral",
+    "name": "Ice Shot",
+    "character": 14,
+    "donor": 10,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 42,
+    "key": "popo_side",
+    "name": "Squall Hammer",
+    "character": 14,
+    "donor": 10,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 43,
+    "key": "popo_up",
+    "name": "Belay",
+    "character": 14,
+    "donor": 10,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 44,
+    "key": "popo_down",
+    "name": "Blizzard",
+    "character": 14,
+    "donor": 10,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 49,
+    "key": "pikachu_neutral",
+    "name": "Thunder Jolt",
+    "character": 13,
+    "donor": 12,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 50,
+    "key": "pikachu_side",
+    "name": "Skull Bash",
+    "character": 13,
+    "donor": 12,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 51,
+    "key": "pikachu_up",
+    "name": "Quick Attack",
+    "character": 13,
+    "donor": 12,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 52,
+    "key": "pikachu_down",
+    "name": "Thunder",
+    "character": 13,
+    "donor": 12,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 53,
+    "key": "samus_neutral",
+    "name": "Charge Shot",
+    "character": 16,
+    "donor": 13,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 54,
+    "key": "samus_side",
+    "name": "Missile",
+    "character": 16,
+    "donor": 13,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 55,
+    "key": "samus_up",
+    "name": "Screw Attack",
+    "character": 16,
+    "donor": 13,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 56,
+    "key": "samus_down",
+    "name": "Morph Ball Bomb",
+    "character": 16,
+    "donor": 13,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 57,
+    "key": "yoshi_neutral",
+    "name": "Egg Lay",
+    "character": 17,
+    "donor": 14,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 58,
+    "key": "yoshi_side",
+    "name": "Egg Roll",
+    "character": 17,
+    "donor": 14,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 59,
+    "key": "yoshi_up",
+    "name": "Egg Throw",
+    "character": 17,
+    "donor": 14,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 60,
+    "key": "yoshi_down",
+    "name": "Yoshi Bomb",
+    "character": 17,
+    "donor": 14,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 61,
+    "key": "puff_neutral",
+    "name": "Rollout",
+    "character": 15,
+    "donor": 15,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 62,
+    "key": "puff_side",
+    "name": "Pound",
+    "character": 15,
+    "donor": 15,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 63,
+    "key": "puff_up",
+    "name": "Sing",
+    "character": 15,
+    "donor": 15,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 64,
+    "key": "puff_down",
+    "name": "Rest",
+    "character": 15,
+    "donor": 15,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 65,
+    "key": "mewtwo_neutral",
+    "name": "Shadow Ball",
+    "character": 10,
+    "donor": 16,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 66,
+    "key": "mewtwo_side",
+    "name": "Confusion",
+    "character": 10,
+    "donor": 16,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 67,
+    "key": "mewtwo_up",
+    "name": "Teleport",
+    "character": 10,
+    "donor": 16,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 68,
+    "key": "mewtwo_down",
+    "name": "Disable",
+    "character": 10,
+    "donor": 16,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 69,
+    "key": "luigi_neutral",
+    "name": "Luigi Fireball",
+    "character": 7,
+    "donor": 17,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 70,
+    "key": "luigi_side",
+    "name": "Green Missile",
+    "character": 7,
+    "donor": 17,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 71,
+    "key": "luigi_up",
+    "name": "Luigi Jump Punch",
+    "character": 7,
+    "donor": 17,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 72,
+    "key": "luigi_down",
+    "name": "Luigi Cyclone",
+    "character": 7,
+    "donor": 17,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 73,
+    "key": "marth_neutral",
+    "name": "Shield Breaker",
+    "character": 9,
+    "donor": 18,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 74,
+    "key": "marth_side",
+    "name": "Dancing Blade",
+    "character": 9,
+    "donor": 18,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 75,
+    "key": "marth_up",
+    "name": "Dolphin Slash",
+    "character": 9,
+    "donor": 18,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 76,
+    "key": "marth_down",
+    "name": "Marth Counter",
+    "character": 9,
+    "donor": 18,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 77,
+    "key": "zelda_neutral",
+    "name": "Nayru's Love",
+    "character": 18,
+    "donor": 19,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 78,
+    "key": "zelda_side",
+    "name": "Din's Fire",
+    "character": 18,
+    "donor": 19,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 79,
+    "key": "zelda_up",
+    "name": "Farore's Wind",
+    "character": 18,
+    "donor": 19,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 80,
+    "key": "zelda_down",
+    "name": "Transform to Sheik",
+    "character": 18,
+    "donor": 19,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 81,
+    "key": "clink_neutral",
+    "name": "Fire Bow",
+    "character": 21,
+    "donor": 20,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 82,
+    "key": "clink_side",
+    "name": "Young Link Boomerang",
+    "character": 21,
+    "donor": 20,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 83,
+    "key": "clink_up",
+    "name": "Young Link Spin Attack",
+    "character": 21,
+    "donor": 20,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 84,
+    "key": "clink_down",
+    "name": "Young Link Bomb",
+    "character": 21,
+    "donor": 20,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 85,
+    "key": "drmario_neutral",
+    "name": "Megavitamins",
+    "character": 22,
+    "donor": 21,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 86,
+    "key": "drmario_side",
+    "name": "Super Sheet",
+    "character": 22,
+    "donor": 21,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 87,
+    "key": "drmario_up",
+    "name": "Dr. Mario Jump Punch",
+    "character": 22,
+    "donor": 21,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 88,
+    "key": "drmario_down",
+    "name": "Dr. Tornado",
+    "character": 22,
+    "donor": 21,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 89,
+    "key": "falco_neutral",
+    "name": "Falco Blaster",
+    "character": 20,
+    "donor": 22,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 90,
+    "key": "falco_side",
+    "name": "Falco Phantasm",
+    "character": 20,
+    "donor": 22,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 91,
+    "key": "falco_up",
+    "name": "Fire Bird",
+    "character": 20,
+    "donor": 22,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 92,
+    "key": "falco_down",
+    "name": "Falco Reflector",
+    "character": 20,
+    "donor": 22,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 93,
+    "key": "pichu_neutral",
+    "name": "Pichu Thunder Jolt",
+    "character": 24,
+    "donor": 23,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 94,
+    "key": "pichu_side",
+    "name": "Pichu Skull Bash",
+    "character": 24,
+    "donor": 23,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 95,
+    "key": "pichu_up",
+    "name": "Agility",
+    "character": 24,
+    "donor": 23,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 96,
+    "key": "pichu_down",
+    "name": "Pichu Thunder",
+    "character": 24,
+    "donor": 23,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 97,
+    "key": "gamewatch_neutral",
+    "name": "Chef",
+    "character": 3,
+    "donor": 24,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 98,
+    "key": "gamewatch_side",
+    "name": "Judgment",
+    "character": 3,
+    "donor": 24,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 99,
+    "key": "gamewatch_up",
+    "name": "Fire",
+    "character": 3,
+    "donor": 24,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 100,
+    "key": "gamewatch_down",
+    "name": "Oil Panic",
+    "character": 3,
+    "donor": 24,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 101,
+    "key": "ganon_neutral",
+    "name": "Warlock Punch",
+    "character": 25,
+    "donor": 25,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 102,
+    "key": "ganon_side",
+    "name": "Gerudo Dragon",
+    "character": 25,
+    "donor": 25,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 103,
+    "key": "ganon_up",
+    "name": "Dark Dive",
+    "character": 25,
+    "donor": 25,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 104,
+    "key": "ganon_down",
+    "name": "Wizard's Foot",
+    "character": 25,
+    "donor": 25,
+    "slot": 3,
+    "price": 65
+  },
+  {
+    "id": 105,
+    "key": "emblem_neutral",
+    "name": "Flare Blade",
+    "character": 23,
+    "donor": 26,
+    "slot": 0,
+    "price": 65
+  },
+  {
+    "id": 106,
+    "key": "emblem_side",
+    "name": "Double-Edge Dance",
+    "character": 23,
+    "donor": 26,
+    "slot": 1,
+    "price": 65
+  },
+  {
+    "id": 107,
+    "key": "emblem_up",
+    "name": "Blazer",
+    "character": 23,
+    "donor": 26,
+    "slot": 2,
+    "price": 80
+  },
+  {
+    "id": 108,
+    "key": "emblem_down",
+    "name": "Roy Counter",
+    "character": 23,
+    "donor": 26,
+    "slot": 3,
+    "price": 65
+  }
+]

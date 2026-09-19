@@ -50,6 +50,28 @@ def verify_scene_log(log, expected):
     return '[rogue] native_scene=1 active=0' in log
 
 
+def verify_match_log(log, expected=20):
+    """Require actual ordered native results, entity counts and successful entries."""
+    if re.search(r'assertion|OSPanic|ERROR scene|Invalid (read|write)', log, re.I):
+        raise ValueError('Emulator assertion or resource failure; inspect saved log')
+    result = re.search(r'\[rogue\] match_qa_complete transitions=(\d+) failures=(\d+) phase=(\d+)', log)
+    if not result: return False
+    if tuple(map(int, result.groups())) != (expected, 0, 6):
+        raise ValueError('Native match fixture failed or did not finish with a loss')
+    transitions = [tuple(map(int, row)) for row in re.findall(
+        r'\[rogue\] transition_qa index=(\d+) won=(\d+) failures=(\d+)', log)]
+    if transitions != [(i, int(i < expected), 0) for i in range(1, expected + 1)]:
+        raise ValueError('Missing, repeated or incorrect native match result')
+    counts = re.findall(r'\[rogue\] match_qa frames=450 fighters=(\d+) expected=(\d+)', log)
+    if len(counts) != expected or any(a != b for a, b in counts):
+        raise ValueError('Native fighter count did not match encounter composition')
+    entries = [tuple(map(int, row)) for row in re.findall(
+        r'\[rogue\] special_qa id=(\d+) air=(\d+) entered=(\d+)', log)]
+    if entries != [(89, air, 1) for _ in range(expected) for air in (0, 1)]:
+        raise ValueError('Borrowed special ground/air entry missing or failed')
+    return '[rogue] native_scene=1 active=0' in log
+
+
 def scene_soak(cfg, iterations=100, timeout=180):
     from .build import build
     manifest = build(cfg, 'debug', 'all', iterations)

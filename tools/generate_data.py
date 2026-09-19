@@ -7,6 +7,13 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def generate():
+    specials = json.loads((ROOT/'data/specials.json').read_text())
+    if len(specials) != 104 or len({r['id'] for r in specials}) != 104:
+        raise ValueError('Special catalog must contain 104 unique definitions')
+    lines = ['#include "special_catalog.h"', 'const RogueSpecialDef rogue_specials[ROGUE_SPECIALS] = {']
+    for row in specials:
+        lines.append('    { ' + ', '.join(json.dumps(row[f]) for f in ['id','character','donor','slot','price','key','name']) + ' },')
+    (ROOT/'src/combat/specials/special_catalog_data.c').write_text('\n'.join(lines + ['};','']))
     economy = tomllib.loads((ROOT / 'data/balance.toml').read_text())['economy']
     header = '#ifndef ROGUE_BALANCE_H\n#define ROGUE_BALANCE_H\n'
     for key, value in economy.items():

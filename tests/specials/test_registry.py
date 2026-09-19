@@ -14,6 +14,11 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(size,104*60)
         rows=[struct.unpack('>15I',elf.read(address+i*60,60)) for i in range(104)]
         keys=[elf.string(row[1]) for row in rows]
+        catalog = {r['id']: r for r in json.loads((ROOT/'data/specials.json').read_text())}
+        for row in rows:
+            entry = catalog[row[0]]
+            self.assertEqual((entry['key'], entry['name'], entry['character'], entry['donor'], entry['slot']),
+                             (elf.string(row[1]), elf.string(row[2]), row[3], row[4], row[5]))
         self.assertEqual(len(set(keys)),104)
         self.assertEqual(len({row[0] for row in rows}),104)
         self.assertEqual({row[4] for row in rows},set(range(27))-{11})

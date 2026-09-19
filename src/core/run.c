@@ -1,19 +1,20 @@
 #include "run.h"
 #include "balance.h"
+#include "offers.h"
 #include "../upgrades/upgrade_registry.h"
 #include "../encounters/encounter_registry.h"
 #include <string.h>
 
 static void offers(RogueRun* run, RogueOfferState* state, RogueRng* rng, int reroll)
 {
-    unsigned candidates[ROGUE_UPGRADES], old[3], count = 0, i, j, pass;
+    unsigned candidates[ROGUE_OFFERS], old[3], count = 0, i, j, pass;
     memcpy(old, state->ids, sizeof(old));
     /* Prefer new eligible IDs; append old ones only if the pool is too small. */
     for (pass = 0; pass < 2; ++pass) {
         unsigned start = count;
-        for (i = 0; i < ROGUE_UPGRADES; ++i) {
+        for (i = 0; i < ROGUE_OFFERS; ++i) {
             int previous = 0, locked = 0;
-            if (run->stacks[i] >= rogue_upgrades[i].max_stacks) continue;
+            if (!RogueOffer_Eligible(run, i + 1)) continue;
             for (j = 0; j < 3; ++j) {
                 if (old[j] == i + 1 && reroll) previous = 1;
                 if (state->sold[j] && old[j] == i + 1) locked = 1;
@@ -120,8 +121,8 @@ int RogueRun_ChooseUpgrade(RogueRun* run, unsigned slot)
     unsigned id;
     if (run->phase != ROGUE_REWARD || slot >= 3 || run->reward.claimed) return 0;
     id = run->reward.ids[slot];
-    if (!id || run->stacks[id - 1] >= rogue_upgrades[id - 1].max_stacks) return 0;
-    run->stacks[id - 1]++; run->reward.claimed = 1; run->phase = ROGUE_ROUTE;
+    if (!RogueOffer_Apply(run, id)) return 0;
+    run->reward.claimed = 1; run->phase = ROGUE_ROUTE;
     return 1;
 }
 int RogueRun_ChooseRoute(RogueRun* run, unsigned slot)
@@ -148,8 +149,11 @@ int RogueRun_MatchEnd(RogueRun* run, int won, unsigned native_score)
     if (run->phase != ROGUE_FIGHT) return 0;
     if (!won) { run->phase = ROGUE_DEAD; return 1; }
     tier = run->route[run->floor][run->selected_route[run->floor]];
-    run->score += native_score;
-    run->gold += tier == ROGUE_BOSS ? ROGUE_BOSS_REWARD : tier == ROGUE_ELITE ? ROGUE_ELITE_REWARD : ROGUE_NORMAL_REWARD;
+    run->score += native_score + (native_score / 10) * run->stacks[12];
+    {
+        unsigned gold = tier == ROGUE_BOSS ? ROGUE_BOSS_REWARD : tier == ROGUE_ELITE ? ROGUE_ELITE_REWARD : ROGUE_NORMAL_REWARD;
+        run->gold += gold + (gold / 10) * run->stacks[11];
+    }
     advance(run); return 1;
 }
 int RogueRun_LeaveService(RogueRun* run)
@@ -190,10 +194,10 @@ int RogueRun_Buy(RogueRun* run, unsigned slot)
     unsigned id, price;
     if (run->phase != ROGUE_SHOP || slot >= 3 || run->shop.sold[slot]) return 0;
     id = run->shop.ids[slot];
-    if (!id || run->stacks[id - 1] >= rogue_upgrades[id - 1].max_stacks) return 0;
-    price = rogue_upgrades[id - 1].price;
+    if (!RogueOffer_Eligible(run, id)) return 0;
+    price = RogueOffer_Price(run, id);
     if (run->gold < price) return 0;
     run->gold -= price; run->gold_spent += price;
-    run->stacks[id - 1]++; run->shop.sold[slot] = 1;
+    RogueOffer_Apply(run, id); run->shop.sold[slot] = 1;
     return 1;
 }
