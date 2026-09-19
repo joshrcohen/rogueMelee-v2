@@ -1,0 +1,86 @@
+{
+  "scenario": "release-reconstruction-controller",
+  "status": "pass",
+  "git_commit": "df14c618168a62acaf310a8d300af525b5118869",
+  "dol_sha1": "3f37a8099efe7a16b510ea641ecd8207d39b31fb",
+  "image_sha256": "86049e8d532af5c543a761f511817a74f24a106f9ec985ffbf7c0b60a59305c1",
+  "reconstructed_sha256": "86049e8d532af5c543a761f511817a74f24a106f9ec985ffbf7c0b60a59305c1",
+  "patch_sha256": "d31cce83ea5e6ca7b632106777359836215fb251c1fd8e177acb5aab08e48d89",
+  "patch_bytes": 940519,
+  "log_sha256": "1df520fe5addd2b8b7ac6d135924c5443ac6fbbc9cef931573e3e23db922c44e",
+  "movie_sha256": "3a823d121b0c0ebbb66fb3245e9f475fa5c392f25a5a3bcabbea9abb52c15153",
+  "screenshot_sha256": "cdfb1ba898e2487c550098db550b665948cf54f5fb3739ac84d9a0245e79ce96",
+  "checks": [
+    "Release build and source-image immutability verified",
+    "xdelta reconstruction matches release image byte for byte",
+    "Reconstructed image booted in a separate user profile",
+    "Normal menu/CSS/reward/route/native combat/natural loss/run-end controller flow",
+    "Developer HUD/QA/build-log markers absent from executable"
+  ],
+  "scope": "One release controller path; broad gameplay evidence is from the recorded debug acceptance suite",
+  "movie": {
+    "polls": 11000,
+    "pulses": [
+      [
+        100,
+        115,
+        1
+      ],
+      [
+        1000,
+        1015,
+        1
+      ],
+      [
+        2000,
+        2015,
+        1
+      ],
+      [
+        3000,
+        3015,
+        1
+      ],
+      [
+        4000,
+        4015,
+        8
+      ],
+      [
+        7000,
+        7030,
+        2
+      ],
+      [
+        8000,
+        8030,
+        1
+      ],
+      [
+        9000,
+        9030,
+        2
+      ],
+      [
+        10000,
+        10030,
+        2
+      ]
+    ],
+    "sticks": [
+      [
+        6000,
+        6100,
+        128,
+        192
+      ],
+      [
+        6300,
+        6312,
+        192,
+        128
+      ]
+    ]
+  },
+  "note": "An initial shorter startup replay remained in attract mode; the recorded replay includes an additional Start pulse before the Rogue shortcut."
+}

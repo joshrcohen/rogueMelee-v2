@@ -8,4 +8,4 @@
 - Aerial swapping is intentionally disabled. Native special bosses such as Master Hand and Giga Bowser are deferred; bosses use ordinary fighter lifecycles.
 - Supported image: clean NTSC-U 1.02 only. Modified images are rejected rather than combined with unknown patches. Slippi compatibility is not claimed.
 
-Release reconstruction and final delivery gates are recorded separately in IMPLEMENTATION_STATUS.md.
+Release reconstruction and native delivery gates passed; exact tested scope is recorded in IMPLEMENTATION_STATUS.md and docs/qa.

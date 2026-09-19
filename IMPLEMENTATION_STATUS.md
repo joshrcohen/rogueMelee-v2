@@ -14,7 +14,7 @@ The entire supplied v6 DOCX was read, including all 35 sections, tables and the 
 | WP7 economy/rerolls | PASS | Escalating costs, isolated reward/shop RNG, sold-slot preservation, purchases, healing and run history tested |
 | WP8 encounters | PASS | 8 elite and 6 boss families; curated rosters/stages, weights, cooldowns, act/floor eligibility and compatible threat budgets; 4500 budget cases and 1000 family samples |
 | WP9 diagnostics/lifecycle | PASS | 104 hitstun/ledge/grab/death/respawn cases; two-way borrowed transform; controller pause/unpause; debug traces, build/seed context and compact combat indicators |
-| WP10 release reconstruction | PENDING | Final release build, real xdelta encode/decode and fresh release controller smoke are next |
+| WP10 release reconstruction | PASS | 940519-byte xdelta reconstructs exact release SHA256; reconstructed image passes normal controller flow in a separate profile |
 
 All 21 automated tests pass. Native evidence and exact executable/image/log hashes are in `docs/qa`. These are historical tested builds, not a claim that every later source change was rerun through every test. The full matrix combines successfully completed intervals around three repaired recipient-specific defects; see `specials-full-matrix.json`. Extended interruptions use Captain Falcon; pause was tested with an equipped special outside its active animation. Natural borrowed transformation completion is recorded separately.
 
@@ -24,8 +24,10 @@ Original input MD5: `0e63d4223b01d9aba596259dc155a174`. Original DOL SHA1: `08e0
 
 Repository: https://github.com/joshrcohen/rogueMelee-v2 (private). No legacy history, retail game image, extracted retail asset or compiler binary is tracked. Aerial swapping remains disabled.
 
+Release executable source commit: `df14c618168a62acaf310a8d300af525b5118869`. Release/reconstructed image SHA256: `86049e8d532af5c543a761f511817a74f24a106f9ec985ffbf7c0b60a59305c1`. Patch SHA256: `d31cce83ea5e6ca7b632106777359836215fb251c1fd8e177acb5aab08e48d89`. The patch and manifest are in `dist/`; `docs/qa/release-reconstruction.json` records the separate-profile controller check. Subsequent commits only record delivery evidence/documentation.
+
 | Final delivery gate | Result |
 | --- | --- |
 | Source, debug build, host tests and native acceptance fixtures | PASS |
-| Release build, reconstructed patch and release controller smoke | PENDING |
-| Clean committed and pushed delivery | PENDING |
+| Release build, reconstructed patch and release controller smoke | PASS |
+| Clean committed and pushed delivery | PASS |
