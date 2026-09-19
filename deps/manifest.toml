@@ -1,0 +1,39 @@
+[[dependency]]
+name = "melee"
+url = "https://github.com/doldecomp/melee.git"
+rev = "11749c9ccbaf73bfc28a569650dfec5e18665a74"
+license = "No repository license; local build/reference only"
+role = "decomp-build"
+redistribute = false
+
+[[dependency]]
+name = "gc_fst"
+url = "https://github.com/AlexanderHarrison/gc_fst.git"
+rev = "a49401e8ac75c9e1684c8e35ab9882183b9fbe6e"
+license = "MIT OR Apache-2.0"
+role = "iso-filesystem-tool"
+redistribute = true
+
+[[dependency]]
+name = "hgecko"
+url = "https://github.com/AlexanderHarrison/hgecko.git"
+rev = "95f3c95a7b067f1d377fb334ae476a9e780b6b1c"
+license = "MIT OR Apache-2.0"
+role = "optional-hook-assembler"
+redistribute = true
+
+[[dependency]]
+name = "cdat"
+url = "https://github.com/AlexanderHarrison/cdat.git"
+rev = "e1f4642cceca47264c438ece0245b02517d60e81"
+license = "Apache-2.0"
+role = "dat-tooling"
+redistribute = true
+
+[[dependency]]
+name = "legacy-specials"
+url = "https://github.com/joshrcohen/rogueMelee.git"
+rev = "82377924344f3d38f6ed89aef9a32dda66820b7f"
+license = "User-authorized specials migration; not a build dependency"
+role = "migration-oracle"
+redistribute = false
