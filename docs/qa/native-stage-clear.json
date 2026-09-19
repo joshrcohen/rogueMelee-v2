@@ -1,0 +1,16 @@
+{
+  "scenario": "matches",
+  "status": "pass",
+  "start": 0,
+  "iterations": 3,
+  "seconds": 9.13240489992313,
+  "log_sha256": "1639b1ba57765a4c8b5a2158f247ca807257975a31fedfd6f6dc80ea0553c01c",
+  "dol_sha1": "0d2c4d3842199e2910045884b17773cedb165417",
+  "image_sha256": "0c446435853b6f8bb925f1568ae90b6c950f96402a874a5f050cbb01a495c1b4",
+  "checks": [
+    "Two native Stage Clear presentations with retail bonus scoring",
+    "Two wins and final loss",
+    "Borrowed context released before match generation advances",
+    "Stock main menu return"
+  ]
+}

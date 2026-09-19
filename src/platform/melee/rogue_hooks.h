@@ -6,5 +6,6 @@ void RogueHooks_OnSceneEnter(int scene);
 void RogueHooks_OnSceneExit(void);
 void RogueHooks_OnFrame(void);
 void RogueHooks_OnPause(int paused);
+int RogueHooks_AdvanceStageClear(void);
 void RogueHooks_DumpContext(void);
 #endif

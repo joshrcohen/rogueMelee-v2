@@ -95,6 +95,13 @@ int main(void)
     assert(a.history_count==2 && a.history[1].kind==4);
     assert(RogueRun_MatchEnd(&a,1,40));
     assert(a.fights_won==1 && a.native_score==40 && a.history[2].kind==5);
+    RogueRun_Init(&a,42,0);
+    assert(RogueRun_ChooseUpgrade(&a,0)); assert(RogueRun_ChooseRoute(&a,0));
+    memset(a.stacks,0,sizeof(a.stacks));
+    a.stacks[11]=a.stacks[12]=a.stacks[22]=1;
+    assert(RogueOffer_Price(&a,1)==34);
+    assert(RogueRun_MatchEnd(&a,1,100));
+    assert(a.gold==83 && a.score==220);
     for(i=0;i<ROGUE_SPECIALS;++i) {
         RogueRun_Init(&a,42,(rogue_specials[i].character+1)%26);
         a.reward.ids[0]=ROGUE_UPGRADES+i+1;
@@ -107,6 +114,10 @@ int main(void)
     n=RogueRun_Serialize(&b,first,sizeof(first));
     assert(!RogueRun_Deserialize(&c,first,n)); assert(memcmp(&a,&c,sizeof(a))==0);
     b=a; b.preview[0].defense=0; n=RogueRun_Serialize(&b,first,sizeof(first));
+    assert(!RogueRun_Deserialize(&c,first,n)); assert(memcmp(&a,&c,sizeof(a))==0);
+    b=a; b.death_reason=3; n=RogueRun_Serialize(&b,first,sizeof(first));
+    assert(!RogueRun_Deserialize(&c,first,n)); assert(memcmp(&a,&c,sizeof(a))==0);
+    b=a; b.fights_won=16; n=RogueRun_Serialize(&b,first,sizeof(first));
     assert(!RogueRun_Deserialize(&c,first,n)); assert(memcmp(&a,&c,sizeof(a))==0);
     printf("PASS: 100 complete runs twice; 50 reroll-isolation seeds; 1000 encounters; snapshot=%08x\n",checksum);
     return 0;

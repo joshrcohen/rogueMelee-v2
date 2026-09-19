@@ -6,6 +6,9 @@
 #include "../encounters/encounter_registry.h"
 #include <string.h>
 
+static RogueRunObserver observer;
+void RogueRun_SetObserver(RogueRunObserver value) { observer = value; }
+
 static void history(RogueRun* run, unsigned kind, unsigned cost, unsigned a, unsigned b, unsigned c)
 {
     RogueHistoryEvent* event = &run->history[run->history_count % ROGUE_HISTORY];
@@ -94,6 +97,7 @@ void RogueEncounter_Generate(RogueRun* run, unsigned tier, RogueEncounter* out)
     for (i = 2; i > 0; --i) run->recent_stages[i] = run->recent_stages[i - 1];
     run->recent_stages[0] = out->stage;
     run->encounters++;
+    if (observer) observer(run, 1, out->recipe, out->tags, out->stage);
 }
 
 static void previews(RogueRun* run)
@@ -218,6 +222,7 @@ int RogueRun_Reroll(RogueRun* run, int shop)
     event->generation = state->generation;
     memcpy(event->after, state->ids, sizeof(event->after));
     run->history_count++;
+    if (observer) observer(run, 2, shop != 0, cost, state->generation);
     return 1;
 }
 int RogueRun_Buy(RogueRun* run, unsigned slot)

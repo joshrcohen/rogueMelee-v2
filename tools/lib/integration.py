@@ -10,7 +10,7 @@ from .process import run
 
 
 def hooks():
-    return tomllib.loads((ROOT / 'integration/hook_manifest.toml').read_text())['hook']
+    return tomllib.loads((ROOT / 'integration/hook_manifest.toml').read_text(encoding='utf-8'))['hook']
 
 
 def validate(entries, upstream):
@@ -45,19 +45,19 @@ def prepare(profile, qa_cycles=0, qa_match=False, qa_ui=False, qa_matches=20, qa
     apply(clean, work)
     from .native_mode import apply as register_mode
     register_mode(clean, work)
-    fixes = tomllib.loads((ROOT/'integration/platform_fixes.toml').read_text())['fix']
-    adapted_paths = json.loads((ROOT/'integration/special_adapters.json').read_text())['files']
+    fixes = tomllib.loads((ROOT/'integration/platform_fixes.toml').read_text(encoding='utf-8'))['fix']
+    adapted_paths = json.loads((ROOT/'integration/special_adapters.json').read_text(encoding='utf-8'))['files']
     for name in {fix['file'] for fix in fixes} - adapted_paths.keys():
         shutil.copyfile(clean/name, work/name)
     for fix in fixes:
         path = work/fix['file']
-        source = path.read_text()
+        source = path.read_text(encoding='utf-8')
         if source.count(fix['anchor']) != fix.get('occurrences', 1):
             raise ValueError('Platform anchor drift: ' + fix['id'])
-        path.write_text(source.replace(fix['anchor'], fix['replacement']))
+        path.write_text(source.replace(fix['anchor'], fix['replacement']), encoding='utf-8')
     for name in {fix['file'] for fix in fixes if fix.get('fighter_api')}:
         path = work/name
-        path.write_text('#include <melee/rogue/platform/melee/melee_fighter.h>\n' + path.read_text())
+        path.write_text('#include <melee/rogue/platform/melee/melee_fighter.h>\n' + path.read_text(encoding='utf-8'), encoding='utf-8')
     for name in {h['file'] for h in entries}:
         p = work / name
         # Earlier stages reset their inputs; preserve any named adapters/fixes
@@ -81,7 +81,7 @@ def prepare(profile, qa_cycles=0, qa_match=False, qa_ui=False, qa_matches=20, qa
             if target.is_file() and target.is_relative_to(ROOT / 'src'):
                 return '#include <melee/rogue/' + target.relative_to(ROOT / 'src').as_posix() + '>'
             return match.group(0)
-        text = re.sub(r'#include "([^"]+)"', normalize, owned.read_text())
+        text = re.sub(r'#include "([^"]+)"', normalize, owned.read_text(encoding='utf-8'))
         (work / 'src/melee/rogue' / owned.relative_to(ROOT / 'src')).write_text(text)
     from .debug_launch import header
     (work/'src/melee/rogue/platform/melee/debug_launch.h').write_text(header(debug_launch))
@@ -98,7 +98,7 @@ def prepare(profile, qa_cycles=0, qa_match=False, qa_ui=False, qa_matches=20, qa
         source = source.replace('config.libs = [', 'cflags_base.append("-DROGUE_QA_SPECIAL_' + key + '=' + str(value) + '")\nconfig.libs = [', 1)
     source = source.replace('Object(Debug, "Runtime/eabi_save_restore.s")',
                             'Object(Equivalent, "Runtime/eabi_save_restore.s")')
-    adapted = json.loads((ROOT/'integration/special_adapters.json').read_text())['files']
+    adapted = json.loads((ROOT/'integration/special_adapters.json').read_text(encoding='utf-8'))['files']
     units = [p.removeprefix('src/') for p in adapted]
     setup = '\nrogue_adapted_units = ' + repr(units) + '\n'
     setup += '''for library in config.libs:

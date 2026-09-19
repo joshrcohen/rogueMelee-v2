@@ -1,0 +1,11 @@
+{
+  "scenario": "native-passive-behavior",
+  "status": "pass",
+  "checks": 20,
+  "failures": 0,
+  "seed": 77,
+  "dol_sha1": "10d4bec3cb8bf97f1ed0236c7943d4353d95331d",
+  "image_sha256": "6f466719fd9637d848564988d596b42521484e9f8cfa098692fddb0f1b5bfae0",
+  "log_sha256": "d89cae786b059c8b6679c06ffe6278a4e97625fbdfae48acca9626d487023339",
+  "scope": "Controlled native attributes and damage/KO/collision hooks; 4 economy/rest passives separately checked in host tests. Gameplay remained active after assertions. This is not natural-input coverage of every passive."
+}

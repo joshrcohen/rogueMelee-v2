@@ -33,6 +33,8 @@ typedef struct RogueRun {
     RogueHistoryEvent history[ROGUE_HISTORY];
 } RogueRun;
 
+typedef void (*RogueRunObserver)(const RogueRun*, unsigned event, unsigned a, unsigned b, unsigned c);
+void RogueRun_SetObserver(RogueRunObserver observer);
 void RogueRun_Init(RogueRun* run, RogueSeed seed, unsigned character);
 int RogueRun_ChooseUpgrade(RogueRun* run, unsigned slot);
 int RogueRun_ChooseRoute(RogueRun* run, unsigned slot);

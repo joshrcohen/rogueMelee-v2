@@ -54,6 +54,7 @@ def main():
     p.add_argument('--encounter')
     p.add_argument('--special')
     p.add_argument('--recipient')
+    p.add_argument('--check-passives', action='store_true', help='Native controlled passive-behavior assertions')
     p = sub.add_parser('soak', help='Run native lifecycle fixtures and save pass/failure evidence')
     p.add_argument('--scenario', choices=['scenes','matches','specials'], default='scenes')
     p.add_argument('--iterations', '--transitions', type=int)
@@ -87,10 +88,16 @@ def main():
             inventory()
         elif args.command == 'run':
             from lib.emulator import launch
-            if any(getattr(args,key) is not None for key in ('seed','scene','encounter','special','recipient')):
+            if args.check_passives or any(getattr(args,key) is not None for key in ('seed','scene','encounter','special','recipient')):
                 from lib.debug_launch import options
                 from lib.build import build
-                fixture = options(args.seed,args.scene,args.encounter,args.special,args.recipient)
+                if args.check_passives:
+                    if args.special or args.encounter or args.recipient not in (None,'fox') or args.scene not in (None,'encounter'):
+                        raise ValueError('--check-passives requires the controlled Fox/duel fixture; only --seed may be customized')
+                    fixture = options(args.seed,'encounter',recipient='fox')
+                    fixture['passives'] = 1
+                else:
+                    fixture = options(args.seed,args.scene,args.encounter,args.special,args.recipient)
                 build(cfg,'debug',qa_ui=True,debug_launch=fixture)
             launch(cfg)
         elif args.command == 'package':

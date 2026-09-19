@@ -33,4 +33,5 @@ def header(config=None):
         '#define ROGUE_LAUNCH_RECIPIENT %u' % config['recipient'],
         '#define ROGUE_LAUNCH_SPECIAL %u' % config['special'],
         '#define ROGUE_LAUNCH_ENCOUNTER %u' % config['encounter'],
+        '#define ROGUE_QA_PASSIVES %u' % config.get('passives',0),
         '#define ROGUE_LAUNCH_COMBAT %u' % (config['scene'] == 'encounter'), ''])

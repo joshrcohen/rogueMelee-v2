@@ -9,7 +9,7 @@ Read all 35 sections, all tables and the embedded progression reference from the
 | WP2 platform/runtime spine | Partial: additive mode, named hooks, scene/match generations and ownership guards; clean-1.02 capabilities are detected once at scene entry and cached; unsupported profiles leave the entry shortcut inactive |
 | WP3 deterministic run core | Host tests PASS: 64-bit seeds, four isolated streams, 100 complete runs twice, serialization v3, golden snapshot `4a55e066` |
 | WP4 borrowed specials | Partial: 104 entries compile; all Captain Falcon cases pass. Full 26 x 104 matrix is running; extended interruption/respawn scenarios remain open |
-| WP5 playable run lifecycle | Native 100-match soak PASS (99 wins, final loss). Normal menu/CSS/reward/route/combat/natural-loss controller flow PASS. Targeted passive behavior checks remain open |
+| WP5 playable run lifecycle | Native 100-match soak PASS (99 wins, final loss). Normal menu/CSS/reward/route/combat/natural-loss controller flow PASS. 20 native passive assertions and separate economy/rest host checks PASS |
 | WP6 native progression UI | 100 mixed scene lifetimes PASS; controller build/reroll/selection flow PASS. Header spacing corrected and visually verified; final reward/shop visual review remains open |
 | WP7 economy/rerolls | Deterministic core tests PASS: separate reward/shop streams, escalating prices, sold-slot preservation, purchase/rest/history behavior |
 | WP8 encounters | 8 elite and 6 boss families implemented with curated rosters, visible rules, modifier composition and build-sensitive rivals; host distribution tests pass; final native recipe review pending |
@@ -18,7 +18,7 @@ Read all 35 sections, all tables and the embedded progression reference from the
 
 All 21 automated tests pass. Native evidence is recorded with exact executable/image/log hashes in `docs/qa/`; these are historical tested builds, not certification of every later source change.
 
-The 100-match evidence is `docs/qa/100-matches.json`; all borrowed contexts were released before match generation advanced. The normal controller fixture and its limitations are recorded in `docs/qa/normal-controller-flow.json`.
+Native retail Stage Clear, bonus scoring and progression integration now pass 100 consecutive matches (`docs/qa/100-matches-stage-clear.json`). The earlier 100-match evidence is `docs/qa/100-matches.json`; all borrowed contexts were released before match generation advanced. The normal controller fixture and its limitations are recorded in `docs/qa/normal-controller-flow.json`.
 
 The special matrix first passed 1,252 recipient/move pairs, then exposed Peach's native float flag overwriting a borrowed Fox Blaster item pointer. Native grounded-state updates now target Peach's saved native state. The isolated failing pair passes. The next segment reached 1,504 successful pairs, then found Charge Shot storing a donor hand-bone index on Ice Climbers. Remapping the persistent attachment at creation fixes the isolated case; the remaining 1,200 pairs are being tested. Earlier fixes cover Hand Slap's absent airborne attack and returning Link-family boomerang context/bone handling. Extended hitstun, death/respawn, ledge, grab, pause and transform coverage is still required.
 
@@ -37,3 +37,7 @@ Additional matrix fix: Jigglypuff's native accessory callbacks accessed the dono
 Developer seed/scene/encounter/special/recipient options and targeted asset/hook/DOL build modes are implemented. The native developer fixture passed with a full-width seed, Mario recipient, Fox Reflector and Juggernaut encounter (`docs/qa/developer-launch.json`). The extended fixture's precise evidence is `docs/qa/extended-0-104.json`.
 
 Controller-driven native pause/unpause passed with an equipped borrowed special, followed by interruption, respawn and teardown (`docs/qa/pause-controller.json`). The donor animation was inactive at the pause point; this is not evidence of pausing every move mid-animation. Frame-driven fixture and specialist-pressure timers now stop while native pause flags are set.
+
+Native passive fixture evidence: `docs/qa/passive-behavior.json`; reproduce with `py -3 tools/rogue.py run --check-passives --seed 77`. Native damage, shield, movement, dodge, stock, knockback and KO hooks are checked directly; this controlled fixture does not claim natural controller coverage of every effect.
+
+Remaining encounter gap found during the spec audit: explicit act/floor eligibility, threat costs and compatible mutation budgets. Current curated recipes, roster/stage constraints and cooldowns already pass host coverage.

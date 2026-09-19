@@ -4,6 +4,7 @@
 #include "ui_scene.h"
 #include "melee_fighter.h"
 #include "qa/special_matrix.h"
+#include "qa/passives.h"
 #include "../../director/rogue_director.h"
 #include "../../upgrades/upgrade_registry.h"
 #include "../../encounters/encounter_registry.h"
@@ -20,6 +21,7 @@
 #include <melee/gm/gmscene.h>
 #include <melee/gm/gmvsmelee.h>
 #include <melee/gm/gmvs.h>
+#include <melee/gm/gmregclear.h>
 #include <melee/pl/player.h>
 #include <melee/lb/forward.h>
 #include <melee/lb/lbaudio_ax.h>
@@ -62,6 +64,9 @@ void RogueMode_Load(void)
         RogueRun* run = RogueDirector_Run();
         const RogueSpecialDef* special = RogueSpecial_Find(ROGUE_LAUNCH_SPECIAL);
         unsigned tries;
+#if ROGUE_QA_PASSIVES
+        for (tries = 0; tries < ROGUE_UPGRADES; ++tries) run->stacks[tries] = 1;
+#endif
         if (special) run->specials[special->slot] = special->id;
         if (ROGUE_LAUNCH_COMBAT) {
             if (ROGUE_LAUNCH_ENCOUNTER) {
@@ -118,6 +123,8 @@ static void enter_match(GameModeState* state)
     match.rules.is_stock = true;
     match.rules.is_vs = true;
     match.rules.is_teams = true;
+    match.rules.x4_4 = true; /* Retail Stage Clear and bonus-score presentation. */
+    match.rules.x18 = run->score;
     match.rules.item_freq = -1;
     match.rules.stkind = stages[run->current.stage - 1];
     for (i = 0; i < GM_MAX_PLAYERS; ++i) {
@@ -165,10 +172,14 @@ static void exit_match(GameModeState* state)
 {
     int won = result.match_end.outcome == OUTCOME_TEAM_ELIMINATION &&
         result.match_end.player_standings[0].stocks > 0;
+    int raw_score = won ? fn_8017F294() : result.match_end.player_standings[0].score;
+    unsigned native_score = raw_score > 0 ? raw_score : 0;
+    if (won) native_score = native_score > RogueDirector_Run()->score ? native_score - RogueDirector_Run()->score : 0;
     (void) state;
     RogueDirector_Run()->carried_percent = result.match_end.player_standings[0].percent;
     RogueRun_MatchEnd(RogueDirector_Run(), won,
-        result.match_end.player_standings[0].score > 0 ? result.match_end.player_standings[0].score : 0);
+        native_score);
+    if (!won && result.match_end.outcome == OUTCOME_NO_CONTEST) RogueDirector_Run()->death_reason = 2;
     RogueSpecialQa_Result(won);
 #if ROGUE_DEBUG && ROGUE_QA_MODE == 2
     qa_matches++;
@@ -227,6 +238,8 @@ static void draw(void)
     }
     RogueText_Line(&screen, 24, 61, "ACT %u / 3     FLOOR %u / 15", run->act, floor+1);
     RogueText_Style(&screen, 0.80f, 0xFFFFFF);
+    RogueText_Line(&screen, 330, 62, "SCORE %u", run->score);
+    RogueText_Style(&screen, 0.55f, 0xDAE2FF);
     RogueText_Line(&screen, 471, 61, "GOLD %u", run->gold);
     RogueText_Style(&screen, 0.85f, 0xF6CD36);
     RogueText_Line(&screen, 212, 102, "%s", build_view ? "CURRENT BUILD" : phases[run->phase]);
@@ -272,7 +285,7 @@ static void draw(void)
                 RogueText_Wrap(&screen, 36+i*320, 190, 25, recipe ? rogue_recipes[recipe-1].name : "Recover and prepare");
             }
         } else {
-            RogueText_Line(&screen, 42, 150, "%s", phases[run->phase]);
+            RogueText_Line(&screen, 42, 150, "%s", run->phase == ROGUE_DEAD && run->death_reason == 2 ? "RUN ABANDONED" : phases[run->phase]);
             if (run->phase == ROGUE_REST)
                 RogueText_Line(&screen, 42, 187, "DAMAGE %u%%   RECOVER %u%%   START: REST", run->carried_percent, 20 + 10 * run->stacks[13]);
             else RogueText_Line(&screen, 42, 187, "SCORE %u   FIGHTS %u", run->score, run->fights_won);
@@ -383,13 +396,14 @@ void RogueMode_Frame(void)
 #if ROGUE_DEBUG
     OSReport("[rogue] ui_input phase=%u mask=%x cursor=%u build=%u\n", run->phase, (unsigned) input, cursor, build_view);
 #endif
-    if (input & MenuInput_Back) build_view = !build_view;
+    if (input & MenuInput_Back) { build_view = !build_view; sfxBack(); }
     if (!build_view) {
-        if (input & (MenuInput_Up | MenuInput_Left)) cursor = (cursor + count - 1) % count;
-        if (input & (MenuInput_Down | MenuInput_Right)) cursor = (cursor + 1) % count;
+        if (input & (MenuInput_Up | MenuInput_Left)) { cursor = (cursor + count - 1) % count; sfxMove(); }
+        if (input & (MenuInput_Down | MenuInput_Right)) { cursor = (cursor + 1) % count; sfxMove(); }
         if ((input & MenuInput_XButton) && (run->phase == ROGUE_REWARD || run->phase == ROGUE_SHOP))
             feedback = RogueRun_Reroll(run, run->phase == ROGUE_SHOP) ? "New offers ready" : "Reroll unavailable: check gold or sold slots";
         if (input & MenuInput_AButton) {
+            sfxForward();
             if (run->phase == ROGUE_REWARD) RogueRun_ChooseUpgrade(run, cursor);
             else if (run->phase == ROGUE_ROUTE) RogueRun_ChooseRoute(run, cursor % 2);
             else if (run->phase == ROGUE_SHOP)
@@ -455,6 +469,9 @@ void RogueMode_MatchFrame(void)
     if (RogueRuntime_IsActive() && RogueRuntime_Get()->scene == GS_VS) {
         RogueRun* run = RogueDirector_Run();
         ++encounter_frames;
+#if ROGUE_DEBUG && ROGUE_QA_PASSIVES
+        if (encounter_frames == 150) RoguePassiveQa_Check();
+#endif
         if ((run->current.tags & 64) && encounter_frames % 180 == 0) {
             Fighter_GObj* entity = Player_GetEntity(1);
             Fighter* fighter = entity ? entity->user_data : NULL;

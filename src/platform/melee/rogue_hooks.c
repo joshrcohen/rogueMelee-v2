@@ -8,6 +8,24 @@
 #include <dolphin/os.h>
 #include <melee/pl/player.h>
 #include <melee/ft/types.h>
+#include <melee/gm/gmregclear.h>
+static unsigned clear_frames;
+
+#if ROGUE_DEBUG
+static void observe_run(const RogueRun* run, unsigned event, unsigned a, unsigned b, unsigned c)
+{
+    RogueRuntime_Trace(event == 1 ? 13 : 14, a);
+    if (event == 1) {
+        OSReport("[rogue] encounter seed=%08x%08x floor=%u recipe=%u tags=%x stage=%u rng_draws=%u\n",
+            (unsigned) (run->seed >> 32), (unsigned) run->seed, run->floor, a, b, c, run->encounter_rng.draws);
+    } else {
+        const RogueHistoryEvent* history = &run->history[(run->history_count-1)%ROGUE_HISTORY];
+        OSReport("[rogue] reroll shop=%u cost=%u generation=%u gold=%u before=%u,%u,%u after=%u,%u,%u\n",
+            a,b,c,run->gold,history->before[0],history->before[1],history->before[2],
+            history->after[0],history->after[1],history->after[2]);
+    }
+}
+#endif
 
 unsigned RogueHooks_BootMode(unsigned native_mode)
 {
@@ -22,6 +40,9 @@ void RogueHooks_OnBoot(void)
 {
     RogueRuntime_OnBoot();
 #if ROGUE_DEBUG
+    RogueRun_SetObserver(observe_run);
+#endif
+#if ROGUE_DEBUG
     OSReport("[rogue] build=0.1.0-dev/%s boot aerials=disabled\n", ROGUE_BUILD_ID);
 #endif
 }
@@ -35,6 +56,7 @@ void RogueHooks_OnSceneEnter(int scene)
 #endif
     if (!RogueRuntime_IsActive()) return;
     RogueRuntime_SceneEnter((unsigned) scene);
+    if (scene == GS_VS) clear_frames = 0;
     if (scene == GS_VS && !RogueRuntime_MatchEnter())
         OSPanic(__FILE__, __LINE__, "rogue match lifetime overlap");
 #if ROGUE_DEBUG
@@ -102,4 +124,16 @@ void RogueHooks_OnPause(int paused)
 #else
     (void) paused;
 #endif
+}
+
+int RogueHooks_AdvanceStageClear(void)
+{
+#if ROGUE_DEBUG
+    if (!RogueRuntime_IsActive()) return 0;
+    if (!clear_frames++) OSReport("[rogue] native_stage_clear score=%d match=%u\n", fn_8017F294(), RogueRuntime_Get()->match_generation);
+#if ROGUE_QA_MODE == 2 || ROGUE_QA_MODE == 4
+    return clear_frames >= 120;
+#endif
+#endif
+    return 0;
 }

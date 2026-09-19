@@ -1,0 +1,17 @@
+{
+  "scenario": "matches",
+  "status": "pass",
+  "start": 0,
+  "iterations": 100,
+  "seconds": 199.26584889995866,
+  "log_sha256": "f1dd4f8b81680a182aac8b69f2446faa66b840f1ffdd5f98282e36315a89f739",
+  "dol_sha1": "97a12a5d6e1b5b1689e6bfe73df739f0c8686ae2",
+  "image_sha256": "c59e94eb73eb9c914faed88533d084ccc6c12cdf84002004ef0a853e96cd0288",
+  "checks": [
+    "99 retail Stage Clear screens with native bonus-score totals",
+    "99 wins and final loss",
+    "200 borrowed Falco neutral ground/air entries",
+    "100 donor contexts released before match generation advances",
+    "Stock main menu return"
+  ]
+}

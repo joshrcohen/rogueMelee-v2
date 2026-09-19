@@ -72,3 +72,5 @@ py -3 tools/rogue.py soak --matches 100 --seed 77
 ```
 
 Seeds accept unsigned 64-bit decimal values. Character names use lowercase underscores; move keys are listed in `data/specials.json`. Developer launch overrides require debug builds. A plain `run` launches the last verified image without recompiling.
+
+For controlled native passive assertions, run `py -3 tools/rogue.py run --check-passives --seed 77` and look for `passive_behavior checks=20 failures=0` in the owned Dolphin log.

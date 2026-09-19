@@ -244,3 +244,20 @@ file = "src/melee/gm/gmvs.c"
 anchor = "        gm_ClearDbPauseFlag(arg1);"
 replacement = "        gm_ClearDbPauseFlag(arg1);\n        RogueHooks_OnPause(0);"
 reason = "Trace an actual native unpause after controller input is accepted."
+
+[[fix]]
+id = "stage-clear-qa-header"
+owner = "platform/diagnostics"
+file = "src/melee/gm/gmregclear.c"
+anchor = '#include "gmregclear.h"'
+replacement = '''#include "gmregclear.h"
+#include <melee/rogue/platform/melee/rogue_hooks.h>'''
+reason = "Declare the native result-screen diagnostic/QA continuation adapter."
+
+[[fix]]
+id = "stage-clear-qa-confirmation"
+owner = "platform/diagnostics"
+file = "src/melee/gm/gmregclear.c"
+anchor = "    if (lbl_80472D28.x116 == 1) {"
+replacement = "    if (RogueHooks_AdvanceStageClear() || lbl_80472D28.x116 == 1) {"
+reason = "Log native result entry. Automated match fixtures retain the retail screen for 120 frames then continue; ordinary debug and release builds require the native confirmation input."

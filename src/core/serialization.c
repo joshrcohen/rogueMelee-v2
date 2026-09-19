@@ -90,7 +90,9 @@ int RogueRun_Deserialize(RogueRun* run, const unsigned char* data, unsigned size
         if(copy.selected_route[i]>1) return 0;
         for(j=0;j<2;++j) if(copy.route[i][j]>ROGUE_NODE_REST) return 0;
     }
-    if (copy.gold > 1000000 || copy.score > 100000000 ||
+    if (copy.fights_won > ROGUE_FLOORS || copy.death_reason > 2 ||
+        copy.reroll_gold_spent > copy.gold_spent ||
+        copy.gold > 1000000 || copy.score > 100000000 ||
         copy.reward.claimed > 1 || copy.shop.claimed > 1) return 0;
     for (i = 0; i < ROGUE_UPGRADES; ++i)
         if (copy.stacks[i] > rogue_upgrades[i].max_stacks) return 0;
